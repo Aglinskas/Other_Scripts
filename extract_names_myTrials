@@ -1,0 +1,5 @@
+for i = 1 : length([myTrials])
+   a = strsplit(myTrials(i).filepath, '/');
+    myTrials(i).name = a{2};
+    myTrials(i).stimKind = a{1};
+end

@@ -1,0 +1,5 @@
+for i = 1 : length(myTrials)
+if isempty(myTrials(i).resp)
+myTrials(i).resp = 0
+end
+end

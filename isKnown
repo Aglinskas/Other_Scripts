@@ -1,0 +1,6 @@
+find([myTrials.blockNum] == 7 & [myTrials.resp] == 1);
+y = find([myTrials.blockNum] == 7 & [myTrials.resp] == 1);
+n = find([myTrials.blockNum] == 7 & [myTrials.resp] == 2);
+
+known = length(y)
+unknown = length(n)

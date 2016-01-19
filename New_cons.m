@@ -1,6 +1,6 @@
 %% PREP
 matlabbatch = [];
-matlabbatch{1}.spm.stats.con.spmmat{1} = '/Volumes/Aidas_HDD/MRI_data/S6/Analysis/SPM.mat';
+matlabbatch{1}.spm.stats.con.spmmat{1} = '/Volumes/Aidas_HDD/MRI_data/S6/Analysis3/SPM.mat';
 
 %repmat([c_vect zeros(1,6)],1,5)
 c_vect = repmat(0,1,15);

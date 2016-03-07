@@ -1,9 +1,12 @@
 %load people list
 
-myTrials_dir = '/Users/aidas_el_cap/Desktop/Recognition/myTrials_fmri/'
-subject = [3 4 5 6]
-myTrials_fn = sprintf('S%d_Results.mat',i)
-
+analysis = 1
+% 1 = score correlation analysis
+%2 = recognition analysis
+myTrials_dir = '/Users/aidas_el_cap/Desktop/Summaries & Results/Recognition/myTrials_fmri/'
+subject = [3]
+myTrials_fn = sprintf('S%d_Results.mat',subject)
+load(fullfile(myTrials_dir,myTrials_fn))
 %%
 load('/Users/aidas_el_cap/Desktop/Other_Scripts/people.mat')
 init = 1
@@ -13,23 +16,23 @@ for i = 1 : length([myTrials]);
     myTrials(i).name = a{2};
     myTrials(i).stimKind = a{1};
 end
-%replace zeros
+%% replace zeros
 for i = 1 : length(myTrials);
 if isempty(myTrials(i).resp);
-myTrials(i).resp = 0;;
+myTrials(i).resp = nan;
+myTrials(i).RT = nan;
 end
 end
 
-%% variables
+%% Recognition analysis
+if analysis == 2
 recognize = 7
 how_old = 2
 essay = 8
 com_name = 9
 how_mFacts = 10
 wh_do = 11
-
-
-%% add r.struct
+% add r.struct
 if init == 1
     %fill names
 for i = 1 : length(people)
@@ -43,7 +46,7 @@ end
     [r.how_mFacts]= deal(0)
 end
 
-%% The master loop
+% The master loop
 for i = 1 : length(myTrials)
 if myTrials(i).blockNum == recognize && myTrials(i).resp == 1
        for l = 1: length(r)
@@ -93,6 +96,17 @@ if myTrials(i).blockNum == how_mFacts && myTrials(i).resp ~= 4 %&& myTrials(i).r
        end
 end
 end
+end
 
-  %%
+%% response correlation analysis
+if analysis == 1
+    [~,index] = sortrows({myTrials.name}.'); myTrials = myTrials(index); clear index
+    [~,index] = sortrows([myTrials.blockNum].'); myTrials = myTrials(index); clear index
     
+
+
+
+
+
+
+end

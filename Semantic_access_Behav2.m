@@ -2,7 +2,7 @@
 %cd '/Users/aidas_el_cap/Desktop/Other_Scripts'
 load('/Users/aidas_el_cap/Desktop/Other_Scripts/people.mat')
 load('/Users/aidas_el_cap/Desktop/Other_Scripts/block_order.mat') 
-myTrials_dir = '/Users/aidas_el_cap/Desktop/Recognition/myTrials_behav/'
+myTrials_dir = '/Users/aidas_el_cap/Desktop/Summaries & Results/Recognition/myTrials_behav/'
 init = 1
 subject = 1:7
 for s = subject

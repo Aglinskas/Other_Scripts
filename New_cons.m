@@ -1,53 +1,76 @@
-%% PREP
-matlabbatch = [];
-matlabbatch{1}.spm.stats.con.spmmat{1} = '/Volumes/Aidas_HDD/MRI_data/S6/Analysis3/SPM.mat';
-
-%repmat([c_vect zeros(1,6)],1,5)
-c_vect = repmat(0,1,15);
-%repmat
-%Con_name = Task 1 vs Monuments
-
-n_cons = 14
+%% Parameters
+clear all;
+close all
+%clear cases
+%clear clases
+fn = '/Volumes/Aidas_HDD/MRI_data/29th_march/S%d/Analysis/SPM.mat';
+subs_to_run = [7 8];
+%% Create vs Create & Run
+run_immediately = 0; % if ==1 runs the cons, if not leaves it in the workspace
+delete_previous_cons = 1;
+%% Experiment specific parameters (aka assumptions)
+n_tasks = 12;
+fc_control_ind = 11; % face control task index;
+mn_control_ind = 12; % monument control task index;
+%% Cons to compute
+compute.task_vs_monuments = 1;
+compute.task_vs_face_control = 0;
+%%
+%structfun(@(x) eq(x,1),compute,'Uniform',1)
+% 
+%% Computed Parameters
+batches = length(find(structfun(@(x) x==1,compute,'Uniform',1) == 1));
+e_vect = repmat(0,1,n_tasks); % empty vector to start with
+n_cons = n_tasks; % should be n_tasks - 1;
 %% LOOP
-
+matlabbatch = {};
+for s = 1:length(subs_to_run) % Loop through subjects
+    subID = subs_to_run(s)
+matlabbatch{s}.spm.stats.con.spmmat = {sprintf(fn,subID)};%subject specific .mat file
+matlabbatch{s}.spm.stats.con.consess = {}; % for length counter 
+l = length(matlabbatch{s}.spm.stats.con.consess); %initiate length counter  as 0
+%% Task vs monuments cons
+%i = 1;
+if compute.task_vs_monuments == 1; % Task vs monuments contrasts
 for i = 1 : n_cons
-    sprintf('Task %d vs Monuments',i)
-    this_c = c_vect
-    this_c(i) = 1
-    this_c(15) = -1
-  
-  
-matlabbatch{1}.spm.stats.con.consess{i}.tcon.name = sprintf('Task %d vs Monuments',i);
-matlabbatch{1}.spm.stats.con.consess{i}.tcon.convec = repmat([this_c zeros(1,6)],1,5);
-matlabbatch{1}.spm.stats.con.consess{i}.tcon.sessrep = 'none';
+    sprintf('Task %d vs Monuments',i);
+    this_c = e_vect;
+    this_c(i) = 1;
+    this_c(mn_control_ind) = -1;
+    
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = sprintf('Task %d vs Monuments',i);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = repmat([this_c zeros(1,6)],1,5);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';
+l = length(matlabbatch{s}.spm.stats.con.consess);
 end
-
-matlabbatch{1}.spm.stats.con.consess{i+1}.tcon.name = 'All Tasks v Monuments';
-matlabbatch{1}.spm.stats.con.consess{i+1}.tcon.convec = repmat([ones(1,14) -14 zeros(1,6)],1,5);
-matlabbatch{1}.spm.stats.con.consess{i+1}.tcon.sessrep = 'none';
-i = i + 1
-clear this_c
-for p = 1 : 13
-    sprintf('Task %d vs Face Control & Monuments',p)
-    this_c = c_vect
-    this_c(p) = 2
-    this_c(14) = -1
-    this_c(15) = -1
-  
-  
-matlabbatch{1}.spm.stats.con.consess{i + p}.tcon.name = sprintf('Task %d vs Face Control & Monuments',p);
-matlabbatch{1}.spm.stats.con.consess{i + p}.tcon.convec = repmat([this_c zeros(1,6)],1,5);
-matlabbatch{1}.spm.stats.con.consess{i + p}.tcon.sessrep = 'none';
 end
-
-clear this_c
-e_vect = repmat(-1,1,15);
-for l = 1:15
-this_c = e_vect
-this_c(l) = 14
-
-matlabbatch{1}.spm.stats.con.consess{i + p +l}.tcon.name = sprintf('Task %d above all',l);
-matlabbatch{1}.spm.stats.con.consess{i + p + l}.tcon.convec = repmat([this_c zeros(1,6)],1,5);
-matlabbatch{1}.spm.stats.con.consess{i + p + l}.tcon.sessrep = 'none';
+%% Task vs face control contrasts
+if compute.task_vs_face_control == 1;
+for i = 1 : n_cons
+    sprintf('Task %d vs Face Control',i);
+    this_c = e_vect;
+    this_c(i) = 1;
+    this_c(fc_control_ind) = -1;
+    
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = sprintf('Task %d vs Monuments',i);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = repmat([this_c zeros(1,6)],1,5);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';
+l = length(matlabbatch{s}.spm.stats.con.consess);
 end
+end
+%% Delete previous cons? Probably yes. 
+if delete_previous_cons == 1
+matlabbatch{s}.spm.stats.con.delete = 1;
+else
+matlabbatch{s}.spm.stats.con.delete = 0;
+end
+end %end subject loop
+%% matlabbatch created decide whether to run it or not
+if run_immediately == 1;
+    disp('Con Batch created, running initcfg')
+spm_jobman('initcfg')
+disp('Running Cons')
 spm_jobman('run',matlabbatch)
+else 
+    disp('Con Batch created, and left in the workspace: matlabbatch')
+end

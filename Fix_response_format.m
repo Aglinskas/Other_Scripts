@@ -27,7 +27,13 @@ if iscell(myTrials(i).response)
 end
 save(fullfile(dr,['S' sub_str],[fln ext{p}]),'myTrials');
 end
-
+%% Add english task name;
+for i = 1:length(myTrials)
+    
+    
+    
+end
+%%
 if isfield(myTrials, 'Name') == 0;
 for i = 1: length(myTrials)
 a = strsplit(myTrials(i).filepath,'/');

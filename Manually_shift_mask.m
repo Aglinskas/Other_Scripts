@@ -3,7 +3,6 @@ a = cosmo_fmri_dataset('/Users/aidas_el_cap/Desktop/2fixed_mask_NOnans.nii')
 m = find(a.samples == 1);
 db = []
 transform = [0 2 2]
-
 for k = m
     ovx = [a.fa.i(k) a.fa.j(k) a.fa.k(k)];
     a.samples(k) = 0;

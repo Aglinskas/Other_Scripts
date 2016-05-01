@@ -1,44 +1,64 @@
+% set_up_xSPM
+% Loads up and sets up a xSPM structure
+% Overwritable parameters are in opts_xSPM. structure
+% 
+% Gives back figure handles for: 
+% hReg, mip, [cor sag ax overlays;]
+%
+if exist('opts_xSPM') == 0
+    opts_xSPM = struct;end
 close all
-spm_path = '/Volumes/Aidas_HDD/MRI_data/Group_Analysis/SPM.mat';
-load(spm_path);
-spm('defaults','FMRI')
-coord = [52 -56 22]; % coordinates to center on
-useContrast = 3; % which contrast to show
+%
+if isfield(opts_xSPM,'spm_path') == 0
+opts_xSPM.spm_path = '/Volumes/Aidas_HDD/MRI_data/Group_Analysis/SPM.mat';
+end
+if isfield(opts_xSPM,'useContrast') == 0
+opts_xSPM.useContrast = 3; % which contrast to show
+end
+%opts_xSPM.available_cons = {SPM.xCon.name}';
 % {SPM.xCon.name}'
-Ic = 1; %which con to calc (hint: F contrast)
-p_tresh = 0.9;
-MCC = 'none'; % 'none' or 'FWE'
-k_extent = 0;
-% mask 
-mask.opt = 1; % 0 for don't use the mask, otherwise, index of mask to use.
-mask.mask{1} = '/Volumes/Aidas_HDD/MRI_data/fixed_rBroadMVPMask.nii';
-mask.method = {'incl.' 'excl.'};
-rend.opt = 1 % 1 for sections, 2 for surface
+%Ic = 1; %which con to calc (hint: F contrast)
+if isfield(opts_xSPM,'p_tresh') == 0
+opts_xSPM.p_tresh = 0.9;end
+if isfield(opts_xSPM,'MC_correction') == 0
+opts_xSPM.MC_correction = 'none'; end % 'none' or 'FWE'
+if isfield(opts_xSPM,'k_extent') == 0
+opts_xSPM.k_extent = 30;end
+if isfield(opts_xSPM,'mask_which_mask_ind') == 0
+opts_xSPM.mask_which_mask_ind = 1; end% 0 for don't use the mask, otherwise, index of mask to use.
+if isfield(opts_xSPM,'mask_mask') == 0
+opts_xSPM.mask_mask{1} = '/Volumes/Aidas_HDD/MRI_data/fixed_rBroadMVPMask.nii';end
+if isfield(opts_xSPM,'mask_method') == 0
+opts_xSPM.mask_method = {'incl.' 'excl.'};end
+if isfield(opts_xSPM,'rend_opt') == 0
+opts_xSPM.rend_opt = 1;end % 1 for sections, 2 for surface
+%% end of opts.
+load(opts_xSPM.spm_path);
+spm('defaults','FMRI')
 t = {'First memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common name' 'How many facts' 'Occupation' 'Distinctiveness' 'Full name' 'Same Face' 'Same monument'}';
 t_old = {'Colore dei capelli' 'Memoria remota?' 'Quanto attraente?' 'Quanto amichevole?' 'Quanto affidabile?' 'Emozioni positive?' 'Quanto familiare?' 'Quanto scriveresti?' 'Nome comune?' 'Quanti fatti ricordi?' 'Che lavoro fa?' 'Volto distintivo?' 'Quanto integra?' 'Stesso volto?' 'Stesso monumento?'}';
     xSPM=SPM;
-    xSPM.Ic=useContrast;
+    xSPM.Ic=opts_xSPM.useContrast;
     %xSPM.Im=0;
     xSPM.Ex=0;
-    xSPM.title=SPM.xCon(useContrast).name;
-    xSPM.thresDesc=MCC; % none FWE
-    xSPM.u=p_tresh;
-    xSPM.k=k_extent;
-    if mask.opt == 0
+    xSPM.title=SPM.xCon(opts_xSPM.useContrast).name;
+    xSPM.thresDesc=opts_xSPM.MC_correction; % none FWE
+    xSPM.u=opts_xSPM.p_tresh;
+    xSPM.k=opts_xSPM.k_extent;
+    if opts_xSPM.mask_which_mask_ind == 0
     xSPM.Im=[];
     else
-    xSPM.Im={mask.mask{mask.opt}};
-    mask.maskfn = strsplit(mask.mask{mask.opt},'/');
-    mask.maskfn = mask.maskfn{length(mask.maskfn)};
-    xSPM.title = [SPM.xCon(useContrast).name ' masked by ' mask.method{xSPM.Ex+1} ' ' mask.maskfn];
+    xSPM.Im={opts_xSPM.mask_mask{opts_xSPM.mask_which_mask_ind}};
+    opts_xSPM.mask_maskfn = strsplit(opts_xSPM.mask_mask{opts_xSPM.mask_which_mask_ind},'/');
+    opts_xSPM.mask_maskfn = opts_xSPM.mask_maskfn{length(opts_xSPM.mask_maskfn)};
+    xSPM.title = [SPM.xCon(opts_xSPM.useContrast).name ' masked by ' opts_xSPM.mask_method{xSPM.Ex+1} ' ' opts_xSPM.mask_maskfn];
     end
     %disp(xSPM.title)
     %
     [hReg,xSPM,SPM]=spm_results_ui('Setup',xSPM);
     hMIPax=spm_mip_ui('FindMIPax');
     hFxyz = spm_results_ui('FindXYZframe');
-    % Results should be up
-    
+    % Results should be up   
     % figure out how many figures are open
 set(0, 'ShowHiddenHandles', 'on');
 spm_figs = (get(0, 'Children')); %figure out SPM graphics window, go to graphics, get children;
@@ -56,12 +76,11 @@ end
 n_figs = length(get(0, 'Children')); 
 eb_fig = n_figs+1;
 % overlay sections
-if rend.opt == 1
+if opts_xSPM.rend_opt == 1
 single_subj_T1_fn = '/Users/aidas_el_cap/Documents/MATLAB/spm12/canonical/single_subj_T1.nii';
 spm_sections(xSPM,hReg,single_subj_T1_fn);
-elseif rend.opt == 2
+elseif opts_xSPM.rend_opt == 2
 end    
-
 try % positions the spm_window
     spm_g.Position = [-0.4861 0.0467 0.3660 0.8444];
     spm_figs(2).Position = [-1097 22 351 347];

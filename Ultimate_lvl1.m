@@ -1,13 +1,13 @@
 fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Functional/Sess%d/swrdata.nii'
-subs_to_run = [15 16 17];
+subs_to_run = [23];
 %% Params
-nsess = 5;
+nsess = 4;
 TR = 2.5;
 analysis_ext = ''; % if blank, i.e= '', the folder is Analysis
 multi_cond_name = 'sub%drun%d_multicond'; %sub7run1_multicond
 %% Run forest run
 write_the_spms = 1;
-estimate_right_away = 0;
+estimate_right_away = 1;
 %%
 figure_out_nsess.opt = 0; % new thing: if myTrials is in the subject directory, script can figure out how many runs there are;
           figure_out_nsess.myTrials_fn = '%s_Results.mat'; %filename for myTrials
@@ -24,6 +24,7 @@ disp(['Root:   ' root])
 %% Multi cond dir
 %% Creates the batch file
 for s = 1:length(subs_to_run)
+    clear matlabbatch % may work, may not
     % Sesssions
     if figure_out_nsess.opt == 1
         subID = subs_to_run(s)

@@ -1,16 +1,23 @@
-funtion set_up`close all
+% set_up_xSPM
+% Loads up and sets up a xSPM structure
+% Overwritable params: 
+% 
+% Gives back figure handles for: 
+% hReg, mip, [cor sag ax overlays;]
+
+close all
 spm_path = '/Volumes/Aidas_HDD/MRI_data/Group_Analysis/SPM.mat';
 load(spm_path);
-
 spm('defaults','FMRI')
-coord = [52 -56 22]; % coordinates to center on
-useContrast = 3; % which contrast to show
-% {SPM.xCon.name}'
-Ic = 1; %which con to calc (hint: F contrast)
-
-p_tresh = 0.9;
-MCC = 'none'; % 'none' or 'FWE'
-k_extent = 0;
+%coord = [52 -56 22]; % coordinates to center on
+if exist('useContrast','var') == 0
+useContrast = 3;end % which contrast to show
+if exist('p_tresh','var') == 0
+p_tresh = 0.001;end
+if exist('MCC','var') == 0
+MCC = 'none';end % 'none' or 'FWE'
+if exist('k_extent','var') == 0
+k_extent = 30;end
 mask.opt = 1; % 0 for don't use the mask, otherwise, index of mask to use.
 mask.mask{1} = '/Volumes/Aidas_HDD/MRI_data/fixed_rBroadMVPMask.nii';
 mask.method = {'incl.' 'excl.'};

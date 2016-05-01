@@ -1,9 +1,9 @@
 %% Parameters to specify
-fn = '/Volumes/Aidas_HDD/MRI_data/S%d/April_15th_S%d_Results.mat';
+fn = '/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results.mat';
 % ^myTrials fn, with '%d' where subID should go
 ofn = '/Volumes/Aidas_HDD/MRI_data/S%d/'
 % ^output directory fn, with '%d' where subID should go
-subID = [17]; % one by one
+for subID = [23]; % one by one
 %%
 trial_dur = 2.5; %Trial duration
 TR = 2.5;
@@ -34,7 +34,6 @@ durations{b} = trial_dur;
   save([sprintf(ofn,subID) 'sub' num2str(subID) 'run' num2str(r) '_multicond'],'durations','onsets','names');
 end
 %%
-
-
-n_sess = myTrials(length([myTrials.time_presented])).fmriRun
+%n_sess = myTrials(length([myTrials.time_presented])).fmriRun
+end % ends subID loop
 

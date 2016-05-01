@@ -2,21 +2,22 @@
 %clear all;
 %close all
 clear all;
+spm_jobman('initcfg')
 fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis/SPM.mat';
-subs_to_run = [6 7 8];
+subs_to_run = [18 19];
 %%
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Full name' 'Same_Face' 'Same_monument'};
 %% Create vs Create & Run
 run_immediately = 1; % if ==1 runs the cons, if not leaves it in the workspace
 delete_previous_cons = 1;
-nsess = 3;
+nsess = 5;
 %% Experiment specific parameters (aka assumptions)
 n_tasks = 12;
 fc_control_ind = 11; % face control task index;
 mn_control_ind = 12; % monument control task index;
 %% Cons to compute
-compute.task_vs_monuments = 1; %implemented
-compute.task_vs_face_control = 1;%implemented
+compute.task_vs_monuments = 0; %implemented
+compute.task_vs_face_control = 0;%implemented
 compute.task_alone = 1;
 compute.task_vs_task = 0;
 % new ones below
@@ -139,10 +140,10 @@ end
 end %end subject loop
 %% matlabbatch created decide whether to run it or not
 if run_immediately == 1;
-    disp('Con Batch created, running initcfg')
-spm_jobman('initcfg')
+    %disp('Con Batch created, running initcfg')
 disp('Running Cons')
 spm_jobman('run',matlabbatch)
+clear matlabbatch
 else 
     disp('Con Batch created, and left in the workspace: matlabbatch')
 end

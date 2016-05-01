@@ -89,6 +89,9 @@ spm_results_ui('SetCoords',xSPM.XYZmm(:,go_to_clust))
 Plot_contrast_estimates_for_Cluster
 colormap(map)
 pause(1);
+extract_from_adjusted_cluster
+colormap(map)
+pause(1);
 end
 %%
 Plot_contrast_estimates_for_Cluster

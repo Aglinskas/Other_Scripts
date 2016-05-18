@@ -4,30 +4,45 @@
 % 
 % Gives back figure handles for: 
 % hReg, mip, [cor sag ax overlays;]
+% Defaults:
+% opts_xSPM.spm_path
+% opts_xSPM.useContrast
+% opts_xSPM.rend_opt % 1 for sections, 2 for surface
+% opts_xSPM.p_tresh = 0.999 default
+% opts_xSPM.MC_correction = 'none' (default) or 'FWE'
+% opts_xSPM.k_extent = 0 (default)
+% opts_xSPM.mask_which_mask_ind = 1; end% 0 for don't use the mask, otherwise, index of mask to use.
+% opts_xSPM.mask_mask{1} = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/conj_a1.nii';end
 %
+% {SPM.xCon.name}'
+
 if exist('opts_xSPM') == 0
     opts_xSPM = struct;end
 close all
 %
 if isfield(opts_xSPM,'spm_path') == 0
-opts_xSPM.spm_path = '/Volumes/Aidas_HDD/MRI_data/Group_Analysis/SPM.mat';
+opts_xSPM.spm_path = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/SPM.mat';
 end
 if isfield(opts_xSPM,'useContrast') == 0
-opts_xSPM.useContrast = 3; % which contrast to show
+opts_xSPM.useContrast = 1; % which contrast to show
 end
 %opts_xSPM.available_cons = {SPM.xCon.name}';
 % {SPM.xCon.name}'
 %Ic = 1; %which con to calc (hint: F contrast)
 if isfield(opts_xSPM,'p_tresh') == 0
-opts_xSPM.p_tresh = 0.9;end
+opts_xSPM.p_tresh = 0.9999;end
 if isfield(opts_xSPM,'MC_correction') == 0
 opts_xSPM.MC_correction = 'none'; end % 'none' or 'FWE'
 if isfield(opts_xSPM,'k_extent') == 0
-opts_xSPM.k_extent = 30;end
+opts_xSPM.k_extent = 0;end
 if isfield(opts_xSPM,'mask_which_mask_ind') == 0
-opts_xSPM.mask_which_mask_ind = 1; end% 0 for don't use the mask, otherwise, index of mask to use.
+opts_xSPM.mask_which_mask_ind = 3; end% 0 for don't use the mask, otherwise, index of mask to use.
 if isfield(opts_xSPM,'mask_mask') == 0
-opts_xSPM.mask_mask{1} = '/Volumes/Aidas_HDD/MRI_data/fixed_rBroadMVPMask.nii';end
+%opts_xSPM.mask_mask{1} = '/Volumes/Aidas_HDD/MRI_data/fixed_rBroadMVPMask.nii';end
+opts_xSPM.mask_mask{1} = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/conj_a1.nii';
+opts_xSPM.mask_mask{2} = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/Sphere_MASK_combined.nii'
+opts_xSPM.mask_mask{3} = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/Sphere_MASK_combined_roi2.nii'
+end
 if isfield(opts_xSPM,'mask_method') == 0
 opts_xSPM.mask_method = {'incl.' 'excl.'};end
 if isfield(opts_xSPM,'rend_opt') == 0
@@ -98,3 +113,16 @@ copyobj(cor,gcf);
 copyobj(axial,gcf);
 colormap(a,map);
 %SPM Window is up
+
+
+%%
+%                spm_path: '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/SPM.mat'
+%             useContrast: 1
+%                 p_tresh: 1.0000
+%           MC_correction: 'none'
+%                k_extent: 0
+%     mask_which_mask_ind: 1
+%               mask_mask: {1x3 cell}
+%             mask_method: {'incl.'  'excl.'}
+%                rend_opt: 1
+%             mask_maskfn: 'conj_a1.nii'

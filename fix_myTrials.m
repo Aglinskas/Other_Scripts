@@ -1,8 +1,9 @@
-fn = '/Volumes/Aidas_HDD/29th_march/from scanner/March29_S0%d_Results.mat';
+fn = '/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results%s.mat';
 % ^myTrials fn, with '%d' where subID should go
 ofn = '/Users/aidas_el_cap/Desktop/myTrials/Fixed/S%d_results_fixed'
 % ^output directory fn, with '%d' where subID should go
-for subID = [7 8]
+subvect = [7 8 9 10 11 14 15 17 18 19 20 21 22]
+for subID = subvect
 %%
 trial_dur = 2.5; %Trial duration
 %TR = 2.5;
@@ -11,8 +12,8 @@ face_control_task = [11 12 13];
 momument_control_task = [14 15 16];
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Full name' 'Same_Face' 'Same_monument'};
 %%
-load(sprintf(fn,subID))
-disp(['loaded ' sprintf(fn,subID)])
+load(sprintf(fn,subID,subID))
+disp(['loaded ' sprintf(fn,subID,subID)])
 %% Fixes Control task coding
 if max([myTrials.blockNum]) > unique_tasks
  [myTrials(ismember([myTrials.blockNum],face_control_task)).blockNum] = deal(11);
@@ -82,6 +83,6 @@ myTrials(i).name_ID = find(a == 1);
 %%
 end
 end
-
-save(sprintf(ofn,subID));
+save(sprintf(fn,subID,subID,'_fixed'),'myTrials');
 end
+disp('All fixed')

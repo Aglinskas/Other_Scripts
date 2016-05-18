@@ -1,16 +1,17 @@
 fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Functional/Sess%d/swrdata.nii'
-subs_to_run = [23];
+%subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
+subs_to_run = [8 9 10 11 14 15 17 18 19 20 21 22]
 %% Params
-nsess = 4;
+nsess = 5;
 TR = 2.5;
-analysis_ext = ''; % if blank, i.e= '', the folder is Analysis
+analysis_ext = '_mask02'; % if blank, i.e= '', the folder is Analysis
 multi_cond_name = 'sub%drun%d_multicond'; %sub7run1_multicond
 %% Run forest run
 write_the_spms = 1;
 estimate_right_away = 1;
 %%
 figure_out_nsess.opt = 0; % new thing: if myTrials is in the subject directory, script can figure out how many runs there are;
-          figure_out_nsess.myTrials_fn = '%s_Results.mat'; %filename for myTrials
+figure_out_nsess.myTrials_fn = '%s_Results.mat'; %filename for myTrials
 % movement_params.manual = 1;
 %           movement_params.fln = 'rp_data.txt';
 %% get the file strcuture
@@ -23,8 +24,9 @@ end
 disp(['Root:   ' root])
 %% Multi cond dir
 %% Creates the batch file
+clear matlabbatch % clear matlabbatch if one exists
 for s = 1:length(subs_to_run)
-    clear matlabbatch % may work, may not
+    %clear matlabbatch % may work, may not
     % Sesssions
     if figure_out_nsess.opt == 1
         subID = subs_to_run(s)
@@ -74,7 +76,7 @@ matlabbatch{s}.spm.stats.fmri_spec.fact = struct('name', {}, 'levels', {});
 matlabbatch{s}.spm.stats.fmri_spec.bases.hrf.derivs = [0 0];
 matlabbatch{s}.spm.stats.fmri_spec.volt = 1;
 matlabbatch{s}.spm.stats.fmri_spec.global = 'None';
-matlabbatch{s}.spm.stats.fmri_spec.mthresh = 0.8;
+matlabbatch{s}.spm.stats.fmri_spec.mthresh = 0.2;
 matlabbatch{s}.spm.stats.fmri_spec.mask = {''};
 matlabbatch{s}.spm.stats.fmri_spec.cvi = 'AR(1)';
     end
@@ -94,8 +96,10 @@ spm_jobman('initcfg');
     spm_jobman('run',matlabbatch)
     disp('DONE: fMRI model specification for all subs')
     
-    clear matlabbatch
+    
     if estimate_right_away == 1
+        disp('Estimating')
+        clear matlabbatch
 for s = 1:length(subs_to_run)
     %l = (length(matlabbatch))
     subID = subs_to_run(s)
@@ -104,8 +108,7 @@ matlabbatch{s}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{s}.spm.stats.fmri_est.method.Classical = 1;
 
 %spm_jobman('initcfg');
-spm_jobman('run',matlabbatch)
-
 end
     end
+spm_jobman('run',matlabbatch)
     

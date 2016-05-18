@@ -1,14 +1,14 @@
 %function PopFact(subVec,statDir)
 addpath('/Users/aidas_el_cap/Desktop/Other_Scripts/')
 cd /Volumes/Aidas_HDD/MRI_data/
-statDir='Analysis'
-subVec=[9 10 11 12 13 14 15 17]
+statDir='Analysis_mask02'
+subVec=[7 8 9 10 11 14 15 17 18 19 20 21 22]
 %load template
 load /Users/aidas_el_cap/Desktop/F_con.mat
 % matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).name='subject';
 % populate template
 nCond=12;
-startContrast=28;
+startContrast=4;
 for i=1:length(subVec)  % increase fields to match N
     matlabbatch{1}.spm.stats.factorial_design.des.fblock.fsuball.fsubject(i)=...
         matlabbatch{1}.spm.stats.factorial_design.des.fblock.fsuball.fsubject(1);
@@ -33,6 +33,6 @@ end
 
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters(1)=[];
  
-matlabbatch{1}.spm.stats.factorial_design.dir={['./Group_'  statDir '/']}
+matlabbatch{1}.spm.stats.factorial_design.dir={['./Group3_'  statDir '/']}
 save (['popFact_' statDir] ,  'matlabbatch')
 spm_jobman('run', matlabbatch)

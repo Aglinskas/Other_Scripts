@@ -10,11 +10,11 @@
 %   2 or mip inset (default);
 %   3 for do nothing (clean stays hidden with handle figure(f))
 %   4 for plot w/ sections (awesome shit)
-%   
+%opts_clust.suppress4: using opt 4, suppress output   
 Ic = 1; % which contrast to extract estimates from: F con usually
 if exist('opts_clust','var') == 0
 opts_clust.size = 1 %1 for full, 2 for else
-opts_clust.inset = 2;
+opts_clust.inset = 4;
 end
 T_leg = t; % Tasks: Are they  or t_old?
 [xyzmm,i] = spm_XYZreg('NearestXYZ',...
@@ -74,16 +74,26 @@ title(xSPM.title)
 hold off
 % opts_clust.inset = 1 for clear, 2 or mip inset (default);
 if isfield(opts_clust,'inset') == 0;
-    opts_clust.inset = 2;
+    opts_clust.inset = 4;
 end
 if opts_clust.inset == 1
 figure(f);
 elseif opts_clust.inset == 2
     inset(f,mip,0.2);
     colormap(map)
+    if opts_clust.size == 1
+title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(length(XYZmm)) ' Voxels'])
+else title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(vx) ' Most significant voxels Voxels'])
+end
 elseif opts_clust.inset == 3
 elseif opts_clust.inset == 4
 get_sections
+% %
+% try 
+%     clf(g)
+% catch
+% end
+% %
 g = sections_fig;
 jj = subplot(2,1,1);
 opts_clust.inset = 0
@@ -94,7 +104,6 @@ else title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(vx) ' 
 end
 set(jj,'XTickLabel',T_leg)
 jj.XTick = [1:12];
-figure(g)
 %%
 %copyobj(f.CurrentAxes.XTickLabel,j);
 % hax1 = gca;
@@ -102,14 +111,27 @@ figure(g)
 % delete(j);
 % hax2=copyobj(f,g.Parent)
 % set(hax2, 'Position', pos);
-%%
-j = subplot(2,3,4)
-copyobj(sag.Children(:),j)
-j= subplot(2,3,5)
-copyobj(axial.Children(:),j)
-j = subplot(2,3,6)
-copyobj(cor.Children(:),j)
-colormap(map)
+%% Rest of the subplots, colormap and position
+j = subplot(2,3,4);
+copyobj(sag.Children(:),j);
+j= subplot(2,3,5);
+copyobj(axial.Children(:),j);
+j = subplot(2,3,6);
+copyobj(cor.Children(:),j);
+colormap(map);
+g.Position = [1 1 1276 704]
+%% Show | Not show the graph
+%figure(g)
+if isfield(opts_clust,'suppress4') == 0
+opts_clust.suppress4 = 0;
+figure(g)
+elseif opts_clust.suppress4 == 0;
+figure(g)
+else 
+set(g,'Visible', 'off')
+disp('created as figure g, suppressed')
+end
+
 end
 
 

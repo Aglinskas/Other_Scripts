@@ -1,0 +1,2 @@
+diskutil unmount /dev/disk1s2;diskutil mount /dev/disk1s2
+diskutil unmountDisk /dev/disk1; diskutil mountDisk /dev/disk1;

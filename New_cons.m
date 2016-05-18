@@ -3,8 +3,9 @@
 %close all
 clear all;
 spm_jobman('initcfg')
-fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis/SPM.mat';
-subs_to_run = [18 19];
+fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/SPM.mat';
+%subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
+subs_to_run = [17 18 19 20 21 22];
 %%
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Full name' 'Same_Face' 'Same_monument'};
 %% Create vs Create & Run
@@ -143,7 +144,10 @@ if run_immediately == 1;
     %disp('Con Batch created, running initcfg')
 disp('Running Cons')
 spm_jobman('run',matlabbatch)
+try
 clear matlabbatch
+catch
+end
 else 
     disp('Con Batch created, and left in the workspace: matlabbatch')
 end

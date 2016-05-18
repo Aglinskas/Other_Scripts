@@ -25,7 +25,7 @@ clust_z(:,2) = j;
 clust_z(:,3) = 1:length(clust_z);
 top = sortrows(clust_z,1);
 if cluster_k > length(clust_c)
-    warning('cluster_k (%d) is larger than the cluster (%d)\nWill use the size of the cluster (%d)',cluster_k,length(clust_c),length(clust_c))
+    disp(sprintf('cluster_k (%d) is larger than the cluster (%d)\nWill use the size of the cluster (%d)',cluster_k,length(clust_c),length(clust_c)))
     top_ind = top(:,2);
 else top_ind = top(length(top):-1:length(top)-cluster_k,2);
 end

@@ -1,4 +1,5 @@
-subVec= [12 13 14 15 16]
+cd /Volumes/Aidas_HDD/MRI_data/
+subVec= [24:30]
 A=dir('S*')
 for i = 1:length(A)
     subFold{i}=A(i).name;
@@ -13,9 +14,9 @@ translation=true
 for sub=subVec
     
     subCC=subCC+1;
-    for j=1:5
-        fName= dir (['./S' num2str(sub) '/Functional/sess' num2str(j) '/rp*.txt']) ;
-        myMot=load (['./S' num2str(sub) '/Functional/sess' num2str(j)  '/' fName(1).name]) ;
+    for j=1:length(dir (['./S' num2str(sub) '/Functional/Sess' '*']));
+        fName= dir (['./S' num2str(sub) '/Functional/Sess' num2str(j) '/rp*.txt']) ;
+        myMot=load (['./S' num2str(sub) '/Functional/Sess' num2str(j)  '/' fName(1).name]) ;
         %myMot(:,4:6)=myMot(:,4:6)*mean(range(myMot(:,1:3)))/mean(range(myMot(:,4:6)));
         subplot(length(subVec),5,j+(subCC-1)*5)
         if translation

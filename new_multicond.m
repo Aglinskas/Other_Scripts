@@ -3,7 +3,7 @@ fn = '/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results.mat';
 % ^myTrials fn, with '%d' where subID should go
 ofn = '/Volumes/Aidas_HDD/MRI_data/S%d/'
 % ^output directory fn, with '%d' where subID should go
-for subID = [23]; % one by one
+for subID = [24:30]; % one by one
 %%
 trial_dur = 2.5; %Trial duration
 TR = 2.5;

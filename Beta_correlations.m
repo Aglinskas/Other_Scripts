@@ -68,4 +68,3 @@ WaitSecs(0.5)
 KbWait(-1)
 WaitSecs(0.5)
 end
-

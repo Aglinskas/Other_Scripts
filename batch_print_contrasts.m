@@ -1,11 +1,14 @@
 clear all
 spm('defaults','FMRI')
-fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis/SPM.mat';
+fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/SPM.mat';
 %ofn = '/Volumes/Aidas_HDD/MRI_data/29th_march/S%d/Analysis/batch_results/';
-s = [9 10];
+s = [29 30];
 %%
-thresh = [0.001 0.05]
-threshdesc = {'none' 'FWE'}
+thresh = [0.001 0.05];
+threshdesc = {'none' 'FWE'};
+thresh = thresh(1)
+threshdesc = threshdesc(1)
+%%
 %%
 if length(thresh) == length(threshdesc)
     l = length(thresh);
@@ -17,7 +20,7 @@ for i = 1:length(s)
     %cd(sprintf(ofn,subID))
     load(sprintf(fn,subID))
     for v = 1:l
-    for con = 1:length(SPM.xCon);
+    for con = 1:3%length(SPM.xCon);
 matlabbatch{con}.spm.stats.results.spmmat = {sprintf(fn,subID)};
 matlabbatch{con}.spm.stats.results.conspec.titlestr = ['S' num2str(subID) ' ' SPM.xCon(con).name ' p<' num2str(thresh(v)) '(' threshdesc{v} ')'];
 matlabbatch{con}.spm.stats.results.conspec.contrasts = con;

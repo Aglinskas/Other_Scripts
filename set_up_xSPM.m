@@ -114,7 +114,7 @@ copyobj(axial,gcf);
 colormap(a,map);
 %SPM Window is up
 
-
+opts_xSPM
 %%
 %                spm_path: '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/SPM.mat'
 %             useContrast: 1

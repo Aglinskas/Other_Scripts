@@ -67,8 +67,6 @@ cc = round(spm_mip_ui('Getcoords'))';
 v = sum(abs([aa(:,1) - cc(1) aa(:,2) - cc(2) aa(:,3) - cc(3)]),2);
 y = master_coords_legend(find(abs(v) == min(abs(v)))).label;
 sanch{c} = y;
-
-
 % extract_from_adjusted_cluster3
 % b = figure(500)
 % title([master_coords_legend([master_coords_legend.spmCluster] == c).label ' ' num2str(master_coords_legend(c).nearestCoords')])

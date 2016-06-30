@@ -5,7 +5,7 @@ clear all;
 spm_jobman('initcfg')
 fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/SPM.mat';
 %subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
-subs_to_run = [17 18 19 20 21 22];
+subs_to_run = [29:30];
 %%
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Full name' 'Same_Face' 'Same_monument'};
 %% Create vs Create & Run

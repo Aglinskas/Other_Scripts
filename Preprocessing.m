@@ -26,7 +26,7 @@ clear all
 %n_scans = 615;
 figure_out_nsess.opt = 0; % new thing: if myTrials is in the subject directory, script can figure out how many runs there are;
 figure_out_nsess.myTrials_fn = '%s_Results.mat' %filename for myTrials
-n_sess          = 4;      % number of sessions
+n_sess          = 5;      % number of sessions
 % n_scans         = nscans_subj(:,k);    % scans per session (2 slices chopped from original data)
 TR              = 2.5;      % repetition time in s
 num_slices      = 34;     % number of slices
@@ -72,7 +72,7 @@ end_analysis    = 2;  % end of analysis
 % names of subjects (list all names of subject directories)
 %%%% name_subj = {'01AF','02TH','03PW','04IC','05SC','06MJ','07PB','08JT','09AM','10PK','11GE','12PE','13JU','14BH','15RE','16MT','17AE','18IE','19KL','20PJ','21LJ','22BK','23ML','24AL'};
 
-name_subj = {'S23'};
+name_subj = {'S30' 'S29'};
  %name_subj = {'S5_D1' , 'S5_D2' , 'S6_D1' ,'S6_D2' , 'S7_D1' , 'S7_D2' , 'S8_D1' ,'S8_D2' , 'S9_D1' , 'S9_D2'};
 
 
@@ -164,11 +164,10 @@ if slice_timing>0
 
 end    
 
-
+tic
 % loop through all subjects
 %===========================================================================
 while (k<=length(name_subj)),
-    
     fprintf(1,'==================================\n');
     fprintf(1,'Starting analysis for subject %s\n',name_subj{k});
     fprintf(1,'==================================\n');
@@ -713,5 +712,5 @@ while (k<=length(name_subj)),
     
     
 end     % end of main loop
-
+toc
 cd (dir_base);

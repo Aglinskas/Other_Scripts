@@ -12,13 +12,14 @@ end
 end
 %% fmri myTrials
 load('/Users/aidas_el_cap/Desktop/Tasks.mat')
-a = [9 10 11 15 16 17];
+a = [9 16 17 23];
 
 for subID = a;
 task = 5;
 resp = 4;
-fn = sprintf('/Users/aidas_el_cap/Desktop/myTrials/new/S%d_Results.mat',subID);
+fn = sprintf('/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results.mat',subID,subID);
 load(fn) % loaded
+for z = 1:length(myTrials); if isempty(myTrials(z).resp); myTrials(z).resp = 0;end;end
 r = {myTrials([myTrials.blockNum] == task &[myTrials.resp] == resp).filepath};
 r = cellfun(@(x) strsplit(x,'/'), r,'UniformOutput',false);
 

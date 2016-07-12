@@ -1,7 +1,7 @@
 tic
 fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Functional/Sess%d/swrdata.nii'
 %subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
-subs_to_run = [29 30] %[8 9 10 11 14 15 17 18 19 20 21 22]
+subs_to_run = [31] %[8 9 10 11 14 15 17 18 19 20 21 22]
 %% Params
 nsess = 5;
 TR = 2.5;

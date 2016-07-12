@@ -1,4 +1,4 @@
-load('/Volumes/Aidas_HDD/MRI_data/subBetaArray_32.mat')
+load('/Volumes/Aidas_HDD/MRI_data/subBetaArray_32_fixedmPFC_31subs.mat')
 load('/Users/aidas_el_cap/Desktop/Tasks.mat')
 which_rois = 2:20;
 conds = 10; % how many pics
@@ -13,12 +13,12 @@ masks_ext = {'may24_' '.nii'};
 % preallocate subbetarray with nans
 n_subs = 13;
 n_tasks = 12;
-subBetaArray(1:length(masks),1:n_tasks,1:n_subs) = nan;
+%subBetaArray(1:length(masks),1:n_tasks,1:n_subs) = nan;
 for i = 1:length(masks_ext);masks_name = cellfun(@(x) strrep(x,masks_ext{i},''),masks_name,'UniformOutput', false);end
-%% Plot 'em!
+%% Plot 'em!x
 clf
 %makeLifeEasy=squeeze(mean(myData,1)); % (rois,tasks)average across subjects at least for now
-for ii=9%1:conds
+for ii=1:conds
     plot_lim = [0 6]
     xlim(plot_lim);
     ylim([-2 6]);
@@ -34,7 +34,7 @@ for ii=9%1:conds
 ylim([-2 6]);
 title(t{ii});
 text(mean(makeLifeEasy(:,[1:tasks]~=ii),2),makeLifeEasy(:,[1:tasks]==ii),{masks_name{which_rois}}');
-%saveas(p, ['/Users/aidas_el_cap/Desktop/fucks num2str(ii)],'bmp')
+saveas(p, ['/Users/aidas_el_cap/Desktop/test/' num2str(ii) '.bmp'],'bmp')
 end
 %%
 %% Get them in a table
@@ -73,6 +73,13 @@ end
 cols = 1:2:20
 for i = cols
 a = zscore([tbl{2:end,i}]')
-a = num2cell(a)
+%a = [tbl{2:end,i}]';
+a = num2str(a,'% .4f')
+%a = num2cell(a)
+a = cellstr(a);
 [tbl{2:end,i}] = deal(a{:})
 end
+%%
+amat = []
+%[tbl{2:end,cols}]'
+%%

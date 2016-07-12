@@ -1,5 +1,5 @@
 cd /Volumes/Aidas_HDD/MRI_data/
-subVec= [24:30]
+subVec= [10:20]
 A=dir('S*')
 for i = 1:length(A)
     subFold{i}=A(i).name;

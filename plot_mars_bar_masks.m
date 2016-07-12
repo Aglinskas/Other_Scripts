@@ -17,21 +17,36 @@ nsubs = length(subvect);
 % % roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
 % load('/Users/aidas_el_cap/Desktop/Tasks.mat');
 % lbls = {t{:,1}}';
-ofn = '/Users/aidas_el_cap/Desktop/2nd_Fig/Rois_minus_baseline30/'
-mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/';
-ext = 'TrSph';
+ofn = '/Users/aidas_el_cap/Desktop/2nd_Fig/Rois_minus_baseline_goodmPFC/'
+mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/';
+ext = 'may24';
 for i = 1:length(master_coords)
     rois{i,1} = ['TrSph_' master_coords{i,2} '_' num2str(master_coords{i,1}) '_roi.nii']
 end
 master_rois = master_coords
+%% get the masks to be used
+% mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/'
+% ext = 'may24';
+% for i = 1:length(master_coords)
+%     rois{i,1} = ['TrSph_' master_coords{i,2} '_' num2str(master_coords{i,1}) '_roi.nii']
+% end
+ofn = '/Users/aidas_el_cap/Desktop/2nd_Fig/Rois_minus_baseline_goodmPFC_30subs/'
+load('/Volumes/Aidas_HDD/MRI_data/old_new_rois.mat')
+load('/Volumes/Aidas_HDD/MRI_data/master_coords2.mat')
+load('/Volumes/Aidas_HDD/MRI_data/master_rois')
+nsubs = 20;
+%rois - filenames;
+%roi_name - nice names to put on figures;
+spm_dir = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/'
+mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
 %%
-for this_roi_ind = 1:length(rois)
+for this_roi_ind = 2:length(rois)
 %for subID = subvect(1);
 clear opts_xSPM
-opts_xSPM.spm_path = [mask_dir 'SPM.mat']
+opts_xSPM.spm_path = [spm_dir 'SPM.mat']
 this_roi_fn = [mask_dir rois{this_roi_ind}]
-this_roi_coords = [master_rois{this_roi_ind,1}];
-this_roi_name = master_rois{this_roi_ind,2};
+this_roi_coords = [master_rois{this_roi_ind,2:4}];
+this_roi_name = master_rois{this_roi_ind,1};
 opts_xSPM.mask_mask{4} = this_roi_fn
 opts_xSPM.mask_which_mask_ind = 4;
 set_up_xSPM
@@ -46,7 +61,6 @@ spm_results_ui('SetCoords',this_roi_coords)
 %             mask_method: {'incl.'  'excl.'}
 %                rend_opt: 1
 %             mask_maskfn: 'Sphere_MASK_combined_roi2.nii'
-%%
 %% extract_from_adjusted_cluster
 % Plots contrast estimates from a cluster.
 % Options:
@@ -157,10 +171,12 @@ j = subplot(2,3,6);
 copyobj(cor.Children(:),j);
 colormap(map);
 f.Position = [1 1 1436 804]
+%f.Position = [-1279        -123        1280         928]
 title(['Crosshair at: ' num2str(spm_mip_ui('GetCoords',mip)')])
 %% End of figure 
 %% Save
 if exist(ofn) == 0;mkdir(ofn);end
 saveas(f,[ofn this_roi_name],'jpg')
+%export_fig([ofn 'Rois_minus_baseline_goodmPFC_30subs'],'-pdf','-append')
 end
 %end

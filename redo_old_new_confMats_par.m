@@ -7,29 +7,33 @@
 % figure(gcf)
 %% 
 %subvect = [ 7     8     9    10    11    14    15    17    18    19    20    21    22];
-
-% load checkpointed data workspace;
-load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf09-Jul-2016 15:45:46.mat')
-%%
-load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
-load('/Volumes/Aidas_HDD/MRI_data/rois30.mat')
+% load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
+% load('/Volumes/Aidas_HDD/MRI_data/rois30.mat')
+%subvect = [24 25 26 27]
 subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
-rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/';
+rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
 rois = dir([rois_fn '*may24_*.nii']);
-rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
-                    rois = dir([rois_fn '*conj_a1*.nii']);
+%rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
+                    %rois = dir([rois_fn '*conj_a1*.nii']);
 rois = {rois.name}';
 roi_name = rois;
 % roi_name = cellfun(@(x) strsplit(x,{'oldnii_' '.nii'}),rois,'UniformOutput',false);
 roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',false);
-roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
+%roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
 load('/Users/aidas_el_cap/Desktop/Tasks.mat');
 lbls = {t{:,1}}';
 %% prepare
-all_conf(1:length(rois),1:max(subvect),1:12,1:12) = 2; 
+%all_conf(1:length(rois),1:max(subvect),1:12,1:12) = 2; 
+
+%% Resume from here;
+% Load up checkpointed data workspace; 
+load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf09-Jul-2016 15:45:46.mat')
+%%
+load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
+%%
 pairs = nchoosek(1:12,2);
-for which_roi = 1:length(rois);
-for subID = [24 25 27 28 29 30 31] %subvect;
+for which_roi = 1%2:length(rois);
+for subID = subvect;
 single_sub_conf_mat = repmat(2,12,12);
 subbetas = dir(sprintf([subDir 'beta_*'],subID));
 target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';
@@ -41,7 +45,6 @@ parfor paircomp = 1:length(pairs);
 %     disp(['Roi ' num2str(which_roi) '/' num2str(length(roi_name)) ' ' roi_name{which_roi}])
 % end
 disp(sprintf('Running Roi %d/%d, sub %d',which_roi,length(rois),subID))
-
 mask = fullfile(rois_fn,rois{which_roi});
 all_scans = struct;
 single_scan  = struct;

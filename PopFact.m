@@ -2,7 +2,7 @@
 addpath('/Users/aidas_el_cap/Desktop/Other_Scripts/')
 cd /Volumes/Aidas_HDD/MRI_data/
 statDir='Analysis_mask02'
-subVec=[7  8  9 10 11 14 15 17 18 19 20 21 22 24 25 27 28 29 30]
+subVec=[7  8  9 10 11 14 15 17 18 19 20 21 22 24 25 27 28 29 30 31]
 %load template
 load /Users/aidas_el_cap/Desktop/F_con.mat
 % matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).name='subject';
@@ -33,6 +33,6 @@ end
 
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters(1)=[];
  
-matlabbatch{1}.spm.stats.factorial_design.dir={['./Group30_'  statDir '/']}
+matlabbatch{1}.spm.stats.factorial_design.dir={['./Group31_'  statDir '/']}
 save (['popFact_' statDir] ,  'matlabbatch')
 spm_jobman('run', matlabbatch)

@@ -3,18 +3,21 @@
 % returns subBetaArray(Region,Task,Subject)
 % Set up MIP w/ defaults of whatever
 %% Get the masks to extract betas from:
-masks_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
+load('/Volumes/Aidas_HDD/MRI_data/subvect.mat');
+nsubs = length(subvect);
+masks_dir = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/new_masks/';
 masks = dir(masks_dir); masks = {masks([masks.isdir] == 0).name}';
 masks_name = masks;
 masks_ext = {'may24_' '.nii'};
 % preallocate subbetarray with nans
-n_subs = 13;
+n_subs = nsubs;
 n_tasks = 12;
-subBetaArray(1:length(masks),1:n_tasks,1:n_subs) = nan;
+%subBetaArray(1:length(masks),1:n_tasks,1:n_subs) = nan;
 for i = 1:length(masks_ext);masks_name = cellfun(@(x) strrep(x,masks_ext{i},''),masks_name,'UniformOutput', false);end
 %masks_name
 %%
 for which_roi = 2:length(masks);
+opts_xSPM.spm_path = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/SPM.mat'
 opts_xSPM.mask_mask{4} = fullfile(masks_dir,masks{which_roi});
 opts_xSPM.mask_which_mask_ind = 4;
 opts_xSPM.k_extent = 0;
@@ -27,6 +30,11 @@ num_clusters = unique(A);
 if num_clusters > 1; warning('split roiz man');which_roi;end
 for c = 1;%num_clusters;
 c_ind = find(A==c);
+% expressive
+disp([masks_name{which_roi} ' : ' num2str(length(c_ind)) ' voxels'])
+how_many_voxels{which_roi,1} = masks_name{which_roi};
+how_many_voxels{which_roi,2} = [num2str(length(c_ind)) ' voxels'];
+%
 %data = spm_get_data(SPM.xY.VY,xSPM.XYZ(:,[i i+1])); % get all voxels in ROI
 all_y_from_this_clust = spm_get_data(SPM.xY.VY,xSPM.XYZ(:,c_ind));% first dim is beta (156), second is voxels in the clust
 beta=reshape(all_y_from_this_clust,n_tasks,n_subs,length(c_ind)); % rows for tasks, columns for subs
@@ -35,7 +43,7 @@ mean_roi_beta_allSubs = mean(beta,3);
 %figure;,bar(mean(mean(beta,3),2)) %third dimesion is voxels, second dimension are people
 subBetaArray(which_roi,1:n_tasks,1:n_subs) = reshape(mean_roi_beta_allSubs,1,n_tasks,n_subs);
 end
-save('/Volumes/Aidas_HDD/MRI_data/subBetaArray_32','subBetaArray')
+save('/Volumes/Aidas_HDD/MRI_data/subBetaArray_32_fixedmPFC_31subs','subBetaArray')
 disp('Done')
 end
 % %% get labels

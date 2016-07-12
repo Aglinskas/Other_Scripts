@@ -72,7 +72,7 @@ end_analysis    = 2;  % end of analysis
 % names of subjects (list all names of subject directories)
 %%%% name_subj = {'01AF','02TH','03PW','04IC','05SC','06MJ','07PB','08JT','09AM','10PK','11GE','12PE','13JU','14BH','15RE','16MT','17AE','18IE','19KL','20PJ','21LJ','22BK','23ML','24AL'};
 
-name_subj = {'S30' 'S29'};
+name_subj = {'S31'};
  %name_subj = {'S5_D1' , 'S5_D2' , 'S6_D1' ,'S6_D2' , 'S7_D1' , 'S7_D2' , 'S8_D1' ,'S8_D2' , 'S9_D1' , 'S9_D2'};
 
 

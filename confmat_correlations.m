@@ -66,6 +66,7 @@ submats(roi_ind,subID,:,:) = submat;
 end
 end
 %submats(roi,subID,task,task)
+size(submats)
 %% Plot Decoding Accuracies Across ROIs (By task for each ROI)
 for which_rois_to_cor = 2:20%length(roi_name);
 % new rois: 2:20

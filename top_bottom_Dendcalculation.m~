@@ -48,7 +48,7 @@ to_deal = num2cell(to_deal);
 [clust_atlas{1:max(clust_list(:)),1}] = deal(to_deal{:})
 [clust_atlas{1:n_rois,2}] = deal(to_deal{1:n_rois})
 %% Make clust_atlas
-for c = 37 %n_rois+1:max(clust_list(:))
+for c = 31 %n_rois+1:max(clust_list(:))
     c_prime = c;
     found = 0
     rois_in_clust = []

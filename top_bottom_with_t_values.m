@@ -1,19 +1,10 @@
 %% Load up, and define singmat
 cd /Volumes/Aidas_HDD/MRI_data/
 loadMR
-%load('subBetaArray_Final.mat')
-%load('subBetaArray_with_farPSTS.mat')
-% masks_name{11} = 'ORB_new2-right';
-masks_name = cellfun(@(x) strrep(x,'_','-'),masks_name,'UniformOutput',0)
-
-
-which_rois_to_cor = [1:length(masks_name)]
-% [1:12 15:18] no orbitals
-%[1 3 5 7 9 11 13 15 16 17] Left ROIS
-% [2 4 6 8 10 12 14 15 16 18] Right ROIS
-roi_names = masks_name;
+load('subBetaArray_Final.mat')
+roi_names  = masks_name;
+which_rois_to_cor = 1:length(masks_name) %define GLOBALLY,bearing in mind 32 rois
 lbls = {roi_names{which_rois_to_cor}}'
-size(subBetaArray)
 %% Create Keep
 clear keep
 reducedBetaArray=(subBetaArray(which_rois_to_cor,1:10,:));%subBetaArray(ROI,TASK,SUB)
@@ -21,12 +12,6 @@ for subj=1:size(reducedBetaArray,3)
    keep(subj,:,:)= corr(squeeze(reducedBetaArray(:,:,subj))'); %the transpose is important reducedBetaArray(:,:,subj))'); 
 end
 size(keep)
-singmat = squeeze(mean(keep,1));
-
-%%% feed roicormat instead of keep 
-% a = all_roicormats(:,which_rois_to_cor,which_rois_to_cor);
-% singmat = squeeze(mean(a,1));
-
 % % % Create Region correlation matrix
 % % % Should have an nroi by nroi array of correlations; 
 % % % size(subBetaArray)
@@ -43,46 +28,43 @@ singmat = squeeze(mean(keep,1));
 % % % keep = keep(:,which_rois_to_cor,which_rois_to_cor)
 % % % 
 % % % Keep has to be already define as the size that you want
-%
-%%
-clear Task_Cor_Mat
-y = [1:12 15 18] % which rois
-y = 1:18
-tt = 1
-subBetaArray = subBetaArray(:,1:10,:);
-for subject = 1:size(subBetaArray,3); % loop subjects
-    for r = 1:size(subBetaArray,2); % loop task
-        for c = 1:size(subBetaArray,2); % loop task
-Task_Cor_Mat(subject,r,c) = corr(subBetaArray(y,r,subject),subBetaArray(y,c,subject));
-        end
+% T OR Z MATRIX
+clear t_mat
+one_minus_keep = 1-keep;
+for r = 1:size(one_minus_keep,2)
+    for c = 1:size(one_minus_keep,2)
+  t_mat(r,c) = (squeeze(mean(one_minus_keep(:,r,c),1))) ./ std(one_minus_keep(:,r,c));
+  %t_mat(:,r,c) = zscore(one_minus_keep(:,r,c));
     end
 end
+%figure(8);imagesc(t_mat)
+%singmat = squeeze(nanmean(t_mat,1));
+% clear keep
+%keep(:,1:size(t_mat,1),1:size(t_mat,1)) = t_mat;
+%keep(1,:,:) = t_mat;
+disp('scott commented this')
+singmat = t_mat
 
-keep = Task_Cor_Mat;
-singmat = squeeze(mean(Task_Cor_Mat,1))
-lbls = tasks(1:10)
-which_rois_to_cor = 1:size(keep,2);
-
+% Vectorize your matrix (Takes averaged singmat)
+%singmat = squeeze(mean(keep,1));% Correlate then average
 %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear newVec
 cc=0;
 for ii=1:length(singmat)
 for jj=ii+1:length(singmat)
 cc=cc+1;
 newVec(cc)=singmat(ii,jj);
+doubleChecknewVec(cc)=mean(keep(:,ii,jj));
 end
 end
-Z = linkage(1-newVec,'ward'); % one minus newvec is importnat
+Z = linkage(newVec,'ward'); % one minus newvec is importnat
+ZZ = linkage(1-doubleChecknewVec,'ward')  % compare the two
 wanna_plot = 1; if wanna_plot == 1
-dend_labeled = figure(6);
+figure(6);
 dendrogram(Z,'labels',lbls,'Orientation','left')
-%dend_num = figure(7);
-%dendrogram(Z,'Orientation','left');
-end
-%%% Figure out the clusters
+figure(7);
+dendrogram(Z,'Orientation','left');end
+%% Figure out the clusters
 %lbls
 clear clust_list
 n_rois = length(which_rois_to_cor);
@@ -129,7 +111,7 @@ if found == 1
 end
  end
 end
-%%% CLUSTERS TO COMPARE
+%% CLUSTERS TO COMPARE
 %clust_pair = [37 36]
 all_possible_clusters = []
 all_possible_clusters = nchoosek(n_rois+1:max(clust_list(:))',2);
@@ -139,7 +121,7 @@ for c_perm_ind = 1:size(all_possible_clusters,1);
 %     if c_perm_ind == 4
 %         break 
 %     end
-    clust_pair = all_possible_clusters(c_perm_ind,:);
+    clust_pair = all_possible_clusters(c_perm_ind,:)
 
 rois_to_comp{1} = clust_atlas{clust_pair(1),2}; %cell?
 rois_to_comp{2} = clust_atlas{clust_pair(2),2};
@@ -166,8 +148,8 @@ betweeen_clust_betas = [];
 for r = 1: size(betweeen_clust_pairs,1)
    betweeen_clust_betas = [betweeen_clust_betas keep(:,betweeen_clust_pairs(r,1),betweeen_clust_pairs(r,2))];
 end
-betweeen_clust_pairs;
-    
+betweeen_clust_pairs
+
 size(betweeen_clust_betas)
 % Calculation
 % top = 1-[keep(:,1,7) keep(:,1,17) keep(:,4,7) keep(:,4,17)]
@@ -183,33 +165,20 @@ size(betweeen_clust_betas)
 top = betweeen_clust_betas;
 bottom = within_clust_betas;
 
-vals= [(1-nanmean(top')) -  (1-nanmean(bottom'))]';
+vals= 1-[nanmean(top') -  nanmean(bottom')]'
 %[H,P,CI,STATS] = ttest(vals,0,'alpha',0.05 / size(all_possible_clusters,1));
-[H,P,CI,STATS] = ttest(vals);
+%[H,P,CI,STATS] = ttest(vals(vals~=nan));
 STATS
 P
 
-all_possible_clusters(c_perm_ind,3) = STATS.tstat;
-%all_possible_clusters(c_perm_ind,3) = vals;
-all_possible_clusters(c_perm_ind,4) = P;
-all_possible_clusters(c_perm_ind,5) = H;
-
-if max(betweeen_clust_betas(:)==1);
-    all_possible_clusters(c_perm_ind,[3,4])=-666;
-end
+%all_possible_clusters(c_perm_ind,3) = STATS.tstat;
+all_possible_clusters(c_perm_ind,3) = vals;
+%all_possible_clusters(c_perm_ind,4) = P;
+%all_possible_clusters(c_perm_ind,5) = H;
 end
 %all_possible_clusters = sortrows(all_possible_clusters,-3);
 %keep(subject,roi,roi)
 %% Epiloque
-roi_pair = [22 21]
-
-cind = find(all_possible_clusters(:,1) == roi_pair(2) & all_possible_clusters(:,2) == roi_pair(1));
-if isempty(cind)
-   cind = find(all_possible_clusters(:,1) == roi_pair(1) & all_possible_clusters(:,2) == roi_pair(2));end
-all_possible_clusters(cind,:)
-  
-
-
 % cluster_table = {}
 % wh_p = 153
 % 
@@ -217,3 +186,18 @@ all_possible_clusters(cind,:)
 % tt = {clust_atlas{all_possible_clusters(wh_p,[1 2]),2}}
 % cluster_table{1,1} = {lbls{tt{1}}}
 % cluster_table{1,2} = {lbls{tt{2}}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

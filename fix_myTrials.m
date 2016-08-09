@@ -2,7 +2,7 @@ fn = '/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results%s.mat';
 % ^myTrials fn, with '%d' where subID should go
 ofn = '/Users/aidas_el_cap/Desktop/myTrials/Fixed/S%d_results_fixed'
 % ^output directory fn, with '%d' where subID should go
-subvect = [7 8 9 10 11 14 15 17 18 19 20 21 22]
+loadMR
 for subID = subvect
 %%
 trial_dur = 2.5; %Trial duration

@@ -3,11 +3,47 @@
 % % 2. List of independent coordinates
 %% Spheres on coordinates (1)
 load('/Volumes/Aidas_HDD/MRI_data/master_coords30.mat')
-ofn='/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02';
+ofn = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/'
+sv_dir ='/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/July_19th_ROIS_2';
+if exist(sv_dir) == 0; mkdir(sv_dir);end
+addpath('/Users/aidas_el_cap/Documents/MATLAB/spm12/toolbox/marsbar/')
 %%
 master_coords = {}
-master_coords{1,1} = [3,50,-19]
-master_coords{1,2} = 'may24_new__mPFC2'
+%master_coords{1,1} = [3,50,-19]
+%master_coords{1,2} = 'may24_new__mPFC2'
+% manual override of coords
+% master_coords{1,1} = [57,-52,11];master_coords{1,2} = 'rpSTS_vis'
+% master_coords{2,1} = [-42,-58,20];master_coords{2,2} = 'lpSTS_vis'
+% master_coords{3,1} = [33,35,-13];master_coords{3,2} = 'rORB_new2'
+% master_coords{4,1} = [-36,26,-22];master_coords{4,2} = 'lORB_new2'
+% master_coords{1,1} = [33,35,-13];master_coords{1,2} = 'rORB-33'
+% master_coords{2,1} = [-33,35,-13];master_coords{2,2} = 'lORB-33'
+% master_coords{3,1} = [-36,26,-22];master_coords{3,2} = 'rORB-36'
+% master_coords{4,1} = [36,26,-22];master_coords{4,2} = 'lORB-36'
+% master_coords{end+1,1} = [48,-58,20];master_coords{end,2} = 'rPSTS2'
+% master_coords{end+1,1} = [-45,-64,29];master_coords{end,2} = 'lPSTS2'
+% master_coords{end+1,1} = [-45,-64,34];master_coords{end,2} = 'lPSTS3'
+
+% rrpsts_far = [54   -64    26] % good
+% lrpsts_far = [-36   -70    47] % good,right ang
+% 
+% master_coords{end+1,1} = [57 -58 5];master_coords{end,2} = 'pSTS-Silvia-Right'
+% master_coords{end+1,1} = [-45 -64 14];master_coords{end,2} = 'pSTS-Silvia-Left'
+
+
+master_coords{end+1,1} = [-42,-61,26];master_coords{end,2} = 'lpsts_peak'
+master_coords{end+1,1} = [48,-58,20];master_coords{end,2} = 'rpsts_peak'
+
+% master_coords{end+1,1} = [54   -64    26];master_coords{end,2} = 'rrpsts_far'
+% master_coords{end+1,1} = [-36   -70    47];master_coords{end,2} = 'lrpsts_far'
+% master_coords{end+1,1} = [36   -70    47];master_coords{end,2} = 'rrpsts_far2'
+% master_coords{end+1,1} = [-39   -73    41];master_coords{end,2} = 'lpsts_pole'
+% master_coords{end+1,1} = [ 39   -64    47];master_coords{end,2} = 'rpsts_pole'
+% master_coords{end+1,1} = [,,];master_coords{end,2} = ''
+% master_coords{end+1,1} = [,,];master_coords{end,2} = ''
+% master_coords{end+1,1} = [,,];master_coords{end,2} = ''
+% master_coords{end+1,1} = [,,];master_coords{end,2} = ''
+
 %%
 coord = master_coords;
 for i=1:size(coord,1)
@@ -45,6 +81,7 @@ all_rois = all_rois'
 % sp = mars_space(V);
 % Pos = voxpts(roi_o,sp);
 base_spc = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/beta_0001.nii';
+%base_spc = '/Users/aidas_el_cap/Documents/MATLAB/spm12/canonical/single_subj_T1.nii'
 %%
 roi_to_get = all_rois{24};
 Pos = voxpts(roi_to_get,base_spc)
@@ -52,11 +89,13 @@ for i = 1:length(Pos)
     [a p] = spm_atlas('query',xA,Pos(:,i))
 end
 %% Check if ROI sphere coords are within the anatomical cluster;
-coord = [3 -52 29]'
+for i = 1:size(master_coords,1)
+coord = master_coords{i,1}';
 atlas = fullfile('/Users/aidas_el_cap/Documents/MATLAB/spm12/tpm/','labels_Neuromorphometrics.nii');
 xA = spm_atlas('load',atlas);
-[a b] = spm_atlas('query',xA,coord) % Good coord has to be fed in
-
+[a b] = spm_atlas('query',xA,coord); % Good coord has to be fed in
+disp(coord')
+disp(a)
 %   FORMAT xA = spm_atlas('load',atlas)
 %   FORMAT L = spm_atlas('list')
 %   FORMAT [S,sts] = spm_atlas('select',xA,label)
@@ -66,7 +105,7 @@ xA = spm_atlas('load',atlas);
 %   FORMAT V = spm_atlas('prob',xA,label)
 %   FORMAT V = spm_atlas('maxprob',xA,thresh)
 %   FORMAT D = spm_atlas('dir')
-
+end
 %%
 if extract_voi_coords == 1
 mip = spm_mip_ui('FindMIPax');
@@ -93,11 +132,13 @@ test_roi = all_rois{1};
 volume(test_roi)
 %display(test_roi)
 %% Combine ROIs (2)
-fls = dir([ofn '/eye(12)*roi.mat']);
+%fls = dir([ofn '/eye(12)*roi.mat']);
+fn_path = '/Users/aidas_el_cap/Desktop/44_clust/';
+fls = dir([fn_path '/*roi.mat'])
 clear all_rois
 for i = 1:length(fls)
 %all_rois{i} = load(fullfile(ofn,fls(i).name));
-all_rois{i} = maroi('load',fullfile(ofn,fls(i).name));
+all_rois{i} = maroi('load',fullfile(fn_path,fls(i).name));
 end
 disp(['loadded ' num2str(length(all_rois)) ' ROIs'])
 clear Trim_stim_ALL
@@ -105,10 +146,12 @@ Trim_stim_ALL = all_rois{1};
 for i = 2:length(all_rois)
 Trim_stim_ALL = Trim_stim_ALL + all_rois{i};
 end
-saveroi(Trim_stim_ALL,[ofn 'ALLcombined_roi.mat'])
+saveroi(Trim_stim_ALL,[fn_path 'ALLcombined_roi.mat'])
 disp('Combined and Saved')
-%% Trim ROI (2)
+%% Create and Trim ROI (2) Final
 spc = mars_space('/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/beta_0008.nii');
+%spc = mars_space('/Users/aidas_el_cap/Desktop/mirtemp/GG-366-GM-0.7mm.nii');
+coord = master_coords;
 for i=1:size(coord,1)
  sph_centre = [coord{i,1}];
  sph_widths = 6;
@@ -120,27 +163,30 @@ trim_stim = maroi('load', [ofn '/ALLcombined_roi.mat'])
 trim_stim = sph_roi & trim_stim;
 trim_stim = label(trim_stim,[coord{i,2} ' ' num2str(coord{i,1})]);
 %trim_stim = label(trim_stim, Voi_coords{i,2})
- saveroi(trim_stim, ([ofn '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat']));
- mars_rois2img([ofn '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat'],[ofn '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.nii'],spc)
+ saveroi(trim_stim, ([sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat']));
+ mars_rois2img([sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat'],[sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.nii'],spc)
 % saveroi(trim_stim, ([ofn '/TrSph_' coord{i} '_' num2str([coord{i,2:4}]) '_roi.mat']));
 %  mars_rois2img([ofn '/TrSph_' coord{i} '_' num2str([coord{i,2:4}]) '_roi.mat'],[ofn '/TrSph_' coord{i} '_' num2str([coord{i,2:4}]) '_roi.nii'],spc)
 end
 %% Combine and save trimmed
+ofn = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/July_19th_ROIS_2/'
+%spc = mars_space('/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/beta_0008.nii');
+%spc = mars_space('/Users/aidas_el_cap/Documents/MATLAB/spm12/canonical/single_subj_T1_bet.nii');
+spc = mars_space('/Users/aidas_el_cap/Desktop/mirtemp/GG-366-GM-0.7mm.nii')
 fls = dir([ofn '/TrSph_*roi.mat']);
-clear all_rois
+all_rois = {}
 for i = 1:length(fls)
 %all_rois{i} = load(fullfile(ofn,fls(i).name));
-all_rois{i} = maroi('load',fullfile(ofn,fls(i).name));
+all_rois{end+1} = maroi('load',fullfile(ofn,fls(i).name));
 end
 disp(['loadded ' num2str(length(all_rois)) ' ROIs'])
 clear Trim_stim_ALL
 Trim_stim_ALL = all_rois{1};
-for i = 2:length(all_rois)
+for i = 1:length(all_rois)
 Trim_stim_ALL = Trim_stim_ALL | all_rois{i};
 end
 saveroi(Trim_stim_ALL,[ofn 'Sphere_MASK_combined_roi2'])
 disp('Combined and Saved')
-spc = mars_space('/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/beta_0008.nii');
 mars_rois2img([ofn 'Sphere_MASK_combined_roi2.mat'],[ofn 'Sphere_MASK_combined_roi2.nii'],spc)
 %%
 %mars_rois2img(roi_list, img_name, roi_space, flags)

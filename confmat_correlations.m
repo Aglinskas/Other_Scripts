@@ -2,10 +2,10 @@
 % %30 ROIS
 % fl = '/Users/aidas_el_cap/Desktop/RSA_ana/all_conf24-Jun-2016 17:49:15.mat';
 % load('/Volumes/Aidas_HDD/MRI_data/master_coords30.mat')
-fl = '/Users/aidas_el_cap/Desktop/RSA_ana/all_conf11-Jul-2016 11:52:41.mat';
+fl = '/Users/aidas_el_cap/Desktop/RSA_ana/all_conf27-Jul-2016 16:43:20.mat';
 load(fl)
-roi_name{11} = 'new__mPFC2'
-load('/Volumes/Aidas_HDD/MRI_data/subvect.mat') % subvect_cor.mat has sub 18 and 10 removed (shitty betas)
+roi_name = masks_name;
+load('/Volumes/Aidas_HDD/MRI_data/subvect_full20.mat') % subvect_cor.mat has sub 18 and 10 removed (shitty betas)
 %load('')
 clear master_coords
 [master_coords{1:size(roi_name,1),2}] = deal(roi_name{:})
@@ -56,7 +56,7 @@ clear submat
 clear submats
 submats = repmat(nan,length(roi_name),length(subvect),mat_size,mat_size);
 size(submats)
-for roi_ind = 2:20 %2:length(roi_name);
+for roi_ind = 1:length(roi_name);
 for subID = subvect;
 for pair_ind = new_pair_ind%1:length(pairs)
     submat(pairs(pair_ind,1),pairs(pair_ind,2)) = mean(rawall_corResult{roi_ind,subID,pair_ind}.samples);
@@ -68,12 +68,12 @@ end
 %submats(roi,subID,task,task)
 size(submats)
 %% Plot Decoding Accuracies Across ROIs (By task for each ROI)
-for which_rois_to_cor = 2:20%length(roi_name);
+for which_rois_to_cor = 1:length(roi_name);
 % new rois: 2:20
 % old rois 21:32
 %mean(mean(submats(which_rois_to_cor,subvect,:,:),4),3)
 singmat = squeeze(mean(submats(which_rois_to_cor,subvect,:,:),2));
-ofn  = '/Users/aidas_el_cap/Desktop/2nd_Fig/confusion_rawacc_30subs_newVec/';
+ofn  = '/Users/aidas_el_cap/Desktop/2nd_Fig/July27th_roi_confmats/';
 ttl_both = {'Decoding Accuracy %s' roi_name{which_rois_to_cor} [num2str(mat_size) ' tasks']};
 %singmat(find(isnan(singmat))) = 1;
 %this_mat_lbls = {roi_name{which_rois_to_cor}}
@@ -115,8 +115,8 @@ title(ttl_m);
 saveas(m,[ofn ['m_' ttl_m{:}]],'jpg')
 d = figure(5);
 d.Position =[-1279 -123 1280 928];
-%Z = linkage(singmat);
-Z = linkage(newVec,'ward');
+Z = linkage(singmat,'ward');
+%Z = linkage(newVec,'ward');
 %dendrogram(Z,'ColorThreshold','default')
 dendrogram(Z,'Orientation','left','ColorThreshold','default');
 ttl_d = cellfun(@(x) sprintf(x,'Dendogram'),ttl_both,'UniformOutput',false)';
@@ -124,6 +124,7 @@ title(ttl_d);
 d.CurrentAxes.YAxis.TickLabels = {this_mat_lbls{str2num(d.CurrentAxes.YAxis.TickLabels)}};
 saveas(d,[ofn ['d_' ttl_d{:}]],'jpg')
 end
+disp('done')
 %%
 % %% Wanna plot accuracy dends and mats? 
 % ofn  = '/Users/aidas_el_cap/Desktop/2nd_Fig/confusion6/';
@@ -173,7 +174,7 @@ end
 % Pay attention to oi pair inds
 clear all_roicormats
 clear roicormat
-which_rois_to_cor = 2:20%length(roi_name); %find(roi_vect == 1)
+which_rois_to_cor = 1:length(roi_name)%length(roi_name); %find(roi_vect == 1)
 % roi_pairs = nchoosek(1:length(roi_name),2);
 roi_pairs = nchoosek(which_rois_to_cor,2);
 n_rois = length(which_rois_to_cor);
@@ -190,7 +191,7 @@ all_roicormats(subID,:,:) = roicormat;
 end
 %imagesc(squeeze(mean(all_roicormats,1)))
 %% PLOT ROI CORRELATION MATRIX
-ofn  = '/Users/aidas_el_cap/Desktop/2nd_Fig/confusion_oldredone_30s/';
+ofn  = '/Users/aidas_el_cap/Desktop/2nd_Fig/Correlation_July27th_Rois/';
 ttl_both = {'Region Correlation %s redone' 'Across old ROIs' 'without controls'};
 clear singmat newVec
 singmat = squeeze(mean(all_roicormats(subvect,which_rois_to_cor,which_rois_to_cor),1));

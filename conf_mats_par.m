@@ -7,29 +7,45 @@
 % figure(gcf)
 %% 
 %subvect = [ 7     8     9    10    11    14    15    17    18    19    20    21    22];
-
 % load checkpointed data workspace;
-load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf09-Jul-2016 15:45:46.mat')
-%%
-load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
-load('/Volumes/Aidas_HDD/MRI_data/rois30.mat')
+% load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf09-Jul-2016 15:45:46.mat')
+%% Set up 2 % same as beta array 
+load('/Volumes/Aidas_HDD/MRI_data/subvect_full20.mat');
+nsubs = length(subvect);
+masks_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
+masks = dir(masks_dir); masks = {masks([masks.isdir] == 0).name}';
+masks_name = masks;
+masks_ext = {'may24_' '.nii'};
+% preallocate subbetarray with nans
+n_subs = nsubs;
+n_tasks = 12;
+% %% Old Set up
+% load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
+% load('/Volumes/Aidas_HDD/MRI_data/rois30.mat')
+% subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
+% rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/';
+% rois = dir([rois_fn '*may24_*.nii']);
+% rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
+% rois = dir([rois_fn '*conj_a1*.nii']);
+% rois = {rois.name}';
+% roi_name = rois;
+% % roi_name = cellfun(@(x) strsplit(x,{'oldnii_' '.nii'}),rois,'UniformOutput',false);
+% roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',false);
+% roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
+% load('/Users/aidas_el_cap/Desktop/Tasks.mat');
+% lbls = {t{:,1}}';
+%% Feed the right names 
+rois_fn = masks_dir;
+rois = masks;
 subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
-rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/';
-rois = dir([rois_fn '*may24_*.nii']);
-rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
-                    rois = dir([rois_fn '*conj_a1*.nii']);
-rois = {rois.name}';
-roi_name = rois;
-% roi_name = cellfun(@(x) strsplit(x,{'oldnii_' '.nii'}),rois,'UniformOutput',false);
-roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',false);
-roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
-load('/Users/aidas_el_cap/Desktop/Tasks.mat');
+load('/Users/aidas_el_cap/Desktop/Work_/Tasks.mat')
 lbls = {t{:,1}}';
+%% Set up 2
 %% prepare
 all_conf(1:length(rois),1:max(subvect),1:12,1:12) = 2; 
 pairs = nchoosek(1:12,2);
 for which_roi = 1:length(rois);
-for subID = [24 25 27 28 29 30 31] %subvect;
+for subID = subvect;
 single_sub_conf_mat = repmat(2,12,12);
 subbetas = dir(sprintf([subDir 'beta_*'],subID));
 target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';

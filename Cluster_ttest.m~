@@ -1,0 +1,18 @@
+loadMR
+%%
+roi_ind = [4 3];
+clust1 = [6 5];
+clust2 = [12 11];
+
+clust1_betas = reshape(keep(:,roi_ind,clust1),20,[]);
+clust2_betas = reshape(keep(:,roi_ind,clust2),20,[]);
+clust1_betas_mn =  mean(reshape(keep(:,roi_ind,clust1),20,[]),2);
+disp({masks_name{[roi_ind clust1]}})
+disp(mean(reshape(keep(:,roi_ind,clust1),20,[]),1))
+clust2_betas_mn =  mean(reshape(keep(:,roi_ind,clust2),20,[]),2);
+disp({masks_name{[roi_ind clust2]}})
+disp(mean(reshape(keep(:,roi_ind,clust2),20,[]),1))
+
+[H,P,CI,STATS] = ttest(clust1_betas_mn,clust2_betas_mn);
+disp(['T = ' num2str(STATS.tstat)])
+disp(['P = ' num2str(P)])

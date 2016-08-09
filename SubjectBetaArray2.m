@@ -3,9 +3,9 @@
 % returns subBetaArray(Region,Task,Subject)
 % Set up MIP w/ defaults of whatever
 %% Get the masks to extract betas from:
-load('/Volumes/Aidas_HDD/MRI_data/subvect.mat');
+load('/Volumes/Aidas_HDD/MRI_data/subvect_full20.mat');
 nsubs = length(subvect);
-masks_dir = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/new_masks/';
+masks_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
 masks = dir(masks_dir); masks = {masks([masks.isdir] == 0).name}';
 masks_name = masks;
 masks_ext = {'may24_' '.nii'};
@@ -14,9 +14,9 @@ n_subs = nsubs;
 n_tasks = 12;
 %subBetaArray(1:length(masks),1:n_tasks,1:n_subs) = nan;
 for i = 1:length(masks_ext);masks_name = cellfun(@(x) strrep(x,masks_ext{i},''),masks_name,'UniformOutput', false);end
-%masks_name
+masks_name
 %%
-for which_roi = 2:length(masks);
+for which_roi = 1:length(masks);
 opts_xSPM.spm_path = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/SPM.mat'
 opts_xSPM.mask_mask{4} = fullfile(masks_dir,masks{which_roi});
 opts_xSPM.mask_which_mask_ind = 4;
@@ -43,8 +43,10 @@ mean_roi_beta_allSubs = mean(beta,3);
 %figure;,bar(mean(mean(beta,3),2)) %third dimesion is voxels, second dimension are people
 subBetaArray(which_roi,1:n_tasks,1:n_subs) = reshape(mean_roi_beta_allSubs,1,n_tasks,n_subs);
 end
-save('/Volumes/Aidas_HDD/MRI_data/subBetaArray_32_fixedmPFC_31subs','subBetaArray')
+save('/Volumes/Aidas_HDD/MRI_data/subBetaArray_Final','subBetaArray','masks_name')
+%save('/Volumes/Aidas_HDD/MRI_data/subBetaArray_22_labels','subBetaArray')
 disp('Done')
+how_many_voxels
 end
 % %% get labels
 % for c_which = 1:length(master_coords);

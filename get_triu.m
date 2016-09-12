@@ -12,18 +12,16 @@
 % end
 % end
 % end
-
 function newVec = get_triu(singmat)
 clear newVec
 cc=0;
-for ii=1:length(singmat)
-for jj=ii+1:length(singmat)
+for ii=1:size(singmat,2)
+for jj=ii+1:size(singmat,2)
 cc=cc+1;
-newVec(cc)=singmat(ii,jj);
+newVec(:,cc)=singmat(:,ii,jj);
 end
 end
 end
-
 
 
 

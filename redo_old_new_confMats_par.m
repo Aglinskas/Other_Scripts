@@ -12,7 +12,7 @@
 %subvect = [24 25 26 27]
 subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
 rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
-rois = dir([rois_fn '*may24_*.nii']);
+rois = dir([rois_fn '*.nii']);
 %rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
                     %rois = dir([rois_fn '*conj_a1*.nii']);
 rois = {rois.name}';

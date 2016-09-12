@@ -4,7 +4,7 @@ lbls = masks_name;
 %load('/Users/aidas_el_cap/Desktop/ord.mat')
 %ord = str2num(dend_num.CurrentAxes.YTickLabel); % Dendogram
 %%
-dt = 'MVPA'; % which data is inputted {'betas' 'MVPA'}
+dt = 'betas'; % which data is inputted {'betas' 'MVPA'}
 switch dt
     case 'betas'
 b = squeeze(mean(keep,1))% for betas
@@ -41,8 +41,8 @@ set(hStrings,{'Color'},num2cell(textColors,2));  %# Change the text colors
 %clust1_ind = [1,1;4,4]
 switch dt
     case 'betas'
-% clust1_2_cross_ind = [1,5;4,10] % Beta Cluster
-% clust2_3_cross_ind = [5,11;10,18] % Beta Cluster
+clust1_2_cross_ind = [1,5;4,10] % Beta Cluster
+clust2_3_cross_ind = [5,11;10,18] % Beta Cluster
 
 disp('Working on betas values data')
 

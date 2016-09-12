@@ -1,5 +1,5 @@
 cd /Volumes/Aidas_HDD/MRI_data/
-subVec= [10:20]
+subVec= [9:10]
 A=dir('S*')
 for i = 1:length(A)
     subFold{i}=A(i).name;
@@ -12,7 +12,6 @@ assessor=[];
 figure
 translation=true
 for sub=subVec
-    
     subCC=subCC+1;
     for j=1:length(dir (['./S' num2str(sub) '/Functional/Sess' '*']));
         fName= dir (['./S' num2str(sub) '/Functional/Sess' num2str(j) '/rp*.txt']) ;
@@ -27,7 +26,6 @@ for sub=subVec
         axis([1,length(myMot),-4, 4])
         assessor(subCC,j)=max(range(myMot));
         title(num2str(sub))
-        
     end
     pause(.1)
 end

@@ -29,7 +29,7 @@ textStrings = num2str(matrix(:),'%0.2f');
 textStrings = strtrim(cellstr(textStrings));
 [x,y] = meshgrid(1:length(matrix));
 hStrings = text(x(:),y(:),textStrings(:),'HorizontalAlignment','center');
-midValue = max(get(gca,'CLim'));  %# Get the middle value of the color range
+midValue = max(get(gca,'CLim'));%# Get the middle value of the color range
 textColors = repmat(matrix(:) > midValue,1,3);  %# Choose white or black for the
 set(hStrings,{'Color'},num2cell(textColors,2));  %# Change the text colors
 end

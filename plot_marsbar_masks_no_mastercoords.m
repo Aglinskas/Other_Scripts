@@ -5,25 +5,6 @@
 loadMR
 nsubs = length(subvect);
 %% Just info
-% subvect = [ 7     8     9    10    11    14    15    17    18    19    20    21    22];
-% subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
-% rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
-%                     rois = dir([rois_fn '*may24_*.nii']);
-% % rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
-% %                     rois = dir([rois_fn '*conj_a1*.nii']);
-% rois = {rois.name}';
-% roi_name = rois;
-% % roi_name = cellfun(@(x) strsplit(x,{'oldnii_' '.nii'}),rois,'UniformOutput',false);
-% roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',false);
-% % roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
-% load('/Users/aidas_el_cap/Desktop/Tasks.mat');
-% lbls = {t{:,1}}';
-ofn = '/Users/aidas_el_cap/Desktop/2nd_Fig/Rois_minus_baseline_Aug8th/'
-mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/';
-ext = 'may24';
-for i = 1:length(master_coords)
-    rois{i,1} = ['TrSph_' master_coords{i,2} '_' num2str(master_coords{i,1}) '_roi.nii']
-end
 %master_rois = master_coords
 %% get the masks to be used
 subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
@@ -39,18 +20,6 @@ roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',f
 load('/Users/aidas_el_cap/Desktop/Tasks.mat');
 lbls = {t{:,1}}';
 %%
-% mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/'
-% ext = 'may24';
-% for i = 1:length(master_coords)
-%     rois{i,1} = ['TrSph_' master_coords{i,2} '_' num2str(master_coords{i,1}) '_roi.nii']
-% end
-% ofn = '/Users/aidas_el_cap/Desktop/2nd_Fig/Rois_minus_baseline_goodmPFC_30subs/'
-% load('/Volumes/Aidas_HDD/MRI_data/old_new_rois.mat')
-% load('/Volumes/Aidas_HDD/MRI_data/master_coords2.mat')
-% load('/Volumes/Aidas_HDD/MRI_data/master_rois')
-% nsubs = 20;
-% %rois - filenames;
-% %roi_name - nice names to put on figures;
 spm_dir = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/'
 mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
 %%
@@ -59,11 +28,17 @@ for this_roi_ind = 1:length(rois)
 clear opts_xSPM
 opts_xSPM.spm_path = [spm_dir 'SPM.mat']
 this_roi_fn = [mask_dir rois{this_roi_ind}]
-this_roi_coords = [master_rois{this_roi_ind,2:4}];
-this_roi_name = master_rois{this_roi_ind,1};
+%this_roi_coords = [master_rois{this_roi_ind,2:4}];
+this_roi_name = roi_name{this_roi_ind,1};
 opts_xSPM.mask_mask{4} = this_roi_fn
 opts_xSPM.mask_which_mask_ind = 4;
 set_up_xSPM
+%this_roi_coords = xSPM.XYZmm(:,find(xSPM.Z == max(xSPM.Z))); %peak
+this_roi_coords = xSPM.XYZmm(:,median(floor(length(xSPM.XYZmm) / 2))) %middle
+
+master_rois{this_roi_ind,1} = this_roi_name;
+master_rois{this_roi_ind,2} = this_roi_coords;
+
 spm_results_ui('SetCoords',this_roi_coords)
 %  spm_path: '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/SPM.mat'
 %             useContrast: 1
@@ -145,7 +120,7 @@ errorbar(mean(subBetas',2),CI,'rx')
 %title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(length(XYZmm)) ' Voxels'])
 %title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(vx) 'Voxels'])
 %
-ttl = {this_roi_name ['Roi Center: ' num2str(this_roi_coords)] ['Clust Size: ' num2str(length(spm_clusters(xSPM.XYZ)))]};
+ttl = {this_roi_name ['Roi Center: ' num2str(this_roi_coords')] ['Clust Size: ' num2str(length(spm_clusters(xSPM.XYZ)))]};
 title(ttl)
 %
 set(gca,'XTickLabel',T_leg)
@@ -193,4 +168,5 @@ if exist(ofn) == 0;mkdir(ofn);end
 saveas(f,[ofn this_roi_name],'jpg')
 %export_fig([ofn 'Rois_minus_baseline_goodmPFC_30subs'],'-pdf','-append')
 end
+save('/Volumes/Aidas_HDD/MRI_data/master_rois.mat','master_rois')
 %end

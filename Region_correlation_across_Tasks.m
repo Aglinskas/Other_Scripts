@@ -13,7 +13,6 @@ Task_Cor_Mat(subject,r,c) = corr(subBetaArray(y,r,subject),subBetaArray(y,c,subj
         end
     end
 end
-
 %%
 a = squeeze(mean(Task_Cor_Mat,1)) % mean across subjects
 add_numbers_to_mat(a,tasks) % imagesc + add numbers

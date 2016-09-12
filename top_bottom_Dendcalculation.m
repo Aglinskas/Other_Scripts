@@ -5,8 +5,6 @@ loadMR
 %load('subBetaArray_with_farPSTS.mat')
 % masks_name{11} = 'ORB_new2-right';
 masks_name = cellfun(@(x) strrep(x,'_','-'),masks_name,'UniformOutput',0)
-
-
 which_rois_to_cor = [1:length(masks_name)]
 % [1:12 15:18] no orbitals
 %[1 3 5 7 9 11 13 15 16 17] Left ROIS
@@ -16,11 +14,12 @@ lbls = {roi_names{which_rois_to_cor}}'
 size(subBetaArray)
 %% Create Keep
 clear keep
-reducedBetaArray=(subBetaArray(which_rois_to_cor,1:10,:));%subBetaArray(ROI,TASK,SUB)
+which_subs = [1:8 9 10:20]
+reducedBetaArray=(subBetaArray(which_rois_to_cor,1:10,which_subs));%subBetaArray(ROI,TASK,SUB)
 for subj=1:size(reducedBetaArray,3)
-   keep(subj,:,:)= corr(squeeze(reducedBetaArray(:,:,subj))'); %the transpose is important reducedBetaArray(:,:,subj))'); 
+   keep(subj,:,:)= corr(squeeze(reducedBetaArray(:,:,subj))','type', 'Pearson'); %the transpose is important reducedBetaArray(:,:,subj))'); 
 end
-size(keep)
+%keep = keep(:,:,[1:8 10:20])
 singmat = squeeze(mean(keep,1));
 
 %%% feed roicormat instead of keep 
@@ -46,23 +45,24 @@ singmat = squeeze(mean(keep,1));
 %
 %%
 clear Task_Cor_Mat
-y = [1:12 15 18] % which rois
-y = 1:18
+%y = [1:12 15 18] % which rois
+y = 1:18 % ROIS
 tt = 1
-subBetaArray = subBetaArray(:,1:10,:);
+subBetaArray = subBetaArray(:,:,[1:8 10:20]); % reduce subjects
+%subBetaArray = subBetaArray(:,1:10,:);
 for subject = 1:size(subBetaArray,3); % loop subjects
     for r = 1:size(subBetaArray,2); % loop task
         for c = 1:size(subBetaArray,2); % loop task
-Task_Cor_Mat(subject,r,c) = corr(subBetaArray(y,r,subject),subBetaArray(y,c,subject));
+Task_Cor_Mat(subject,r,c) = corr(subBetaArray(y,r,subject),subBetaArray(y,c,subject),'type', 'Spearman');
         end
     end
 end
-
+squeeze(mean(Task_Cor_Mat,1))
+%
 keep = Task_Cor_Mat;
 singmat = squeeze(mean(Task_Cor_Mat,1))
 lbls = tasks(1:10)
 which_rois_to_cor = 1:size(keep,2);
-
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -201,7 +201,7 @@ end
 %all_possible_clusters = sortrows(all_possible_clusters,-3);
 %keep(subject,roi,roi)
 %% Epiloque
-roi_pair = [22 21]
+roi_pair = [24 25]
 
 cind = find(all_possible_clusters(:,1) == roi_pair(2) & all_possible_clusters(:,2) == roi_pair(1));
 if isempty(cind)

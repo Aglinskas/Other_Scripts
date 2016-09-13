@@ -1,23 +1,29 @@
-sudo diskutil unmount disk1
+sudo diskutil unmount disk2
+
+sudo diskutil unmount disk2s1
+sudo diskutil mountDisk disk2s2
 
 
-sudo diskutil unmount disk1s1
-sudo diskutil mountDisk disk1s2
+sudo diskutil unmount /dev/disk2s2
+sudo diskutil mount /dev/disk2s2
+
+sudo diskutil unmountDisk /dev/disk2
+sudo diskutil mountDisk /dev/disk2
+sudo diskutil unmountDisk disk2s1
+sudo diskutil unmountDisk disk2s2
 
 
-sudo diskutil unmount /dev/disk1s2
-sudo diskutil mount /dev/disk1s2
+sudo diskutil mount disk2
+sudo diskutil mount disk2s1
+sudo diskutil mount disk2s2
 
-sudo diskutil unmountDisk /dev/disk1
-sudo diskutil mountDisk /dev/disk1
-sudo diskutil unmountDisk disk1s1
-sudo diskutil unmountDisk disk1s2
+sudo diskutil mountDisk disk2
+sudo diskutil mountDisk disk2s1
+sudo diskutil mountDisk disk2s2
 
 
-sudo diskutil mount disk1
-sudo diskutil mount disk1s1
-sudo diskutil mount disk1s2
 
-sudo diskutil mountDisk disk1
-sudo diskutil mountDisk disk1s1
-sudo diskutil mountDisk disk1s2
+sudo diskutil unmount disk2
+sudo diskutil unmountDisk /dev/disk2
+sudo diskutil unmount disk2s1
+sudo diskutil unmountDisk disk2s2

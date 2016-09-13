@@ -1,19 +1,17 @@
 %clear all
-% clear all except loop counter
-vars = whos;
-sv = find(strcmp({vars.name},'plpl')== 1)
-to_clear = {vars([[1:sv-1]';[sv+1:length(vars)]']).name}'
-cellfun(@clear,to_clear,'UniformOutput',0)
-%clear all
+%% clear all except loop counter
+% vars = whos;
+% sv = find(strcmp({vars.name},'plpl')== 1)
+% to_clear = {vars([[1:sv-1]';[sv+1:length(vars)]']).name}'
+% cellfun(@clear,to_clear,'UniformOutput',0)
+%%
+clear all
 close all
-load('/Users/aidasaglinskas/Desktop/forAidas.mat')
+load('/Users/aidasaglinskas/Desktop/myLatestDendro.mat')
 %% Parameters to specify
-%loadMR2
-%length(find(fidelity.score > 25))
-%load('/Users/aidasaglinskas/Desktop/dendroPerSub.mat')
-load('/Users/aidasaglinskas/Desktop/dendroPerSub.mat')
-dendroPerSub(:,rows2exclude,:)=[];
-dendroPerSub(:,:,rows2exclude)=[];
+% load('/Users/aidasaglinskas/Desktop/dendroPerSub.mat')
+% dendroPerSub(:,rows2exclude,:)=[];
+% dendroPerSub(:,:,rows2exclude)=[];
 matrix_to_permute = dendroPerSub; % Takes Matrix(subject,row,colum)
 load('/Users/aidasaglinskas/Desktop/label.mat')
 label(rows2exclude)=[];

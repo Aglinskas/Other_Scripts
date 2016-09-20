@@ -5,11 +5,11 @@ opts_xSPM.mask_mask{4} = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/Sph
 opts_xSPM.mask_which_mask_ind = 4;
 opts_xSPM.k_extent = 0;
 set_up_xSPM
-load('/Volumes/Aidas_HDD/MRI_data/master_coords.mat')
+%load('/Volumes/Aidas_HDD/MRI_data/master_coords.mat')
 % i = find(xSPM.XYZmm(1,:) == c_cor(1) & xSPM.XYZmm(2,:) == c_cor(2) & xSPM.XYZmm(3,:) == c_cor(3));
 %% Get Clusters
-n_subs = 13;
-n_tasks = 12;
+n_subs = 20;
+n_tasks = 24;
 A = spm_clusters(xSPM.XYZ); 
 num_clusters = unique(A);
 for c = num_clusters;

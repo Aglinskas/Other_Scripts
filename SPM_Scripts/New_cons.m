@@ -3,9 +3,10 @@
 %close all
 clear all;
 spm_jobman('initcfg')
-fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/SPM.mat';
+fn = '/Users/aidasaglinskas/Google Drive/MRI_data/S%d/Analysis_mask02/SPM.mat';
 %subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
-subs_to_run = [31];
+loadMR
+subs_to_run = subvect;
 %%
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Full name' 'Same_Face' 'Same_monument'};
 %% Create vs Create & Run
@@ -25,9 +26,9 @@ compute.task_vs_task = 0;
 compute.f_contrast = 1;
 compute.all_vs_monuments = 1;
 compute.all_vs_faceCC = 1;
+compute.splitBlocks = 1
 %%
 %structfun(@(x) eq(x,1),compute,'Uniform',1)
-% 
 %% Computed Parameters
 batches = length(find(structfun(@(x) x==1,compute,'Uniform',1) == 1));
 e_vect = repmat(0,1,n_tasks); % empty vector to start with
@@ -96,7 +97,7 @@ end
 %% Task vs face control contrasts
 if compute.task_vs_face_control == 1;
 for i = 1 : n_cons
-    sprintf('Task %s vs Face Control',tasks_eng{i})
+    %sprintf('Task %s vs Face Control',tasks_eng{i})
     this_c = e_vect;
     this_c(i) = 1;
     this_c(fc_control_ind) = -1;
@@ -132,6 +133,28 @@ l = length(matlabbatch{s}.spm.stats.con.consess);
     end
 end 
 end
+%% Attractives 1 & 2
+if compute.splitBlocks == 1
+l = length(matlabbatch{s}.spm.stats.con.consess);
+alt_swtch = [1 2;2 1];
+for swtch = alt_swtch(mod(s,2) + 1,:)
+for i = 1 : n_cons
+    sprintf('Task %s vs Face Control',tasks_eng{i});
+    this_c = e_vect;
+    this_c(i) = 1;
+    %this_c(fc_control_ind) = -1;
+    
+clear do_vect
+do_vect(1,:) = [repmat([this_c zeros(1,6)],1,3) repmat([e_vect zeros(1,6)],1,2)];
+do_vect(2,:) = [repmat([e_vect zeros(1,6)],1,3) repmat([this_c zeros(1,6)],1,2)];
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = sprintf('Task %d:%s (%d)',i,tasks_eng{i},swtch);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = do_vect(swtch,:);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';
+l = length(matlabbatch{s}.spm.stats.con.consess);
+end % ends cons
+end % ends swtch
+end % ends if
+%%
 %% Delete previous cons? Probably yes. 
 if delete_previous_cons == 1
 matlabbatch{s}.spm.stats.con.delete = 1;

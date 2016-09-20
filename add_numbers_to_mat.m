@@ -6,21 +6,22 @@ function add_numbers_to_mat(matrix,lbls)
 imagesc(matrix)
 current_mat_fig = gcf
 
-if max(current_mat_fig.CurrentAxes.XTick) ~= max(current_mat_fig.CurrentAxes.YTick)
+if size(matrix,1) ~= size(matrix,2)
+    %max(current_mat_fig.CurrentAxes.XTick) ~= max(current_mat_fig.CurrentAxes.YTick)
 error('Not a square matrix')
 end
 
-if length(lbls) > max(current_mat_fig.CurrentAxes.XTick)
+if length(lbls) > size(matrix,1)
     lbls
     error('Too many labels')
-elseif length(lbls) < max(current_mat_fig.CurrentAxes.XTick)
+elseif length(lbls) < size(matrix,1)
     lbls
     error('Too few labels')
 end
 
-current_mat_fig.CurrentAxes.YTick = 1:max(current_mat_fig.CurrentAxes.YTick);
+current_mat_fig.CurrentAxes.YTick = 1:size(matrix,1);
 current_mat_fig.CurrentAxes.YTickLabel = lbls%num2str(ord)
-current_mat_fig.CurrentAxes.XTick = 1:max(current_mat_fig.CurrentAxes.XTick);
+current_mat_fig.CurrentAxes.XTick = 1:size(matrix,1);
 current_mat_fig.CurrentAxes.XTickLabel = lbls%num2str(ord)
 current_mat_fig.CurrentAxes.YTickLabelRotation = 0
 current_mat_fig.CurrentAxes.XTickLabelRotation = 15

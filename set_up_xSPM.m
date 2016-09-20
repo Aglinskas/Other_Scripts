@@ -92,7 +92,7 @@ n_figs = length(get(0, 'Children'));
 eb_fig = n_figs+1;
 % overlay sections
 if opts_xSPM.rend_opt == 1
-single_subj_T1_fn = '/Users/aidas_el_cap/Documents/MATLAB/spm12/canonical/single_subj_T1.nii';
+single_subj_T1_fn = '/Users/aidasaglinskas/Documents/MATLAB/spm12/canonical/single_subj_T1.nii';
 spm_sections(xSPM,hReg,single_subj_T1_fn);
 elseif opts_xSPM.rend_opt == 2
 end    

@@ -1,0 +1,18 @@
+NeuroSynth_dir = '/Users/aidasaglinskas/Google Drive/Neurosynth/'
+ROI_dir = '/Users/aidasaglinskas/Google Drive/MRI_data/ROIS/'
+
+%%
+xFiles={'myNeuropStsL.nii','myNeuropStsR.nii' etc
+%regFile={marsbar made images for pStsL, pStsR etc?
+nRegoins=18
+for ii = 1:nRegoins
+connect=nifti (xFile{ii})  % load the neuro file for the Left pSTS
+connect=connect.dat;%(:,:,:)
+for jj=ii+1:nRegions
+    mask=nifit(refFile{jj}) ;
+    mask=mask.dat;%(:,:,:)
+    outPut(ii,jj)=mean(connect(mask));
+end
+end
+
+    

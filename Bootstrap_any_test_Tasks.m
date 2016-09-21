@@ -27,7 +27,7 @@ dim_to_permute = 3;
 %label(rows2exclude)=[];
 labels_for_the_matrix = tasks2(task_inds) %labels for the matrix
 %repmat({'No lbl'},1,1138)
-specify_model = 0
+specify_model = 1
 part_of_iteration = 0; % is this part of it?
 threhold = 25; % only for iterations;
 numClust=12; %number of clusters we care about

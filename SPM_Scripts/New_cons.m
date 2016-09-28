@@ -145,8 +145,10 @@ for i = 1 : n_cons
     %this_c(fc_control_ind) = -1;
     
 clear do_vect
-do_vect(1,:) = [repmat([this_c zeros(1,6)],1,3) repmat([e_vect zeros(1,6)],1,2)];
-do_vect(2,:) = [repmat([e_vect zeros(1,6)],1,3) repmat([this_c zeros(1,6)],1,2)];
+% do_vect(1,:) = [repmat([this_c zeros(1,6)],1,3) repmat([e_vect zeros(1,6)],1,2)];
+% do_vect(2,:) = [repmat([e_vect zeros(1,6)],1,3) repmat([this_c zeros(1,6)],1,2)];
+do_vect(1,:) = repmat([this_c zeros(1,6) e_vect zeros(1,6)],1,2)
+do_vect(2,:) = repmat([e_vect zeros(1,6) this_c zeros(1,6)],1,2)
 matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = sprintf('Task %d:%s (%d)',i,tasks_eng{i},swtch);
 matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = do_vect(swtch,:);
 matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';

@@ -1,33 +1,17 @@
-% figure
-% voxInRoi=250;
-% tasks=12;
-% data=randn(tasks,voxInRoi);
-% corrMat=corr(data');
-% imagesc(corrMat)
-% figure(gcf)
-%% 
-%subvect = [ 7     8     9    10    11    14    15    17    18    19    20    21    22];
-% load('~/Google Drive/MRI_data/subvect.mat')
-% load('~/Google Drive/MRI_data/rois30.mat')
-%subvect = [24 25 26 27]
+clear all
 loadMR
 subDir = '~/Google Drive/MRI_data/S%d/Analysis_mask02/';
 rois_fn = '~/Google Drive/ROI_masks/';
-rois = dir([rois_fn '*.nii']);
-rois = {rois.name}';
-roi_name = rois;
-%roi_name = cellfun(@(x) strsplit(x,{'oldnii_' '.nii'}),rois,'UniformOutput',false);
-%roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',false);
-%roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
+rois = dir([rois_fn '*.nii']);rois = {rois.name}';roi_name = rois;
+roi_name = cellfun(@(x) strrep(x,'.nii',''),rois,'UniformOutput',0)
 lbls = tasks;
 %% prepare
-%all_conf(1:length(rois),1:max(subvect),1:12,1:12) = 2; 
-
-%% Resume from here;
-% Load up checkpointed data workspace; 
-%load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf09-Jul-2016 15:45:46.mat')
-%%
+all_conf(1:length(rois),1:max(subvect),1:12,1:12) = 2;
 pairs = nchoosek(1:12,2);
+
+results_set = repmat(nan,length(rois),max(subvect),length(pairs));
+%results_set(which_roi,subID,paircomp) = mean(corr_results.samples); % Aidas
+%%
 for which_roi = 1%2:length(rois);
 for subID = subvect(1);
 single_sub_conf_mat = repmat(2,12,12);
@@ -72,11 +56,14 @@ opt.classifier=@cosmo_classify_lda;
 %disp('opt.partitions')
 opt.partitions=cosmo_nchoosek_partitioner(all_scans,1);
 
-corr_results=cosmo_searchlight(all_scans,nbrhood,measure,opt,'nproc',4);% ,'nproc',4
+corr_results=cosmo_searchlight(all_scans,nbrhood,measure,opt,'nproc',2);% ,'nproc',4
 %corr_results.samples=corr_results.samples-(1/40);
 corr_results.samples=corr_results.samples-(1/length(unique(all_scans.sa.targets)));
 
-meanall_corResult{which_roi,subID,paircomp} = mean(corr_results.samples);;
+meanall_corResult{which_roi,subID,paircomp} = mean(corr_results.samples);
+
+results_set(which_roi,paircomp,subID) = mean(corr_results.samples); % Aidas
+
 rawall_corResult{which_roi,subID,paircomp} = corr_results;
 
 %to_conf_mat = [which_tasks mean(corr_results.samples)]

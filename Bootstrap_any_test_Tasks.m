@@ -10,6 +10,15 @@ close all
 loadMR
 load('~/Google Drive/MRI_data/subBetaArraySPLIT_alt.mat')
 load('/Users/aidasaglinskas/Desktop/tasks2.mat')
+
+clear new_SBA
+for sub = 1:size(subBetaArray,3)
+    new_SBA(:,:,sub) = subBetaArray(:,:,sub) - repmat([mean(subBetaArray(:,[1:12],sub)) mean(subBetaArray(:,[13:24],sub))],18,1);
+end
+disp('done')
+clear subBetaArray
+subBetaArray = new_SBA;
+size(new_SBA)
 %% Parameters to specify
 % load('/Users/aidasaglinskas/Desktop/dendroPerSub.mat')
 % dendroPerSub(:,rows2exclude,:)=[];
@@ -31,7 +40,7 @@ specify_model = 1
 part_of_iteration = 0; % is this part of it?
 threhold = 25; % only for iterations;
 numClust=12; %number of clusters we care about
-nperms = 10000; %how many permutations?
+nperms = 1000; %how many permutations?
 save_figs_to_file = 1
 clust_schemab = 1;
 schemaball_tresh = 25 % Threshold for the schemaball

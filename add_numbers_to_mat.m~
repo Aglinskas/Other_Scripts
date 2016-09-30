@@ -1,4 +1,6 @@
-
+% add numbers to conf mat
+% add_numbers_to_mat(matrix,lbls)
+%
 function add_numbers_to_mat(varargin)
 
 switch nargin
@@ -14,13 +16,9 @@ switch nargin
     lbls = varargin{2};
     case 3
     matrix = varargin{1};
-    %lbls1 = varargin{2};  
-    %lbls2 = varargin{3};  
-    lblsx = varargin{cellfun(@(x) [isequal(length(x), size(matrix,2)) && isvector(x)],varargin)};
-    lblsy = varargin{cellfun(@(x) [isequal(length(x), size(matrix,1)) && isvector(x)],varargin)};
+    lbls1 = varargin{2};  
 end
 
-%save('/Users/aidasaglinskas/Desktop/args.mat')
 imagesc(matrix)
 current_mat_fig = gcf
 
@@ -28,15 +26,15 @@ current_mat_fig = gcf
     %max(current_mat_fig.CurrentAxes.XTick) ~= max(current_mat_fig.CurrentAxes.YTick)
 %error('Not a square matrix')
 %end
-% if nargin == 2
-% if length(lbls) > size(matrix,1)
-%     lbls
-%     error('Too many labels')
-% elseif length(lbls) < size(matrix,1)
-%     lbls
-%     error('Too few labels')
-% end
-% end
+if nargin == 2
+if length(lbls) > size(matrix,1)
+    lbls
+    error('Too many labels')
+elseif length(lbls) < size(matrix,1)
+    lbls
+    error('Too few labels')
+end
+end
 
 if nargin == 2
 current_mat_fig.CurrentAxes.YTick = 1:size(matrix,1);
@@ -45,13 +43,6 @@ current_mat_fig.CurrentAxes.XTick = 1:size(matrix,1);
 current_mat_fig.CurrentAxes.XTickLabel = lbls%num2str(ord)
 current_mat_fig.CurrentAxes.YTickLabelRotation = 0
 current_mat_fig.CurrentAxes.XTickLabelRotation = 15
-elseif  nargin == 3
-current_mat_fig.CurrentAxes.YTick = 1:size(matrix,1);
-current_mat_fig.CurrentAxes.YTickLabel = lblsy;%num2str(ord)
-current_mat_fig.CurrentAxes.XTick = 1:size(matrix,2);
-current_mat_fig.CurrentAxes.XTickLabel = lblsx;%num2str(ord)
-current_mat_fig.CurrentAxes.YTickLabelRotation = 0
-current_mat_fig.CurrentAxes.XTickLabelRotation = 15  
 end
 
 textStrings = num2str(matrix(:),'%0.2f');

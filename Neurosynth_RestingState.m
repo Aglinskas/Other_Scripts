@@ -28,4 +28,10 @@ add_numbers_to_mat(outPut(ord,ord),masks_name(ord))
 n.CurrentAxes.YTickLabel = cellfun(@(x) strrep(x,'_','-'),NeuroSynth_fls(ord),'UniformOutput',0);
 n.CurrentAxes.XTickLabel = cellfun(@(x) strrep(x,'_','-'),ROI_fls(ord),'UniformOutput',0);
 n.CurrentAxes.FontSize = 12;
-%cellfun(@(x) strrep())
+%%
+% newVec = get_triu(outPut);
+% Z = linkage(1-newVec,'ward')
+% d = figure(9)
+% [h x] = dendrogram(Z,'labels',masks_name,'orientation','left','colorthreshold',1.21)
+% [h(1:end).LineWidth] = deal(3)
+% d.CurrentAxes.FontSize = 14

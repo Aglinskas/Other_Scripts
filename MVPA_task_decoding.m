@@ -13,7 +13,7 @@ results_set = repmat(nan,length(rois),length(pairs),max(subvect));
 %results_set(which_roi,subID,paircomp) = mean(corr_results.samples); % Aidas
 %%
 for which_roi = 1:length(rois);
-for subID = subvect(1);
+for subID = subvect;
 single_sub_conf_mat = repmat(2,12,12);
 subbetas = dir(sprintf([subDir 'beta_*'],subID));
 target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';

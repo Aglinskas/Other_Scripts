@@ -1,10 +1,10 @@
 %cd /Users/aidasaglinskas/Desktop/MRI_data/
 clear all
 loadMR
-anal_dir = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_SPLIT_alt/'
+anal_dir = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/'
 Subs_to_run = subvect
-con_img = 16:39; % which con images to take
-conds = [1:24]
+con_img = 5:16; % which con images to take
+conds = [1:12]%[1:24]
 %% Templates
 subAnalFLDR = '/Users/aidasaglinskas/Google Drive/MRI_data/S%d/Analysis_mask02/' % TEMPLATE: '/Users/aidasaglinskas/Desktop/MRI_data/S%d/Analysis_mask02/'
 con_temp = 'con_00%s.nii,1'; % num2str(10,'%0.2u') %TEMPLATE: 'con_00%s.nii,1'

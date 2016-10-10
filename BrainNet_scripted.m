@@ -1,8 +1,12 @@
+loadMR
+
+
+%%
 % Nodes
-node_file = '/Users/aidasaglinskas/Desktop/test.node'
+node_file = '/Users/aidasaglinskas/Desktop/this.node'
 % Edges
 a = squeeze(mean(keep,1));
-a(a<0.4) = 0;
+a(a<0.5) = 0;
 t = round(a,3);
 edge_file = '/Users/aidasaglinskas/Desktop/test2.edge';
 dlmwrite(edge_file,t,' ')

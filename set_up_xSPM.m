@@ -97,8 +97,8 @@ spm_sections(xSPM,hReg,single_subj_T1_fn);
 elseif opts_xSPM.rend_opt == 2
 end    
 try % positions the spm_window
-    spm_g.Position = [-0.4861 0.0467 0.3660 0.8444];
-    spm_figs(2).Position = [-1097 22 351 347];
+    spm_g.Position = [-0.5070 0.9287 0.3656 0.8450];
+    spm_figs(2).Position = [ -1038         654         351         347];
 catch
 end
 map = colormap(spm_figs(1).Children(15));

@@ -7,15 +7,15 @@
 clear all
 subvect = [7	8	9	10	11	14	15	17	18	19	20	21	22	24	25	27	28	29	30	31]
 nsubs = length(subvect);
-masks_dir = '/Users/aidasaglinskas/Google Drive/MRI_data/Group3_Analysis_mask02/new_masks/';
-which_SPM = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_SPLIT_alt/SPM.mat'
-masks = dir(masks_dir); masks = {masks([masks.isdir] == 0).name}';
+masks_dir = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/'%'/Users/aidasaglinskas/Google Drive/MRI_data/Group3_Analysis_mask02/new_masks/';
+which_SPM = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/SPM.mat'
+masks = dir([masks_dir '*.nii']); masks = {masks([masks.isdir] == 0).name}';
 masks_name = masks;
 masks_ext = {'may24_' '.nii'};
-where_to_save = '/Users/aidasaglinskas/Google Drive/MRI_data/SubBetaArraySPLIT_alt.mat' % SubBetaArray and Masks Name
+where_to_save = '/Users/aidasaglinskas/Google Drive/MRI_data/SubBetaArrayTemp.mat' % SubBetaArray and Masks Name
 % preallocate subbetarray with nans
 n_subs = nsubs;
-n_tasks = 24;
+n_tasks = 12;
 %subBetaArray(1:length(masks),1:n_tasks,1:n_subs) = nan;
 for i = 1:length(masks_ext);masks_name = cellfun(@(x) strrep(x,masks_ext{i},''),masks_name,'UniformOutput', false);end
 masks_name

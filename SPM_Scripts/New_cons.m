@@ -26,7 +26,7 @@ compute.task_vs_task = 0;
 compute.f_contrast = 1;
 compute.all_vs_monuments = 1;
 compute.all_vs_faceCC = 1;
-compute.splitBlocks = 1
+compute.splitBlocks = 0
 %%
 %structfun(@(x) eq(x,1),compute,'Uniform',1)
 %% Computed Parameters
@@ -46,6 +46,12 @@ matlabbatch{s}.spm.stats.con.consess{l+1}.fcon.name = 'F_contrast_ALL';
 matlabbatch{s}.spm.stats.con.consess{l+1}.fcon.weights = repmat([eye(n_tasks) zeros(n_tasks,6)],1,nsess);
 matlabbatch{s}.spm.stats.con.consess{l+1}.fcon.sessrep = 'none';
 l = length(matlabbatch{s}.spm.stats.con.consess); 
+
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = 'Face vs Monument Control';
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = repmat([zeros(1,10) 1 -1 zeros(1,6)],1,nsess);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';
+l = length(matlabbatch{s}.spm.stats.con.consess); 
+
 end
 %% All tasks vs monuments
 if compute.all_vs_monuments == 1;

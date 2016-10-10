@@ -1,16 +1,10 @@
-%Load variables that were used to compute the dends
-%load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf24-May-2016 19:07:00.mat')
-%load('/Volumes/Aidas_HDD/MRI_data/master_coords30.mat')
-%load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
 loadMR
 nsubs = length(subvect);
-%% Just info
-%master_rois = master_coords
 %% get the masks to be used
-subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
+subDir = '~/Google Drive/MRI_data/S%d/Analysis_mask02/';
 rois_fn = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/';
 rois = dir([rois_fn '*.nii']);
-%rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
+%rois_fn = '~/Google Drive/MRI_data/Group_anal_m-3_s8n44/';
 %rois = dir([rois_fn '*conj_a1*.nii']);
 rois = {rois.name}';
 roi_name = rois;
@@ -19,9 +13,10 @@ roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',f
 %roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
 %load('/Users/aidas_el_cap/Desktop/Tasks.mat');
 lbls = tasks;
+ofn = '/Users/aidasaglinskas/Desktop/2nd_Fig/Plot_masks/'
 %%
-spm_dir = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/'
-mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
+spm_dir = '~/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/'
+mask_dir = rois_fn;
 %%
 for this_roi_ind = 1:length(rois)
 %for subID = subvect(1);
@@ -40,7 +35,7 @@ master_rois{this_roi_ind,1} = this_roi_name;
 master_rois{this_roi_ind,2} = this_roi_coords;
 
 spm_results_ui('SetCoords',this_roi_coords)
-%  spm_path: '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/SPM.mat'
+%  spm_path: '~/Google Drive/MRI_data/Group3_Analysis_mask02/SPM.mat'
 %             useContrast: 1
 %                 p_tresh: 0.9999
 %           MC_correction: 'none'
@@ -168,5 +163,5 @@ if exist(ofn) == 0;mkdir(ofn);end
 saveas(f,[ofn this_roi_name],'jpg')
 %export_fig([ofn 'Rois_minus_baseline_goodmPFC_30subs'],'-pdf','-append')
 end
-%save('/Volumes/Aidas_HDD/MRI_data/master_rois.mat','master_rois')
+%save('~/Google Drive/MRI_data/master_rois.mat','master_rois')
 %end

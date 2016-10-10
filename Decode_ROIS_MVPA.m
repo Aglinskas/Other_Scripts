@@ -5,29 +5,31 @@ rois = dir([rois_fn '*.nii']);
 rois = {rois.name}';
 roi_name = rois;
 lbls = tasks;
-pairs = nchoosek(1:18,2);
 %%
-%for which_roi = 1%2:length(rois);
+pairs = nchoosek(1:18,2);
+for which_roi = 1%2:length(rois);
 for subID = subvect(1);
-single_sub_conf_mat = repmat(2,18,18);
+single_sub_conf_mat = repmat(2,12,12);
 subbetas = dir(sprintf([subDir 'beta_*'],subID));
 target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';
 
 parfor paircomp = 1:length(pairs);
-    
-    
-disp(['Running subject ' num2str(subID) ' Comparison: ' num2str(paircomp) '/' num2str(length(pairs))])
-mask1 = fullfile(rois_fn,rois{pairs(paircomp,1)});
-mask1 = fullfile(rois_fn,rois{pairs(paircomp,2)});
+%1:12:60
+%%
+% if subID == 7
+%     disp(['Roi ' num2str(which_roi) '/' num2str(length(roi_name)) ' ' roi_name{which_roi}])
+% end
+
+disp(sprintf('Running Roi %d/%d, sub %d',which_roi,length(rois),subID))
+mask = fullfile(rois_fn,rois{which_roi});
 all_scans = struct;
 single_scan  = struct;
 which_tasks = pairs(paircomp,:);
-
-for m_ind = pairs(paircomp,:);
+%disp(['Pair ' num2str(which_tasks)])
 for run = 1:5
-for task = 1:12
+for task = which_tasks
 single_scan = cosmo_fmri_dataset(fullfile(sprintf(subDir,subID),target_betas{task + run*12 - 12}),'mask',mask,'targets',task,'chunks',run);
-if run == 1 & m_ind == pairs(paircomp,1);
+if run == 1 & task == which_tasks(1);
 all_scans=single_scan;else
 all_scans = cosmo_stack({all_scans,single_scan});end
 %disp(['stacking' num2str(run) '/' num2str(task) ' out of ' '5/12'])
@@ -35,8 +37,6 @@ end
 end
 all_scans.sa.labels = all_scans.sa.targets;
 all_scans.sa.labels = arrayfun(@(x) lbls{x},all_scans.sa.labels,'UniformOutput',false);
-
-
 % clear_all_scans = cosmo_remove_useless_data(all_scans);
 % ds = all_scans;
 %% Decoding
@@ -51,11 +51,63 @@ opt.classifier=@cosmo_classify_lda;
 %disp('opt.partitions')
 opt.partitions=cosmo_nchoosek_partitioner(all_scans,1);
 
-corr_results=cosmo_searchlight(all_scans,nbrhood,measure,opt,'nproc',2);% ,'nproc',4
+corr_results=cosmo_searchlight(all_scans,nbrhood,measure,opt,'nproc',4);% ,'nproc',4
+%corr_results.samples=corr_results.samples-(1/40);
 corr_results.samples=corr_results.samples-(1/length(unique(all_scans.sa.targets)));
 
 meanall_corResult{which_roi,subID,paircomp} = mean(corr_results.samples);;
 rawall_corResult{which_roi,subID,paircomp} = corr_results;
+
+%to_conf_mat = [which_tasks mean(corr_results.samples)]
+% single_sub_conf_mat(which_tasks(1),which_tasks(2)) = mean(corr_results.samples);
+% single_sub_conf_mat(which_tasks(2),which_tasks(1)) = mean(corr_results.samples);
+
+% single_sub_conf_mat(which_roi,subID,paircomp,) = mean(corr_results.samples);
+% single_sub_conf_mat{which_tasks(2),which_tasks(1)} = mean(corr_results.samples);
+
+
+% r structure has the accuracies
+% r{1,1} = 'mean accuracy';
+% r{1,2} = 'max accuracy';
+% r{1,3} = '#vx above 2% accuracy';
+% r{1,4} = '#vx above 3% accuracy';
+% r{1,5} = '#vx above 4% accuracy';
+% r{2,1} = mean(corr_results.samples);
+% r{2,2} = max(corr_results.samples);
+% r{2,3} = length(find(corr_results.samples > 0.02));
+% r{2,4} = length(find(corr_results.samples > 0.03));
+% r{2,5} = length(find(corr_results.samples > 0.04));
+% all_r{which_roi,subID,paircomp} = r;
+% [which_tasks(1),which_tasks(2)]
+% r'
+%%
+%%
+
+%imagesc(reshape(all_conf(which_roi,subID,:,:),6,6))
+
+%% Blank Conf mat
+
+
+
+
+%% %plot individual
+% ofn = '/Users/aidas_el_cap/Desktop/2nd_Fig/confusion/';
+% conf = figure(5);
+% conf.Position = [-1214          -1        1120         806]
+% imagesc(confusion)
+% conf.CurrentAxes.XTick = [1:12];conf.CurrentAxes.YTick = [1:12]
+% conf.CurrentAxes.XTickLabel = {lbls{cellfun(@str2num,conf.CurrentAxes.XTickLabel)}};
+% conf.CurrentAxes.YTickLabel = {lbls{cellfun(@str2num,conf.CurrentAxes.YTickLabel)}};
+% colorbar
+% ttl_c = ['Confusion Matrix ' 'Subject ' num2str(subID) ' ' roi_name{which_roi}];
+% title(ttl_c);
+% saveas(conf,[ofn ttl_c],'jpg');
+% Z = linkage(confusion);
+% dend = figure(4);dendrogram(Z);
+% dend.Position = [-1274          -6        1267         811]
+% ttl_d = ['Dendogram ' 'Subject ' num2str(subID) ' ' roi_name{which_roi}];
+% dend.CurrentAxes.XTickLabel = lbls(str2num(Dend.CurrentAxes.XTickLabel));
+% saveas(dend,[ofn ttl_d],'jpg');
 end
 all_conf(which_roi,subID,:,:) = single_sub_conf_mat;
 % Add subject conf to master confs
@@ -85,5 +137,5 @@ all_conf(which_roi,subID,:,:) = single_sub_conf_mat;
 end
 %save('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf','all_conf')
 save(['~/Google Drive/MVPA_data/all_conf_' datestr(datetime)])
-%end
+end
 disp('All done')

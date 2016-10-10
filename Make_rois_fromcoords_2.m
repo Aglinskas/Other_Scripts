@@ -163,8 +163,8 @@ trim_stim = maroi('load', [ofn '/ALLcombined_roi.mat'])
 trim_stim = sph_roi & trim_stim;
 trim_stim = label(trim_stim,[coord{i,2} ' ' num2str(coord{i,1})]);
 %trim_stim = label(trim_stim, Voi_coords{i,2})
- saveroi(trim_stim, ([sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat']));
- mars_rois2img([sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat'],[sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.nii'],spc)
+saveroi(trim_stim, ([sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat']));
+mars_rois2img([sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.mat'],[sv_dir '/TrSph_' coord{i,2} '_' num2str([coord{i,1}]) '_roi.nii'],spc)
 % saveroi(trim_stim, ([ofn '/TrSph_' coord{i} '_' num2str([coord{i,2:4}]) '_roi.mat']));
 %  mars_rois2img([ofn '/TrSph_' coord{i} '_' num2str([coord{i,2:4}]) '_roi.mat'],[ofn '/TrSph_' coord{i} '_' num2str([coord{i,2:4}]) '_roi.nii'],spc)
 end

@@ -1,55 +1,32 @@
-clear all
-close all
-loadMR
-analysis_name = 'whole_clust';
-%% Parameters to specify
-% load('/Users/aidasaglinskas/Desktop/dendroPerSub.mat')
-% dendroPerSub(:,rows2exclude,:)=[];
-% dendroPerSub(:,:,rows2exclude)=[];
-size(MVPA_results)
-clust{1} = [ 4     3    14    13     6     5    12    11];
-clust{2} = [18    17    16    15     2     1];
-clust{3} = [10     9     8     7];
-clust{4} = [1:18]
+function boot_func(matrix,labels,effects_ind)
 
-w_s = [1:20]
-w_t = [1:10]
-%%
-clust_ID = 4
-matrix  = squeeze(mean(MVPA_results(w_s,clust{clust_ID},w_t,w_t),2));
-size(matrix)
-%matrix = corr(matrix');
-size(matrix)
-labels = {tasks{w_t}}'%{masks_name{clust{clust_ID}}}'
+%debug
+matrix = subBetaArray
+labels = master_coords_labels;
+effects_ind = 1 % 1 - fixed effects, 2, random effects;
 
-%task_inds = [1:12;13:24]%[1:12]%[1:12;13:24]
-%task_inds = task_inds(:)
-%roi_inds = 1:18
-
-% Default: [1 2 15 16 17 18]
-% Core-frontal: [11 12 5 6 3 4 13 14]
-% Hipp-FP: [9 10 7 8]
-matrix_to_permute = matrix; % Takes Matrix(subject,row,colum)
-dim_to_permute = 1;
-%load('/Users/aidasaglinskas/Desktop/label.mat')
-%label(rows2exclude)=[];
+matrix_to_permute = matrix(:,[1:10],:); % Takes Matrix(subject,row,colum)
 labels_for_the_matrix = labels %labels for the matrix
-%repmat({'No lbl'},1,1138)
+dim_to_permute = 3;
+
+
+
+
 specify_model = 0
 part_of_iteration = 0; % is this part of it?
 threhold = 25; % only for iterations;
 numClust=3; %number of clusters we care about
-nperms = 10000; %how many permutations?
+nperms = 1000; %how many permutations?
 save_figs_to_file = 1
 clust_schemab = 1;
 schemaball_tresh = 25 % Threshold for the schemaball
 plot_confmat_and_schemaball = 1; % Might Crash with > 1k^2 sized matrix
 disp(sprintf('Will permute matrix along dimesion %d, size of which is %d',dim_to_permute,size(matrix_to_permute,dim_to_permute)))
+rng(randi(100))
+rng
 %% With replacement
 clear subject_pool
 disp('Creating Subject Pool')
-rng(randi(100))
-rng
 tic
 for i = 1:nperms
 rep =[[1:nperms/10:nperms]';[1:1000:nperms]'];
@@ -66,7 +43,6 @@ disp('Collecting Bootstraped data samples')
 for s = 1:size(subject_pool,1)
 subjects = subject_pool(s,:);
 % Collect bootstrap subjects
-
 % but first, indexing (get features, subjects, etc)
 nd = ndims(matrix_to_permute);
 index = repmat({':'},1,nd); % get all
@@ -92,11 +68,11 @@ disp('done')
 toc
 %% Master clustering (Ground truth)
 avg_matrix_to_permute_features = squeeze(nanmean(matrix_to_permute,dim_to_permute));
-avg_matrix_to_permute = avg_matrix_to_permute_features;
+avg_matrix_to_permute = corr(avg_matrix_to_permute_features');
 clear newVec
 cc=0;for ii=1:size(avg_matrix_to_permute,1);for jj=ii+1:size(avg_matrix_to_permute,2),cc=cc+1;newVec(cc)=avg_matrix_to_permute(ii,jj);end;end
 %newVec = get_triu(singmat);
-Z = linkage(newVec,'ward'); % one minus newvec is importnat
+Z = linkage(1-newVec,'ward'); % one minus newvec is importnat
 con_clustering = figure(9);
 drawnow
 [h ground_x] = dendrogram(Z,numClust);%
@@ -134,7 +110,6 @@ drawnow
 % Permutes the clusters
 %% Collect Orderings
 warning('off','stats:linkage:NotEuclideanMatrix')
-warning('off','stats:iseuclidean:NotDistanceMatrix')
 disp('Computing Bootstrap Clusterings')
 for perm=1:size(Bootstrapedkeep,1) %number of permutations
 % Progress bar
@@ -142,12 +117,11 @@ if ismember(perm,[1:size(Bootstrapedkeep,1)/10:size(Bootstrapedkeep,1)])
     perc = find([1:size(Bootstrapedkeep,1)/10:size(Bootstrapedkeep,1)] == perm) * 10;
     disp([num2str(perc) '% done']) % displays percentages done
 end
-% tempK = corr(squeeze(Bootstrapedkeep(perm,:,:))); %Correlate
-tempK = squeeze(Bootstrapedkeep(perm,:,:));         % Not correlate
+tempK = corr(squeeze(Bootstrapedkeep(perm,:,:)));
 clear newVec
 cc=0;for ii=1:size(tempK,1);for jj=ii+1:size(tempK,2),cc=cc+1;newVec(cc)=tempK(ii,jj);end;end
 %newVec = get_triu(squeeze(Bootstrapedkeep(perm,:,:)));
-Z = linkage(newVec,'ward');
+Z = linkage(1-newVec,'ward');
 [h x]=dendrogram(Z,numClust);
 %drawnow
 all_ord(:,perm) = x;
@@ -228,8 +202,8 @@ disp('Creating clustering_matrix')
 rc = find(strcmp(index,':'));
 dim_r = rc(1);
 dim_c = rc(2);
-for r = 1:size(matrix_to_permute,dim_r)
-    for c = 1:size(matrix_to_permute,dim_c)
+for r = 1:size(avg_matrix_to_permute,dim_r)
+    for c = 1:size(avg_matrix_to_permute,dim_c)
 clust = [r c]; % Input indices to check, then CMD+ENTER
 for ind = 1:size(all_ord,2);
 score(ind) = all(all_ord(clust,ind) == all_ord(clust(1),ind));
@@ -339,7 +313,7 @@ drawnow
 fid_fig = figure(13)
 plot(sortrows(fidelity.score))
 title('Fidelity Score')
-%save('/Users/aidasaglinskas/Desktop/dot_mat_files/fidelity.mat','fidelity')
+save('/Users/aidasaglinskas/Desktop/dot_mat_files/fidelity.mat','fidelity')
 %% Save figures and variables separately
 fig_pos = [-1279        -223        1280         928]; %2nd screen
 %fig_pos = [ -13           1        1280         704]; %main screen
@@ -356,7 +330,7 @@ try
 addpath('~/Documents/MATLAB/export_fig_fldr')
 disp('exporting figures')
 % single pdf (defunct)
-%arrayfun(@(x) export_fig(['/Users/aidasaglinskas/Desktop/2nd_Fig/' tm '.pdf'],'-append',x),figs,'UniformOutput',0)
+arrayfun(@(x) export_fig(['/Users/aidasaglinskas/Desktop/dot_mat_files/' tm '.pdf'],'-append',x),figs,'UniformOutput',0)
 % separate PNGs
 %arrayfun(@(x) export_fig(['/Users/aidasaglinskas/Desktop/dot_mat_files/' tm '_' num2str(x.Number) '.png'],x),figs,'UniformOutput',0)
 % single PS

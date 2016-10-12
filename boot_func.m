@@ -1,17 +1,29 @@
-function boot_func(matrix,labels,effects_ind)
+function boot_func(matrix,labels)
 
 %debug
 matrix = subBetaArray
-labels = master_coords_labels;
-effects_ind = 1 % 1 - fixed effects, 2, random effects;
+labels = masks_name
+all_labels = {masks_name {tasks{1:10}}}
+%master_coords_labels;
+%effects_ind = 1 % 1 - fixed effects, 2, random effects;
+%effects_str = {'fixed effects' 'random effects'};
 
 matrix_to_permute = matrix(:,[1:10],:); % Takes Matrix(subject,row,colum)
 labels_for_the_matrix = labels %labels for the matrix
 dim_to_permute = 3;
-
-
-
-
+% oh god this is magic code
+nd = ndims(matrix_to_permute);
+index = repmat({':'},1,nd); % get all
+%%
+%if effects_ind == 2
+clear keep_roi keep_task
+for ss  = 1:size(matrix_to_permute,dim_to_permute)
+        index{dim_to_permute} = ss;
+        keep_roi_rand(:,:,ss) = corr(matrix_to_permute(index{:})');
+        keep_task_rand(:,:,ss) = corr(matrix_to_permute(index{:}));
+end
+%end
+%%
 specify_model = 0
 part_of_iteration = 0; % is this part of it?
 threhold = 25; % only for iterations;
@@ -48,7 +60,10 @@ nd = ndims(matrix_to_permute);
 index = repmat({':'},1,nd); % get all
 index{dim_to_permute} = subjects;
 % Gets Bootstrap Sample
-Bootstrapedkeep(s,:,:)= squeeze(mean(matrix_to_permute(index{:}),dim_to_permute));
+Bootstrapedkeep_fixed(s,:,:)= squeeze(mean(matrix_to_permute(index{:}),dim_to_permute));
+Bootstrapedkeep_randR(s,:,:)= squeeze(mean(keep_roi_rand(index{:}),dim_to_permute));
+Bootstrapedkeep_randT(s,:,:)= squeeze(mean(keep_task_rand(index{:}),dim_to_permute));
+%end
 % Reports Progress
 report_vect = [0:size(subject_pool,1) / 100 * 10:size(subject_pool,1)]';
 report_vect  = [report_vect;[0:500:size(subject_pool,1)]'];
@@ -66,29 +81,41 @@ save(ofn,'Bootstrapedkeep','subject_pool')
 end
 disp('done')
 toc
-%% Master clustering (Ground truth)
-avg_matrix_to_permute_features = squeeze(nanmean(matrix_to_permute,dim_to_permute));
-avg_matrix_to_permute = corr(avg_matrix_to_permute_features');
+%% Master clustering (Ground truth) %% AIDas
+% avg_matrix_to_permute_features = squeeze(nanmean(matrix_to_permute,dim_to_permute));
+% avg_matrix_to_permute = corr(avg_matrix_to_permute_features');
+
+avg_mat = squeeze(mean(matrix_to_permute,dim_to_permute));
+avg_keep_roi_fixed = corr(avg_mat');
+avg_keep_task_fixed = corr(avg_mat);
+avg_keep_roi_rand = mean(keep_roi_rand,dim_to_permute);
+avg_keep_task_rand = mean(keep_task_rand,dim_to_permute);
+
+avgs_all = {avg_keep_roi_fixed avg_keep_task_fixed avg_keep_roi_rand avg_keep_task_rand}
+avgs_all_str = {'avg-keep-roi-fixed' 'avg-keep-task-fixed' 'avg-keep-roi-rand' 'avg-keep-task-rand'};
+%%
+for avg_counter = 1:length(avgs_all)
 clear newVec
-cc=0;for ii=1:size(avg_matrix_to_permute,1);for jj=ii+1:size(avg_matrix_to_permute,2),cc=cc+1;newVec(cc)=avg_matrix_to_permute(ii,jj);end;end
-%newVec = get_triu(singmat);
+newVec = get_triu(avgs_all{avg_counter})
 Z = linkage(1-newVec,'ward'); % one minus newvec is importnat
-con_clustering = figure(9);
+con_clustering = figure(9+avg_counter);
 drawnow
-[h ground_x] = dendrogram(Z,numClust);%
-title(sprintf('Ground Truth Clustering contrained to %d Clusters',numClust))
-unc_clustering = figure(8);
-%dendrogram(Z,length(Z),'Labels',labels_for_the_matrix','Colorthresh',2)
+[h temp_ord] = dendrogram(Z,numClust);%
+ground_x{avg_counter} = temp_ord;
+title({sprintf('Ground Truth Clustering contrained to %d Clusters',numClust) avgs_all_str{avg_counter}})
+unc_clustering = figure;
 dendrogram(Z,length(labels_for_the_matrix),'Colorthresh',2,'Orientation','left')
 ground_ord = str2num(unc_clustering.CurrentAxes.YTickLabel);
 [t tt] = dendrogram(Z,length(labels_for_the_matrix),'labels',labels_for_the_matrix,'Colorthresh',.2,'Orientation','left')
-title({'Unconstrained Ground Truth Clustering' 'numClust = length(Z)'})
+title({'Unconstrained Ground Truth Clustering' 'numClust = length(Z)' avgs_all_str{avg_counter} })
 if length(labels_for_the_matrix) < 50 
 [t(1:end).LineWidth] = deal(3)
 unc_clustering.CurrentAxes.YAxis.FontSize = 20
 end
 drawnow
 figure(90)
+
+end
 %% Temp hax Aidas
 if specify_model == 1
 a = [1:12;1:12];
@@ -127,52 +154,7 @@ Z = linkage(1-newVec,'ward');
 all_ord(:,perm) = x;
 end
 disp('Done')
-%end
-% for ii=1:numClust
-%     stillFriends{ii}=labels_for_the_matrix(x==ii);
-% end
-% for ii=1:numClust
-%     scoreClust(ii,perm)=0;
-% for jj=1:numClust
-%     if any(strcmp(stillFriends{jj},friendSet{ii}{1}));
-%         break
-%     end
-% end
-% try
-%     if all(strcmp(sort(friendSet{ii}),sort(stillFriends{jj})));
-%         scoreClust(ii,perm)=1;
-%     end
-% end
-% end
-% end
-% mn = mean(scoreClust,2);
-% disp('All done')
-% for ii = 1:numClust
-%     disp(['Cluster ' num2str(ii)])
-%     disp(['Reliability ' num2str(mn(ii))])
-%     disp(friendSet{ii})
-% end
-%% Manually Check Cluster replicability
-%edit check_cluster_repricability
-%% Auto Report Percentages;
-% disp('Generating Report')
-% clear report ;
-% for col = 1:numClust
-%     clear perc;
-% in_this_clust = find(ground_x == col);
-% for ind = 1:size(all_ord,2);
-% score(ind) = all(all_ord(in_this_clust,ind) == all_ord(in_this_clust(1),ind));
-% end
-% perc = sum(score) / size(all_ord,2) * 100;
-% report{1,col} = ['Cluster ' num2str(col) ' Replicability: ' num2str(perc) ' %'];
-% report(2:length(in_this_clust)+1,col) = deal({labels_for_the_matrix{in_this_clust}}');
-% end
-% 
-% disp('FINAL REPORT')
-% for col = 1:numClust
-%     disp({report{:,col}}')
-% end
-    
+%%
 %% Manual Check
 manual_check = 0; % keep this as zero, this is a manual code
 if manual_check == 1;

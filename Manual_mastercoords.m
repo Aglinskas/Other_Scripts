@@ -41,7 +41,7 @@ master_coords_labels = {'Precuneus'
 'Face PatchRight'
 'Face PatchLeft'}
 %%
-w = 22
+w = 1
 %%
 spm_mip_ui('SetCoords',master_coords(w,:),mip)
 w
@@ -51,6 +51,6 @@ w = w+1;
 spm_mip_ui('GetCoords',mip)'
 
 %%
-save('/Users/aidasaglinskas/Google Drive/MRI_data/master_coords.mat','master_coords_labels', 'master_coords')
+save('/Users/aidasaglinskas/Google Drive/MRI_data/master_coords_44Peak.mat','master_coords_labels', 'master_coords')
 
 

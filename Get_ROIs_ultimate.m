@@ -1,4 +1,5 @@
-analysis_name = '44subs, manual peak, 6mm spheres no trim'
+clear all
+analysis_name = 'Fully Independent ROIs 44sub'
 %% Group Average, - Get Peaks
 opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/Group_anal_m-3_s8n44/SPM.mat'
 opts_xSPM.p_tresh = .001;
@@ -12,13 +13,20 @@ L = spm_atlas('list');
 xA = spm_atlas('load',L.file);
 %% Master Coords way, 
 master_coord_fn = '/Users/aidasaglinskas/Google Drive/MRI_data/master_coords_44Peak.mat';
-spc = mars_space('/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/beta_0001.nii');
+%Space to extract from
+spc_ex = mars_space('/Users/aidasaglinskas/Google Drive/MRI_data/Group_anal_m-3_s8n44/beta_0001.nii')
+% Space to save in
+spc_ofn = mars_space('/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/beta_0001.nii');
 load(master_coord_fn);
-sph_radius = 6;
-ofn = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/';
+sph_radius = 7.5;
+ofn = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/fully_independent';
+if exist(ofn) == 0;mkdir(ofn);end
 prefix = analysis_name;
-%%
-clear all_rois combined_rois
+%% 
+clear all_rois combined_rois 
+ROI_report = {};
+rep_cats = {'index' 'label' 'sphere volume' 'voxels in clust' 'voxels in ROI' 'clust index' 'master_coord' 'a_coord' 'sphere centre' 'com_sphere' 'com_clust'};
+ROI_report(1,1:length(rep_cats)) = deal(rep_cats);
 for p_ind = 1:length(master_coords)
 p_coord = master_coords(p_ind,:);
 % Get the xSPM index of the current voxel
@@ -28,16 +36,32 @@ this_peak_ind = find(xSPM.XYZmm(1,:) == a(1) & xSPM.XYZmm(2,:) == a(2) & xSPM.XY
                 all_clusts = spm_clusters(xSPM.XYZ);
 this_clust = all_clusts(this_peak_ind);
 this_clust_coords = xSPM.XYZmm(:,find(all_clusts == this_clust));
-
-this_point_list_roi  = maroi_pointlist(struct('XYZ',this_clust_coords,'mat',[]),'vox');
+% ROIS
+this_point_list_roi  = maroi_pointlist(struct('XYZ',this_clust_coords,'mat',[]),'mm');
 this_sphere_roi = maroi_sphere(struct('centre', p_coord,'radius', sph_radius));
+trim_ROI = this_sphere_roi & this_point_list_roi;
 
-trim_ROI = this_sphere_roi;%this_point_list_roi & this_sphere_roi;
-all_rois{p_ind} = trim_ROI; % Collect them all
+%Collect them all
+all_rois{p_ind} = trim_ROI; 
+all_blobs{p_ind} = this_point_list_roi;
+all_spheres{p_ind} = this_sphere_roi;
 
-out_fn = [ofn 'Sph_' prefix ' ' master_coords_labels{p_ind} ' ' num2str(p_coord) '_roi.mat'];
-saveroi(trim_ROI,out_fn); % Save ROI mat
-mars_rois2img(out_fn,strrep(out_fn,'.mat','.nii'),spc); % and .nii
+%Trim ROIS
+out_fn_trimSPH = [ofn '_Trim_Sph_' prefix ' ' master_coords_labels{p_ind} ' ' num2str(p_coord) '_roi.mat'];
+saveroi(trim_ROI,out_fn_trimSPH); % Save ROI mat
+mars_rois2img(out_fn_trimSPH,strrep(out_fn_trimSPH,'.mat','.nii'),spc_ofn); % and .nii
+%Spheres
+out_fn_trimSPHERE = strrep(out_fn_trimSPH,'_Trim_Sph_','_Sphere_');
+saveroi(this_sphere_roi,out_fn_trimSPHERE);
+mars_rois2img(out_fn_trimSPHERE,strrep(out_fn_trimSPHERE,'.mat','.nii'),spc); % and .nii
+%Blobs
+out_fn_trimBLOB = strrep(out_fn_trimSPH,'_Trim_Sph_','_BLOB_');
+saveroi(this_point_list_roi,out_fn_trimBLOB);
+mars_rois2img(out_fn_trimBLOB,strrep(out_fn_trimBLOB,'.mat','.nii'),spc_ex); % and .nii
+
+mars_img2rois(strrep(out_fn_trimBLOB,'.mat','.nii'))
+
+
 
 %size(voxpts(this_sphere_roi,base_space),2)
 if p_ind == 1
@@ -45,10 +69,22 @@ if p_ind == 1
 else
     combined_rois = combined_rois | trim_ROI;
 end
+% Report
+ROI_report{p_ind+1,1} = p_ind;
+ROI_report{p_ind+1,2} = master_coords_labels{p_ind};
+ROI_report{p_ind+1,3} = round(volume(this_sphere_roi));
+ROI_report{p_ind+1,4} = volume(this_point_list_roi);
+ROI_report{p_ind+1,5} = volume(trim_ROI);
+ROI_report{p_ind+1,6} = this_clust;
+ROI_report{p_ind+1,7} = p_coord;
+ROI_report{p_ind+1,8}  = a'
+ROI_report{p_ind+1,9} = centre(this_sphere_roi);
+ROI_report{p_ind+1,10} = round(c_o_m(this_sphere_roi))
+ROI_report{p_ind+1,11} = round(c_o_m(this_point_list_roi)')
 end
-out_fn = [ofn 'Sph_' prefix 'Combined_ROIs' '_roi.mat'];
-saveroi(combined_rois,out_fn); % Save ROI mat
-mars_rois2img(out_fn,strrep(out_fn,'.mat','.nii'),spc); % and .nii
+out_fn_trimSPH = [ofn 'Sph_' prefix 'Combined_ROIs' '_roi.mat'];
+saveroi(combined_rois,out_fn_trimSPH); % Save ROI mat
+mars_rois2img(out_fn_trimSPH,strrep(out_fn_trimSPH,'.mat','.nii'),spc); % and .nii
 %% Extract Beta
 disp('Extracting Betas')
 subDir_temp = '/Users/aidasaglinskas/Google Drive/MRI_data/S%d/Analysis_mask02/'
@@ -140,45 +176,5 @@ end
 end
 disp('Done, exported')
 close all
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

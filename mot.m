@@ -1,5 +1,6 @@
-cd /Volumes/Aidas_HDD/MRI_data/
-subVec= [9:10]
+cd '/Users/aidasaglinskas/Google Drive/Data/'
+clf
+subVec= [23]
 A=dir('S*')
 for i = 1:length(A)
     subFold{i}=A(i).name;
@@ -9,7 +10,7 @@ myResults=[];
 pwd=cd;
 subCC=0
 assessor=[];
-figure
+figure(9)
 translation=true
 for sub=subVec
     subCC=subCC+1;

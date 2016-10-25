@@ -119,7 +119,7 @@ copyobj(axial.Children(:),j);
 j = subplot(2,3,6);
 copyobj(cor.Children(:),j);
 colormap(map);
-g.Position = [1 1 1276 704]
+g.Position = [ -1912          21        1165         621];
 %% Show | Not show the graph
 %figure(g)
 if isfield(opts_clust,'suppress4') == 0
@@ -131,7 +131,6 @@ else
 set(g,'Visible', 'off')
 disp('created as figure g, suppressed')
 end
-
 end
 
 

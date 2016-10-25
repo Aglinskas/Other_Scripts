@@ -3,9 +3,10 @@
 %close all
 clear all;
 spm_jobman('initcfg')
-fn = '/Users/aidasaglinskas/Google Drive/MRI_data/S%d/Analysis_mask02/SPM.mat';
+fn = '/Users/aidasaglinskas/Google Drive/Data/S%d/Analysis/SPM.mat';
 %subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
-loadMR
+%loadMR
+subvect =  [7 8  9 10 11 12 14 15 16 17 18 19 20 21 22 24 25 26  27 28 29 30 31]
 subs_to_run = subvect;
 %%
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Full name' 'Same_Face' 'Same_monument'};
@@ -49,6 +50,12 @@ l = length(matlabbatch{s}.spm.stats.con.consess);
 
 matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = 'Face vs Monument Control';
 matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = repmat([zeros(1,10) 1 -1 zeros(1,6)],1,nsess);
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';
+l = length(matlabbatch{s}.spm.stats.con.consess); 
+
+
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.name = 'Cognitive vs Monument Control';
+matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.convec = repmat([zeros(1,10) 0 -1 zeros(1,6)],1,nsess);
 matlabbatch{s}.spm.stats.con.consess{l+1}.tcon.sessrep = 'none';
 l = length(matlabbatch{s}.spm.stats.con.consess); 
 

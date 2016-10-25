@@ -1,18 +1,19 @@
 tic
-fn = '/Volumes/Aidas_HDD/MRI_data/S%d/Functional/Sess%d/swrdata.nii'
-%subs_to_run = [7 8 9 10 11 14 15 17 18 19 20 21 22];
-subs_to_run = [31] %[8 9 10 11 14 15 17 18 19 20 21 22]
+clear all
+loadMR
+fn = '/Users/aidasaglinskas/Google Drive/Data/S%d/Functional/Sess%d/swdata.nii'
+subs_to_run = subvect;
 %% Params
 nsess = 5;
 TR = 2.5;
-analysis_ext = '_mask02'; % if blank, i.e= '', the folder is Analysis
+analysis_ext = 'retry'; % if blank, i.e= '', the folder is Analysis
 multi_cond_name = 'sub%drun%d_multicond'; %sub7run1_multicond
 %% Run forest run
 write_the_spms = 1;
 estimate_right_away = 1;
 %%
-figure_out_nsess.opt = 0; % new thing: if myTrials is in the subject directory, script can figure out how many runs there are;
-figure_out_nsess.myTrials_fn = '%s_Results.mat'; %filename for myTrials
+%figure_out_nsess.opt = 0; % new thing: if myTrials is in the subject directory, script can figure out how many runs there are;
+%figure_out_nsess.myTrials_fn = '%s_Results.mat'; %filename for myTrials
 % movement_params.manual = 1;
 %           movement_params.fln = 'rp_data.txt';
 %% get the file strcuture
@@ -29,20 +30,21 @@ clear matlabbatch % clear matlabbatch if one exists
 for s = 1:length(subs_to_run)
     %clear matlabbatch % may work, may not
     % Sesssions
-    if figure_out_nsess.opt == 1
-        subID = subs_to_run(s)
-     load(sprintf('/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results.mat',subID,subID));
-    nsess = myTrials(length([myTrials.time_presented])).fmriRun;
-    end
-    for sess = 1:nsess
+%     if figure_out_nsess.opt == 1
+%         subID = subs_to_run(s)
+%      load(sprintf('/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results.mat',subID,subID));
+%     nsess = myTrials(length([myTrials.time_presented])).fmriRun;
+%     end
+           
+    for sess = 1:5%nsess
         subID = subs_to_run(s);
 disp(['Creating batch file for sub ' num2str(subID) ' sess ' num2str(sess)])
 matlabbatch{s}.spm.stats.fmri_spec.dir = {[root 'S' num2str(subID) '/Analysis' analysis_ext]};
 disp(['Analysis for Sub ' num2str(subID) ' Will be placed in ' matlabbatch{s}.spm.stats.fmri_spec.dir{1}]);
 matlabbatch{s}.spm.stats.fmri_spec.timing.units = 'secs';
 matlabbatch{s}.spm.stats.fmri_spec.timing.RT = TR;
-matlabbatch{s}.spm.stats.fmri_spec.timing.fmri_t = 16;
-matlabbatch{s}.spm.stats.fmri_spec.timing.fmri_t0 = 8;
+matlabbatch{s}.spm.stats.fmri_spec.timing.fmri_t = 34;
+matlabbatch{s}.spm.stats.fmri_spec.timing.fmri_t0 = 17;
 %Loop through subjects and sessions nicely;
 %% Add the scans (replace the HUGE cell thing)
 for i = 1:length(spm_vol(sprintf(fn,subID,sess)))
@@ -96,8 +98,7 @@ end
 spm_jobman('initcfg');
     spm_jobman('run',matlabbatch)
     disp('DONE: fMRI model specification for all subs')
-    
-    
+%%   
     if estimate_right_away == 1
         disp('Estimating')
         clear matlabbatch
@@ -107,7 +108,6 @@ for s = 1:length(subs_to_run)
 matlabbatch{s}.spm.stats.fmri_est.spmmat = {[root 'S' num2str(subID) '/Analysis' analysis_ext '/SPM.mat']};
 matlabbatch{s}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{s}.spm.stats.fmri_est.method.Classical = 1;
-
 %spm_jobman('initcfg');
 end
     end

@@ -1,4 +1,4 @@
-%%
+%% 44 Subject Dataset
 master_coords = [3   -52    29
  48   -58    20
 -42   -61    26
@@ -52,5 +52,24 @@ spm_mip_ui('GetCoords',mip)'
 
 %%
 save('/Users/aidasaglinskas/Google Drive/MRI_data/master_coords_44Peak.mat','master_coords_labels', 'master_coords')
-
-
+%% Group Data
+master_coords = [3   -52    29
+ 48   -58    20
+-42   -61    26
+30   -91   -10
+-33   -88   -10
+ 42   -46   -22
+-39   -46   -22
+39    17    23
+-36    20    26
+ -60    -7   -19
+ 57    -7   -19
+ -21   -10   -13
+ 21    -7   -16
+18    41    41
+ -15    41    41
+ 3    50   -19
+ 33    35   -13
+ -33    35   -13
+45    11   -34
+-48    11   -31]

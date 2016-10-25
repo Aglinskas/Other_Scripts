@@ -1,27 +1,23 @@
-%Load variables that were used to compute the dends
-%load('/Users/aidas_el_cap/Desktop/RSA_ana/all_conf24-May-2016 19:07:00.mat')
-%load('/Volumes/Aidas_HDD/MRI_data/master_coords30.mat')
-%load('/Volumes/Aidas_HDD/MRI_data/subvect.mat')
 loadMR
 nsubs = length(subvect);
 %% Just info
 %master_rois = master_coords
 %% get the masks to be used
 subDir = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis_mask02/';
-rois_fn = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/';
+rois_fn = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/Independent_ROIs2/';
 rois = dir([rois_fn '*.nii']);
 %rois_fn = '/Volumes/Aidas_HDD/MRI_data/Group_anal_m-3_s8n44/';
 %rois = dir([rois_fn '*conj_a1*.nii']);
 rois = {rois.name}';
 roi_name = rois;
 % roi_name = cellfun(@(x) strsplit(x,{'oldnii_' '.nii'}),rois,'UniformOutput',false);
-roi_name = cellfun(@(x) regexprep(x,{'may24_' '.nii'},''),rois,'UniformOutput',false);
+roi_name = cellfun(@(x) regexprep(x,{'Trim_Sph_Independent_ROIs2 ' '.nii'},''),rois,'UniformOutput',false);
 %roi_name = cellfun(@(x) x{2},roi_name,'UniformOutput',false);
 %load('/Users/aidas_el_cap/Desktop/Tasks.mat');
 lbls = tasks;
 %%
-spm_dir = '/Volumes/Aidas_HDD/MRI_data/Group31_Analysis_mask02/'
-mask_dir = '/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
+spm_dir = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/'
+mask_dir = rois_fn%'/Volumes/Aidas_HDD/MRI_data/Group3_Analysis_mask02/new_masks/';
 %%
 for this_roi_ind = 1:length(rois)
 %for subID = subvect(1);

@@ -23,12 +23,12 @@ master_coords = [[3  -52 29
 33  -10 -40
 -33 -88 -10
 45  11  -34]]
-%% 
+%%
+%%
 w = 0
 %%
 w = w + 1
 spm_mip_ui('SetCoords',master_coords(w,:),mip)
-
 %%
 %for w = 1:length(master_coords)
 for w = 1:length(master_coords)

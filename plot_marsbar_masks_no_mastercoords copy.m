@@ -20,6 +20,7 @@ lbls = tasks;
 %%
 for this_roi_ind = 1:length(rois)
 %for subID = subvect(1);
+this_roi_ind = 2
 clear opts_xSPM
 opts_xSPM.spm_path = [spm_dir 'SPM.mat']
 this_roi_fn = [mask_dir rois{this_roi_ind}]
@@ -27,6 +28,7 @@ this_roi_fn = [mask_dir rois{this_roi_ind}]
 %this_roi_name = master_rois{this_roi_ind,1};
 opts_xSPM.mask_mask{4} = this_roi_fn
 opts_xSPM.mask_which_mask_ind = 4;
+opts_xSPM.p_tresh = 0.00001
 set_up_xSPM
 %spm_results_ui('SetCoords',this_roi_coords)
 this_roi_coords = spm_mip_ui('Jump',mip,'glmax')';

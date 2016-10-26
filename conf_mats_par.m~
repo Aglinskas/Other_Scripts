@@ -24,10 +24,10 @@ n_tasks = 12;
 masks_name = masks;
 
 %% prepare
-rois_to_run = 1:length(masks.dir)  %[21 8 9 12]
+rois_to_run = []  %[21 8 9 12]
 all_conf(1:length(masks.files),1:max(subvect),1:12,1:12) = 2; 
 pairs = nchoosek(1:12,2);
-for which_roi = 2 %rois_to_run %1:length(masks.files);
+for which_roi = rois_to_run %1:length(masks.files);
 for subID = subvect;
 single_sub_conf_mat = repmat(2,12,12);
 subbetas = dir(sprintf([p.subDir 'beta_*'],subID));

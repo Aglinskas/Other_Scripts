@@ -5,34 +5,34 @@
 % clear
 %coord=[-36, -19,  53];
 %coord=[ 60, -16,  -1];
-coord=[-39, -46, -22] % V1
+
 % coord=[-3,   5,  61]; %SMA
 %subVec=[4:11 13:34 36:47 49 50];
-subVec=1:4;
-P=dir('S*');
-P(~[P.isdir])=[];
-subFolders={P(subVec).name};
- 
-
+%subVec=1:4; 
+% P=dir('S*');
+% P(~[P.isdir])=[];
+% subFolders={P(subVec).name};
 wh_tasks = 1:10 % which tasks, 1:10 or 11:12 because of dif sizes can't store in single matrix
 %statFold='anal_m-3_seg_mt01s8/';
 statFold='Analysis';
-timeWin=20; %in TRs
+timeWin=10; %in TRs
 myPath=pwd;
  
 % some switches/constant
 doZscore=true;
 doSPMFilt=true;
-useContrast=1;
- 
+useContrast=2;
+coord=[36 -49 -19]
  
 cc=0;
 quickER=[];
-for sub =1:length(subFolders)%[3 6 7 8 9 10 11 13 14 15 16 18 19 20:24]
-    
+subvect = [ 7  8  9 10 11 14 15 17 18 19 20 21 22 24 25 28 29 30 31]
+for sub =1:length(subvect)%
+    subID = subvect(sub)
     cc=cc+1;
     
-    load([myPath '/' subFolders{sub} '/' statFold '/SPM.mat']);
+    %load([myPath '/' subFolders{sub} '/' statFold '/SPM.mat']);
+    load(sprintf('/Users/aidasaglinskas/Google Drive/Data/S%d/Analysis/SPM.mat',subID))
     %% constants again
     
     nConds=length(SPM.Sess(1).U);
@@ -117,9 +117,8 @@ regRange=range(squeeze(mean(zscore(quickER(:,2,:),[],3))))
 tempER=quickER;
 tempER(:,2,:)=tempER(:,2,:)./(regRange/betaRange); % rescale
  
- 
 figure,errorbar(squeeze(mean(zscore(quickER(:,[1],:),[],3)))',squeeze(std(quickER(:,[1],:)))')
 hold on
 errorbar(squeeze(mean(zscore(quickER(:,2,:),[],3)))'./(regRange/betaRange),squeeze(std(quickER(:,2,:)))','r')
- 
+
 cd (myPath)

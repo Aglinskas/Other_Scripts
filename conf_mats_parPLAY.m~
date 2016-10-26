@@ -3,10 +3,8 @@ clear all
 close all
 loadMR
 %load('/Volumes/Aidas_HDD/MRI_data/subvect_full20.mat');
-
 p.subDir = '/Users/aidasaglinskas/Google Drive/Data/S%d/Analysis/'
 p.ofn_dir = '/Users/aidasaglinskas/Desktop/MVPA_mats/'
-
 masks.dirfn = '/Users/aidasaglinskas/Google Drive/ROI_masks/Revisited/Independent_ROIs_test5/';
 nsubs = length(subvect);
 
@@ -24,16 +22,16 @@ n_tasks = 12;
 masks_name = masks;
 
 %% prepare
-rois_to_run = 1:length(masks.dir)  %[21 8 9 12]
+rois_to_run = 3:length(masks.dir)  %[21 8 9 12]
 all_conf(1:length(masks.files),1:max(subvect),1:12,1:12) = 2; 
 pairs = nchoosek(1:12,2);
-for which_roi = 2 %rois_to_run %1:length(masks.files);
-for subID = subvect;
+for which_roi = rois_to_run(1) %1:length(masks.files);
+for subID = subvect(1);
 single_sub_conf_mat = repmat(2,12,12);
 subbetas = dir(sprintf([p.subDir 'beta_*'],subID));
 target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';
 
-parfor paircomp = 1:length(pairs);
+for paircomp = 1:length(pairs);
 disp(sprintf('Running Roi %d/%d, sub %d',which_roi,length(rois_to_run),subID))
 
 mask = fullfile(masks.dirfn,masks.files{which_roi});
@@ -57,17 +55,18 @@ clear_all_scans = cosmo_remove_useless_data(all_scans);
 all_scans = clear_all_scans;
 % ds = all_scans;
 %% Decoding
-nbrhood = cosmo_spherical_neighborhood(all_scans, 'radius', 10);
+%nbrhood = cosmo_spherical_neighborhood(all_scans, 'radius', 10);
 measure=@cosmo_crossvalidation_measure;  % pick to classify
 opt=struct();
 opt.classifier=@cosmo_classify_lda;
 opt.partitions=cosmo_nchoosek_partitioner(all_scans,1);
-corr_results=cosmo_searchlight(all_scans,nbrhood,measure,opt);% ,'nproc',4
-corr_results.samples=corr_results.samples-(1/length(unique(all_scans.sa.targets)));
+%ds_sa = cosmo_crossvalidation_measure(ds, varargin)
+corr_results=cosmo_crossvalidation_measure(all_scans,opt);% ,'nproc',4
+%corr_results.samples=corr_results.samples-(1/length(unique(all_scans.sa.targets)));
 
-meanall_corResult{which_roi,subID,paircomp} = mean(corr_results.samples);
-rawall_corResult{which_roi,subID,paircomp} = corr_results;
-
+%meanall_corResult{which_roi,subID,paircomp} = mean(corr_results.samples);
+%rawall_corResult{which_roi,subID,paircomp} = corr_results;
+MVPA_output()
 %to_conf_mat = [which_tasks mean(corr_results.samples)]
 % single_sub_conf_mat(which_tasks(1),which_tasks(2)) = mean(corr_results.samples);
 % single_sub_conf_mat(which_tasks(2),which_tasks(1)) = mean(corr_results.samples);

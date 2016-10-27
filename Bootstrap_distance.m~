@@ -1,0 +1,42 @@
+this.matrix = keep.roi
+roi.indeces = [ 1     2     3     4     7     8     9    10    11    12    13    14    15    16    17    18    19    20]
+this.labels = {master_coords_labels{roi.indeces}}
+this.dim_to_permute = 3
+
+%%
+perm_ind = 1
+
+subs = randi(size(this.matrix,this.dim_to_permute),1,size(this.matrix,this.dim_to_permute));
+newVec = get_triu(mean(this.matrix(:,:,subs),3))
+Z = linkage(1-newVec,'ward');
+dendrogram(Z)
+%%
+clear atlas;
+atlas.Z = Z;
+temp.d = size(this.matrix,1) + 1 : size(this.matrix,1) + length(Z);
+atlas.Z(:,4) = deal(temp.d);
+atlas.atlas = cell(length(Z),2);
+
+        for c = [1]
+        for r = 1:length(atlas.Z)
+if atlas.Z(r,c) < atlas.Z(1,4)
+atlas.atlas{r,c} = atlas.Z(r,c)
+else
+r_temp = r
+    while atlas.Z(r_temp,c) < atlas.Z(1,4) == 0
+        
+    atlas.atlas{r,c} = [atlas.atlas{r,c} atlas.Z(r_temp,[1 2])]
+    r_temp = find(atlas.Z(:,4) == atlas.Z(r_temp,c))
+    end  
+end     
+        end
+        end
+    %%
+%[atlas([1:size(this.matrix,1)],[1])] = deal([1:size(this.matrix,1)])
+%[atlas([1:size(this.matrix,1)],[2])] = deal([1:size(this.matrix,1)])
+%[atlas([1:size(this.matrix,1)],[3])] = deal(0)
+
+
+
+
+

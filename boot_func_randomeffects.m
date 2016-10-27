@@ -1,4 +1,4 @@
-function boot_func_randomeffects(matrix,labels,analysis_name)
+function boot_func_randomeffects(matrix,labels,analysis_name,numClust)
 % boot_func_RandomEffects(matrix,labels,analysis_name)
 % Bootstraps matrices, as RANDOM effects
 % Needs a correlation matrix and matching labels
@@ -20,13 +20,17 @@ dim_to_permute = 3;
 specify_model = 0
 part_of_iteration = 0; % is this part of it?
 threhold = 25; % only for iterations;
-numClust=3; %number of clusters we care about
+%numClust=3; %number of clusters we care about
 nperms = 10000; %how many permutations?
 save_figs_to_file = 1
 clust_schemab = 1;
 schemaball_tresh = 25 % Threshold for the schemaball
 plot_confmat_and_schemaball = 1; % Might Crash with > 1k^2 sized matrix
 disp(sprintf('Will permute matrix along dimesion %d, size of which is %d',dim_to_permute,size(matrix_to_permute,dim_to_permute)))
+
+vect = [1:size(matrix_to_permute,dim_to_permute)];
+myRandom = randi([1 size(matrix_to_permute,dim_to_permute)],[1 10])
+myCanonical = vect(ismember(1:size(matrix_to_permute,dim_to_permute),myRandom) == 0); %ismember(1:size(matrix_to_permute,dim_to_permute),myRandom) == 0
 %% With replacement
 clear subject_pool
 disp('Creating Subject Pool')
@@ -37,8 +41,12 @@ for i = 1:nperms
 rep =[[1:nperms/10:nperms]';[1:1000:nperms]'];
 if ismember(i,rep)
     disp([num2str(i*100 / nperms) ' % done']);end
-subject_pool(i,:) = randi([1 size(matrix_to_permute,dim_to_permute)],[1 size(matrix_to_permute,dim_to_permute)]);
+%subject_pool(i,:) = randi([1 size(matrix_to_permute,dim_to_permute)],[1 size(matrix_to_permute,dim_to_permute)]);
+subject_pool(i,:) = randi([myRandom],[1 length(myRandom)]);
 end
+
+
+
 toc
 %%
 tic

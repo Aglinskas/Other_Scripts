@@ -23,28 +23,34 @@ rois_to_run = 1:length(masks.dir)  %[21 8 9 12]
 all_conf(1:length(masks.files),1:max(subvect),1:12,1:12) = 2; 
 pairs = nchoosek(1:12,2);
 for which_roi = 21 %roisc_to_run %1:length(masks.files);
-for subID = subvect(1);
 single_sub_conf_mat = repmat(2,12,12);
-subbetas = dir(sprintf([p.subDir 'beta_*'],subID));
-target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';
-parfor paircomp = 1:length(pairs);
-disp(sprintf('Running Roi %d/%d, sub %d',which_roi,length(rois_to_run),subID))
-mask = fullfile(masks.dirfn,masks.files{which_roi});
+%subbetas = dir(sprintf([p.subDir 'beta_*'],subID));
+%target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';
+%parfor paircomp = 1:length(pairs);
+%mask = fullfile(masks.dirfn,masks.files{which_roi});
 all_scans = struct;
 single_scan  = struct;
 which_tasks = pairs(paircomp,:);
 %disp(['Pair ' num2str(which_tasks)])
+%disp(sprintf('Running Roi %d/%d, sub %d',which_roi,length(rois_to_run),subID))
+%%
+for subID = subvect
+    disp(sprintf('ROI %d/%d : Stacking Scans %d/%d',find(subvect == subID),length(subvect)))
+subbetas = dir(sprintf([p.subDir 'beta_*'],subID));
+target_betas =  {subbetas(find(repmat([ones(1,12) zeros(1,6)],1,5) == 1)).name}';
+mask = fullfile(masks.dirfn,masks.files{which_roi});
 for run = 1:5
 for task = which_tasks
-single_scan = cosmo_fmri_dataset(fullfile(sprintf(p.subDir,subID),target_betas{task + run*12 - 12}),'mask',mask,'targets',task,'chunks',subID);
-if run == 1 & task == which_tasks(1);
+single_scan = cosmo_fmri_dataset(fullfile(sprintf(p.subDir,subID),target_betas{task + run*12 - 12}),'mask',mask,'targets',task,'chunks',find(subvect == subID));
+if run == 1 & task == which_tasks(1) & subID == subvect(1)% ;
 all_scans=single_scan;else
 all_scans = cosmo_stack({all_scans,single_scan});end
 %disp(['stacking' num2str(run) '/' num2str(task) ' out of ' '5/12'])
 end
 end
+end
 all_scans.sa.labels = all_scans.sa.targets;
-% Z scoring
+%%
 clear_all_scans = cosmo_remove_useless_data(all_scans);
 all_scans = clear_all_scans;
 for i = 1:size(all_scans.samples,1)
@@ -59,19 +65,7 @@ opt.partitions=cosmo_nchoosek_partitioner(all_scans,1);
 %ds_sa = cosmo_crossvalidation_measure(ds, varargin)
 corr_results=cosmo_crossvalidation_measure(all_scans,opt);% ,'nproc',4
 corr_results.samples=corr_results.samples-(1/length(unique(all_scans.sa.targets)));
-
-
 Raw_results{which_roi,subID,paircomp} = mean(corr_results.samples);
-
-
-%u = unique(all_scans.sa.targets);
-%v1 = mean(all_scans.samples(find(all_scans.sa.targets == u(1)),:),1)
-%v2 = mean(all_scans.samples(find(all_scans.sa.targets == u(2)),:),1)
-
-
-
-
-%add_numbers_to_mat(corr(all_scans.samples'),all_scans.sa.labels)
 end
 end
 save([p.ofn_dir datestr(datetime)])

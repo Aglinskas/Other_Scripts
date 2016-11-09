@@ -1,6 +1,6 @@
 cd '/Users/aidasaglinskas/Google Drive/Data/'
 clf
-subVec= [23]
+subVec= [23:27]
 A=dir('S*')
 for i = 1:length(A)
     subFold{i}=A(i).name;

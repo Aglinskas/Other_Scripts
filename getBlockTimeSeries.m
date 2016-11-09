@@ -27,6 +27,7 @@ coord=[36 -49 -19]
 cc=0;
 quickER=[];
 subvect = [ 7  8  9 10 11 14 15 17 18 19 20 21 22 24 25 28 29 30 31]
+subFolders = subvect;
 for sub =1:length(subvect)%
     subID = subvect(sub)
     cc=cc+1;

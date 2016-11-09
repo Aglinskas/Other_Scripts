@@ -2,7 +2,7 @@
 close all
 %%
 % {'IndependentROIS' 'NOT_IndependentROIS'}
-analysis_name = 'Nov9th001'
+analysis_name = 'Nov9th'
 %% Group Average, - Get Peaks
 opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/Group_anal_m-3_s8n44/SPM.mat'
 %opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/SPM.mat'
@@ -98,6 +98,10 @@ end
                             ROI_report{p_ind+1,9} = centre(this_sphere_roi);
                             ROI_report{p_ind+1,10} = round(c_o_m(this_sphere_roi))
                             %ROI_report{p_ind+1,11} = round(c_o_m(this_point_list_roi)')
+                            
+                            
+
+
 end
 out_fn_trimSPH = [ofn '/Combined_ROIs' prefix  '_roi.mat'];
 saveroi(combined_rois,out_fn_trimSPH); % Save ROI mat

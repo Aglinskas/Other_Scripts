@@ -5,14 +5,29 @@ size(subBetaArray)
 clear keep
 w_t = 1:10;
 w_rois = [1 2 3 4 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
-for ss = 1:size(subBetaArray,3)
-    keep.task(:,:,ss) = corr(subBetaArray(w_rois,w_t,ss));
-    keep.roi(:,:,ss) = corr(subBetaArray(w_rois,w_t,ss)');
+tr_subBetaArray = subBetaArray(w_rois,w_t,:);
+% Zscoring
+for ss = 1:size(tr_subBetaArray,3)
+for t = 1:size(tr_subBetaArray,2)
+ %z_subBetaArray.Roi(:,t,ss) = zscore(tr_subBetaArray(:,t,ss));
+ z_subBetaArray.Roi(:,t,ss) = tr_subBetaArray(:,t,ss);
+end
+end
+
+for ss = 1:size(tr_subBetaArray,3)
+for r = 1:size(tr_subBetaArray,1)
+ %z_subBetaArray.task(r,:,ss) = zscore(tr_subBetaArray(r,:,ss));
+ z_subBetaArray.task(r,:,ss) = tr_subBetaArray(r,:,ss);
+end
+end
+
+for ss = 1:size(tr_subBetaArray,3)
+   keep.roi(:,:,ss) = corr(z_subBetaArray.Roi(:,:,ss)');
+   keep.task(:,:,ss) = corr(z_subBetaArray.task(:,:,ss));
 end
 %%
 clf
 this_mat = mean(keep.task,3);
-
 task_ord = [  2     9     3     4     5     1     8     7     6    10]
 %this_mat = this_mat(task_ord,task_ord)
 %t_ten = {tasks{1:10}};
@@ -21,12 +36,11 @@ all_labels = {{master_coords_labels{w_rois}} {tasks{1:10}}};
 this_lbls = all_labels{2}
 
 
-
 f = figure(1)
 im = subplot(1,2,1)
 add_numbers_to_mat(this_mat,this_lbls);
 im.FontSize = 15
-im.FontWeight = 'bold'
+im.FontWeight = 'bold' 
 newVec = get_triu(this_mat);
 Z = linkage(1-newVec,'ward');
 d = subplot(1,2,2)

@@ -1,6 +1,5 @@
 clear all
 loadMR
-
 w_t = [1:10];
 for s = 1:20
     
@@ -9,7 +8,6 @@ for s = 1:20
     b_task = zscore(subBeta.array(:,1:10,s),[],1);
     keep.task(:,:,s) = corr(b_task);
 end
-
 keep.roi = mean(keep.roi,3)
 keep.task = mean(keep.task,3)
 

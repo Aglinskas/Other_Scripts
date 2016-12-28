@@ -8,7 +8,7 @@ a = a(:,1:10,:);
 %#a = a - mean(a,2)
 
 %a = zscore(a,[],1);
-%a = zscore(a,[],2);
+a = zscore(a,[],2);
 
 %# T matrix calc
 for r = 1:18
@@ -30,8 +30,8 @@ lbls = {r_labels(subBeta.ord_r) t_labels(subBeta.ord_t)}
 %# Plotting
 f = figure(3)
 
-tmat(pmat>.05) = 0
-pmat(pmat>.05) = 1
+%tmat(pmat>.05) = 0
+%pmat(pmat>.05) = 1
 
 clf
 subplot(1,2,1)
@@ -60,3 +60,4 @@ title(ttl)
 % add_numbers_to_mat(sdmat,lbls{1},lbls{2})
 % %#p2.FontSize = 16;
 % title('Standard Deviation')
+figure(3)

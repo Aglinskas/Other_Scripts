@@ -20,16 +20,29 @@ v(end+1,:) = [1,5]; l{end+1} = 'Episodic';
 v(end+1,:) = [7,8]; l{end+1} = 'Facts';
 
 r= {};rl = {};
-r{1} = [1]; rl{1} = 'Precuneus';
-r{2} = [2 3]; rl{2} = 'Angular';
-r{3} = [4 5]; rl{3} = 'OFA';
-r{4} = [6 7]; rl{4} = 'FFA';
-r{5} = [8 9]; rl{5} = 'IFG';
-r{6} = [10 11]; rl{6} = 'ATL';
-r{7} = [12 13]; rl{7} = 'Amy';
+% r{1} = [1]; rl{1} = 'Precuneus';
+% r{2} = [2 3]; rl{2} = 'Angular';
+% r{3} = [4 5]; rl{3} = 'OFA';
+% r{4} = [6 7]; rl{4} = 'FFA';
+% r{5} = [8 9]; rl{5} = 'IFG';
+% r{6} = [10 11]; rl{6} = 'ATL';
+% r{7} = [12 13]; rl{7} = 'Amy';
+% r{8} = [14]; rl{8} = 'mPFC';
+% r{9} = [15 16]; rl{9} = 'ORb';
+% r{10} = [17 18]; rl{10} = 'FP';
+
+
+r{1} = [4 5]; rl{1} = 'OFA';
+r{2} = [6 7]; rl{2} = 'FFA';
+r{3} = [8 9]; rl{3} = 'IFG';
+r{4} = [15 16]; rl{4} = 'ORb';
+r{5} = [10 11]; rl{5} = 'ATL';
+r{6} = [1]; rl{6} = 'Precuneus';
+r{7} = [2 3]; rl{7} = 'Angular';
 r{8} = [14]; rl{8} = 'mPFC';
-r{9} = [15 16]; rl{9} = 'ORb';
+r{9} = [12 13]; rl{9} = 'Amy';
 r{10} = [17 18]; rl{10} = 'FP';
+
 
 for r_ind = 1:length(r)
 for t_ind = 1:length(v)
@@ -49,7 +62,7 @@ for r = 1:size(ow,1)
 ve = squeeze(mean(a(r,c,:),2));
 m = squeeze(mean(a(r,find([1:size(ow,2)] ~= c),:),2));
 %m = squeeze(a(r,11,:));
-[H,P,CI,STATS] = ttest2(ve,m);
+[H,P,CI,STATS] = ttest(ve,m);
 tmat(r,c) = STATS.tstat;
 pmat(r,c) = P;
     end

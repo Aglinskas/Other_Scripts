@@ -9,7 +9,7 @@ for r = 1:size(ow,1)
 ve = squeeze(mean(a(r,v(c,:),:),2));
 m = squeeze(mean(a(r,v(find([1:size(ow,2)] ~= c),:),:),2));
 %m = squeeze(a(r,11,:));
-[H,P,CI,STATS] = ttest2(ve,m);
+[H,P,CI,STATS] = ttest(ve,m);
 tmat(r,c) = STATS.tstat;
 pmat(r,c) = P;
     end

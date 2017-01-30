@@ -1,15 +1,9 @@
+clear all
 addpath('/Applications/Fiji.app/scripts/')
 m = Miji
+%
+%fn{1} = '/Users/aidasaglinskas/Google Drive/Data/S11/Anatomical/Ana_nopeel.nii'
+%fn{2} = '/Users/aidasaglinskas/Desktop/sds,sd.jpg'
+%m.run('Open...', ['path=' fn]);
 %%
-fn = '/Users/aidasaglinskas/Desktop/Clutter/Aidas:  Summaries & Analyses (WP 1.4)/MVPA/MVPA 4th Feb/Aidas_MVPA/Data/S6/Ana_peel.nii'
-MIJ.run(fn)
-MIJ.run('Open...', 'path=[/Users/aidasaglinskas/Desktop/Clutter/Aidas:  Summaries & Analyses (WP 1.4)/MVPA/MVPA 4th Feb/Aidas_MVPA/Data/S6/Ana_peel.nii]')
-%%
-%MIJ.run('Open...', 'path=[C:\\Documents and Settings\\Fiji\\Test.png]')
-%OPENING
-% MIJ.run('Embryos (42K)');
-% I = MIJ.getCurrentImage;
-% E = imadjust(wiener2(im2double(I(:,:,1))));
-% imshow(E);
-% MIJ.createImage('result', E, true);
-%m.exit
+m.run('Bio-Formats', 'open=/Users/aidasaglinskas/Desktop/3d_play/highres_nopeel.nii autoscale color_mode=Default rois_import=[ROI manager] split_timepoints view=Hyperstack stack_order=XYCZT');

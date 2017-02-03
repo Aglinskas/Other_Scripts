@@ -15,7 +15,10 @@ a = mean(dt.samples,2);
 a = zscore(a);
 figure(1)
 plot(a)
-
 b_mt = myTrials;
+%%
+fn = '/Volumes/Aidas_HDD 1/Gump_Data/sub001/BOLD/task001_run001';
+dir(fn)
 
-
+a = fullfile(fn,'bold.nii.gz');
+load_nii(a)

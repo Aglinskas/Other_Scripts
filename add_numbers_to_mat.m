@@ -21,8 +21,8 @@ switch nargin
 end
 
 %save('/Users/aidasaglinskas/Desktop/args.mat')
-imagesc(matrix)
-current_mat_fig = gcf
+imagesc(matrix);
+current_mat_fig = gcf;
 
 %if size(matrix,1) ~= size(matrix,2)
     %max(current_mat_fig.CurrentAxes.XTick) ~= max(current_mat_fig.CurrentAxes.YTick)
@@ -43,15 +43,15 @@ current_mat_fig.CurrentAxes.YTick = 1:size(matrix,1);
 current_mat_fig.CurrentAxes.YTickLabel = lbls%num2str(ord)
 current_mat_fig.CurrentAxes.XTick = 1:size(matrix,1);
 current_mat_fig.CurrentAxes.XTickLabel = lbls%num2str(ord)
-current_mat_fig.CurrentAxes.YTickLabelRotation = 0
-current_mat_fig.CurrentAxes.XTickLabelRotation = 15
+current_mat_fig.CurrentAxes.YTickLabelRotation = 0;
+current_mat_fig.CurrentAxes.XTickLabelRotation = 15;
 elseif  nargin == 3
 current_mat_fig.CurrentAxes.YTick = 1:size(matrix,1);
 current_mat_fig.CurrentAxes.YTickLabel = lblsy;%num2str(ord)
 current_mat_fig.CurrentAxes.XTick = 1:size(matrix,2);
 current_mat_fig.CurrentAxes.XTickLabel = lblsx;%num2str(ord)
-current_mat_fig.CurrentAxes.YTickLabelRotation = 0
-current_mat_fig.CurrentAxes.XTickLabelRotation = 15  
+current_mat_fig.CurrentAxes.YTickLabelRotation = 0;
+current_mat_fig.CurrentAxes.XTickLabelRotation = 15;  
 end
 
 textStrings = num2str(matrix(:),'%0.2f');

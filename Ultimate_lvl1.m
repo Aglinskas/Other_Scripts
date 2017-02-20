@@ -2,12 +2,12 @@ tic
 clear all
 loadMR
 fn = '/Users/aidasaglinskas/Google Drive/Data/S%d/Functional/Sess%d/swdata.nii'
-subs_to_run = subvect;
+subs_to_run = 7 %subvect;
 %% Params
 nsess = 5;
 TR = 2.5;
-analysis_ext = 'retry'; % if blank, i.e= '', the folder is Analysis
-multi_cond_name = 'sub%drun%d_multicond'; %sub7run1_multicond
+analysis_ext = 'all_faces'; % if blank, i.e= '', the folder is Analysis
+multi_cond_name = 'sub%drun%d_multicond_all_faces' %'sub%drun%d_multicond'; %sub7run1_multicond
 %% Run forest run
 write_the_spms = 1;
 estimate_right_away = 1;

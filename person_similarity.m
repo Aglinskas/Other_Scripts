@@ -27,14 +27,18 @@ end
 v_hardcopy = v;
 %%
 mat = nanmean(v,3);
-tlbls = subBeta.t_labels(1:10)
+which_tasks = [1 2 3 4 5 6 7 8 9 10];
+mat = mat(:,which_tasks)
+mat = 4 - mat
+
+tlbls = subBeta.t_labels(which_tasks)
 figure(2)
 
 cmat = corr(mat');
 newvec = get_triu(cmat);
 Z = linkage(1-newvec,'ward');
 
-d = subplot(1,3,2)
+d = subplot(1,3,3)
 [h x perm] = dendrogram(Z,0,'labels',names,'orientation','left');
 ord = perm(end:-1:1);
 d.YTickLabel = names(perm)
@@ -44,11 +48,11 @@ d.FontSize = 12;
 d.FontWeight = 'bold'
 
 
-subplot(1,3,3)
+subplot(1,3,1)
 add_numbers_to_mat(mat(ord,:),names(ord),tlbls);
 title('Raw Scores')
 
-c = subplot(1,3,1)
+c = subplot(1,3,2)
 %cmat = corr(mat');
 %add_numbers_to_mat(cmat(ord,ord),names(ord))
 imagesc(cmat(ord,ord));
@@ -58,7 +62,7 @@ c.YTick = 1:1:size(cmat,1);
 c.YTickLabel = names(ord);
 c.XTickLabel = names(ord);
 c.XTickLabelRotation = 90;
-
+title('Correlation Matrix')
 
 
 

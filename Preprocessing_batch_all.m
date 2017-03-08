@@ -9,7 +9,7 @@ str = num2str(subID);
 pref = 'data.nii';
 %matlabbatch{1}.spm.stats.fmri_spec.dir = {sprintf('/Volumes/Pinky/W.P.1.2_fMRI_Experiment/Data_UltraFast/sub %s/anal_UltraFast_withMotion',str)};
 clear matlabbatch
-also_run = 1; % create and run the batches, 1 = yes, 0 = no
+also_run = 0; % create and run the batches, 1 = yes, 0 = no
 slice_time = 0;
 % gets structural dir/files
     s_dir = sprintf('/Users/aidasaglinskas/Google Drive/Data/S%s/Anatomical/',str); %

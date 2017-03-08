@@ -1,8 +1,8 @@
-%clear all
+clear all
 close all
 %%
 % {'IndependentROIS' 'NOT_IndependentROIS'}
-analysis_name = 'Nov9th001'
+analysis_name = 'feb20_2017'
 %% Group Average, - Get Peaks
 opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/Group_anal_m-3_s8n44/SPM.mat'
 %opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/SPM.mat'
@@ -76,9 +76,9 @@ out_fn_trimSPH = [ofn '/' 'Trim_Sph_' prefix ' ' master_coords_labels{p_ind} ' '
 saveroi(trim_ROI,out_fn_trimSPH); % Save ROI mat
 mars_rois2img(out_fn_trimSPH,strrep(out_fn_trimSPH,'.mat','.nii'),spc_ofn); % and .nii
 %Spheres
-out_fn_trimSPHERE = strrep(out_fn_trimSPH,'_Trim_Sph_','_Sphere_');
-saveroi(this_sphere_roi,out_fn_trimSPHERE);
-mars_rois2img(out_fn_trimSPHERE,strrep(out_fn_trimSPHERE,'.mat','.nii'),spc_ofn); % and .nii
+% out_fn_trimSPHERE = strrep(out_fn_trimSPH,'_Trim_Sph_','_Sphere_');
+% saveroi(this_sphere_roi,out_fn_trimSPHERE);
+% mars_rois2img(out_fn_trimSPHERE,strrep(out_fn_trimSPHERE,'.mat','.nii'),spc_ofn); % and .nii
 
 %size(voxpts(this_sphere_roi,base_space),2)
 if p_ind == 1
@@ -91,8 +91,8 @@ end
                             ROI_report{p_ind+1,2} = master_coords_labels{p_ind};
                             ROI_report{p_ind+1,3} = round(volume(this_sphere_roi));
                             %ROI_report{p_ind+1,4} = volume(this_point_list_roi);
-                            ROI_report{p_ind+1,5} = size(voxpts(this_sphere_roi,spc_ofn));
-                            ROI_report{p_ind+1,6} = size(voxpts(trim_ROI,spc_ofn));
+                            ROI_report{p_ind+1,5} = size(voxpts(this_sphere_roi,spc_ofn),2);
+                            ROI_report{p_ind+1,6} = size(voxpts(trim_ROI,spc_ofn),2);
                             ROI_report{p_ind+1,7} = p_coord;
                             ROI_report{p_ind+1,8}  = a'
                             ROI_report{p_ind+1,9} = centre(this_sphere_roi);
@@ -102,9 +102,9 @@ end
 out_fn_trimSPH = [ofn '/Combined_ROIs' prefix  '_roi.mat'];
 saveroi(combined_rois,out_fn_trimSPH); % Save ROI mat
 mars_rois2img(out_fn_trimSPH,strrep(out_fn_trimSPH,'.mat','.nii'),spc_ofn); % and .nii
-% Extract Beta
+%% Extract Beta
    %load('/Users/aidasaglinskas/Google Drive/MRI_data/subvect_full20.mat')
-   subvect =  [7  8  9 10 11 14 15 17 18 19 20 21 22 24 25 26 27 28 29 30 31];
+subvect =  [7  8  9 10 11 14 15 17 18 19 20 21 22 24 25 26 27 28 29 30 31];
 disp('Extracting Betas')
 subDir_temp = '/Users/aidasaglinskas/Google Drive/Data/S%d/Analysis/'
 subID = 7

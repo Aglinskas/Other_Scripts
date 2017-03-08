@@ -43,4 +43,5 @@ f.CurrentAxes.ThetaTickLabel = use_r_lbls;
 f.CurrentAxes.ThetaGrid = 'on';
 f.CurrentAxes.FontSize = 15;
 f.CurrentAxes.FontWeight = 'bold';
+%%
 legend(use_t_lbls(wh_plot),'location','Northeast');

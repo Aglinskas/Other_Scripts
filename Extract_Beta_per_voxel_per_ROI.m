@@ -44,7 +44,10 @@ save('/Users/aidasaglinskas/Google Drive/Mat_files/RoisxVoxel_extracted_wrkspc')
 save('/Users/aidasaglinskas/Google Drive/Mat_files/RoisxVoxel_extracted','all_run_avg','all_run')
 
 
-
+voxel_data.run_raw = all_run
+voxel_data.run_averaged = all_run_avg
+voxel_data.r_labels = masks.nii_files
+save('~/Google Drive/Mat_files/Workspace/voxel_data.mat','voxel_data')
 %%% SANITY CHECK CODE BELOW
 
 

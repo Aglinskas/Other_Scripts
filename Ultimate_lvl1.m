@@ -86,18 +86,19 @@ matlabbatch{s}.spm.stats.fmri_spec.cvi = 'AR(1)';
     disp(['Created batch for sub ' num2str(subID)])
 end
 %%
-% if write_the_spms == 1
-%     disp('Created the batch, running it')
-% %     spm_jobman('initcfg');
-% %     spm_jobman('run',matlabbatch)
-% else
-% disp('ALL DONE, when ready run: spm_jobman(''initcfg'');spm_jobman(''run'',matlabbatch)')
-% end
-
-
-spm_jobman('initcfg');
+if write_the_spms == 1
+        disp('Created the batch, running it')
+        disp('initcfg')
+    spm_jobman('initcfg');
+        disp('writing')
     spm_jobman('run',matlabbatch)
-    disp('DONE: fMRI model specification for all subs')
+else
+disp('ALL DONE, when ready run: spm_jobman(''initcfg'');spm_jobman(''run'',matlabbatch)')
+end
+
+% spm_jobman('initcfg');
+%     spm_jobman('run',matlabbatch)
+%     disp('DONE: fMRI model specification for all subs')
 %%   
     if estimate_right_away == 1
         disp('Estimating')
@@ -108,9 +109,8 @@ for s = 1:length(subs_to_run)
 matlabbatch{s}.spm.stats.fmri_est.spmmat = {[root 'S' num2str(subID) '/Analysis' analysis_ext '/SPM.mat']};
 matlabbatch{s}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{s}.spm.stats.fmri_est.method.Classical = 1;
-%spm_jobman('initcfg');
 end
     end
+    spm_jobman('initcfg');
 spm_jobman('run',matlabbatch)
 toc
-    

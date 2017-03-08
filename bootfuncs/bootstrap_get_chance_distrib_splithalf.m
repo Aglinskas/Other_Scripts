@@ -1,5 +1,5 @@
 %% Setup
-for i = 1:10000
+for i = 1:10
 loadMR
 size(subBeta.array)
 clear keep

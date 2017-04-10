@@ -1,6 +1,8 @@
-analysis_dir = '/Volumes/Aidas_HDD/MRI_data/Group_anal'
-files = '/Volumes/Aidas_HDD/MRI_data/S%d/Analysis/ess_0001.nii'
-subjects = [10 11 12 13 14 15 17]
+loadMR
+
+analysis_dir = '~/Google Drive/Data//Group_anal'
+files = '~/Google Drive/Data/S%d/Analysis/ess_0001.nii'
+subjects = subvect %[10 11 12 13 14 15 17]
 %%
 matlabbatch{1}.spm.stats.factorial_design.dir = {analysis_dir};
 %% Add the scans
@@ -24,8 +26,8 @@ matlabbatch{1}.spm.stats.factorial_design.globalc.g_omit = 1;
 matlabbatch{1}.spm.stats.factorial_design.globalm.gmsca.gmsca_no = 1;
 matlabbatch{1}.spm.stats.factorial_design.globalm.glonorm = 1;
 %% run
-spm_jobman('initcfg')
-spm_jobman('run',matlabbatch)
+%spm_jobman('initcfg')
+%spm_jobman('run',matlabbatch)
 
 %% 
 %%

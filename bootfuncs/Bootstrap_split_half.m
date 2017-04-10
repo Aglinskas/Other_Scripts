@@ -5,7 +5,7 @@ warning('off','stats:linkage:NotEuclideanMatrix')
 
 % Noise == Permuted Subbeta;
 noise = [];
-for r = 1:18
+for r = [1:11 14 15 16]
 for s = 1:20
 rng(randi(100000))
 noise(r,:,s) = subBeta.array(r,[randperm(10) 11 12],s);

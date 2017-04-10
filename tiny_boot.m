@@ -1,25 +1,29 @@
 clear all
 loadMR;
-numclust = 3;
+load('/Users/aidasaglinskas/Desktop/Tiny_task_BT.mat')
+tiny_bt = mean(tiny_bt,4);
+numclust = 0;
 roi_or_task = 1;
 n_perms = 100;
-w_tasks = [1:10];
+w_tasks = [1:5];
 w_rois = 1:18;
 dim_to_permute = 3;
 h = figure(6);set(h, 'Visible', 'off');
 algs = {'single'    'complete'    'average'    'weighted'    'centroid' 'median'    'ward'};
-alg_ind = 2;
+alg_ind = 7
+disp(algs{alg_ind})
 %
 warning('off','stats:linkage:NotEuclideanMatrix');
-bt_array = subBeta.array;
-bt_array = bt_array-repmat(bt_array(:,11,:),1,12); %face subtracted
+bt_array = tiny_bt;
+%bt_array = bt_array-repmat(bt_array(:,11,:),1,12); %face subtracted
 bt_array = bt_array(w_rois,w_tasks,:);% % CC's trimmed 
-%bt_array = zscore(bt_array,[],1);% Mean of ROI is 0
+
 bt_array = zscore(bt_array,[],2); % Task mean is 0
-bt_lbls = {subBeta.r_labels subBeta.t_labels};
+%bt_array = zscore(bt_array,[],1);% Mean of ROI is 0
+bt_lbls = {masks.lbls_nii tiny_t_labels};
 
 mn = mean(bt_array,3);
-figure(38);add_numbers_to_mat(mn,t_labels(1:10),r_labels)
+figure(38);add_numbers_to_mat(mn,bt_lbls{1},bt_lbls{2})
 
 disp(sprintf('Will permute across %d subjects',size(bt_array,dim_to_permute)));
 bt_lbls{1} = bt_lbls{1}(w_rois);
@@ -71,12 +75,12 @@ for perm_ind = 1:n_perms;
     if ismember(perm_ind,repvect);disp(sprintf('%s percent complete',num2str(perm_ind / n_perms * 100)));end
 for signal_or_noise = 1:2;
 this_mat = these_mats{signal_or_noise};
+%this_mat = 1-softmax(this_mat);
 split_pool = [];
 split_subs = [];
 fid_mat_all(signal_or_noise,perm_ind,:,:) = zeros(size(this_mat,3),size(this_mat,3));
 
 subpool = randperm(length(subs));
-
 
 split_pool(:,1) = subpool(1:10);
 split_pool(:,2) = subpool(11:20);
@@ -87,23 +91,27 @@ split_subs(:,1) = split_pool(randi(10,1,10),1);
 split_subs(:,2) = split_pool(randi(10,1,10),2);
 
 
-xx = [];
+%xx = [];
 for split_ind = 1:2;
 perm_mat = this_mat(split_subs(:,split_ind),:,:);
 perm_mat = squeeze(mean(perm_mat,1));
 newVec = get_triu(perm_mat);
 Z = linkage(1-newVec,algs{alg_ind});
+Z_atlas = get_Z_atlas(Z,length(perm_mat));
 h;
-[l x perm] = dendrogram(Z,numclust);
-xx(:,split_ind) = x;
+%[l x perm] = dendrogram(Z,numclust);
+%xx(:,split_ind) = x;
 end % ends split 
 
 % add consensus
-l = nchoosek(1:size(this_mat,2),2);
-for i = 1:length(l);
-fid_mat_all(signal_or_noise,perm_ind,l(i,1),l(i,2)) = fid_mat_all(signal_or_noise,perm_ind,l(i,1),l(i,2)) + [xx(l(i,1),1) == xx(l(i,2),1) && xx(l(i,1),2) == xx(l(i,2),2)];
-fid_mat_all(signal_or_noise,perm_ind,l(i,2),l(i,1)) = fid_mat_all(signal_or_noise,perm_ind,l(i,1),l(i,2));
+%l = nchoosek(1:size(this_mat,2),2);
+for i = 1:length(Z_atlas);
+% fid_mat_all(signal_or_noise,perm_ind,l(i,1),l(i,2)) = fid_mat_all(signal_or_noise,perm_ind,l(i,1),l(i,2)) + perm_mat(l(i,1),l(i,2));%[xx(l(i,1),1) == xx(l(i,2),1) && xx(l(i,1),2) == xx(l(i,2),2)]
+% fid_mat_all(signal_or_noise,perm_ind,l(i,2),l(i,1)) = fid_mat_all(signal_or_noise,perm_ind,l(i,1),l(i,2));
+fid_mat_all(signal_or_noise,perm_ind,Z_atlas{i,1},Z_atlas{i,2}) =  fid_mat_all(signal_or_noise,perm_ind,Z_atlas{i,1},Z_atlas{i,2}) + Z_atlas{i,3};
+fid_mat_all(signal_or_noise,perm_ind,Z_atlas{i,2},Z_atlas{i,1}) = fid_mat_all(signal_or_noise,perm_ind,Z_atlas{i,2},Z_atlas{i,1})  + Z_atlas{i,3};
 end
+
 end
 end
 %fid_mat_all(signal_or_noise,perm_ind,1:size(this_mat,2),1:size(this_mat,2)) = 2;
@@ -118,11 +126,11 @@ disp('done');
 toc;
 % Plot permutations
 figure(3);
-r = squeeze(sum(fid_mat_all(1,:,:,:),2));
-r = r ./ perm_ind;
+r = squeeze(mean(fid_mat_all(1,:,:,:),2));
+%r = r ./ perm_ind;
 r_s = r;
 newVec = get_triu(r);
-Z = linkage(1-newVec);
+Z = linkage(newVec);
 d1 = subplot(2,2,1);
 [h x perm] = dendrogram(Z,'labels',this_lbls,'orientation','left');
 [h(1:end).LineWidth] = deal(3)
@@ -133,11 +141,10 @@ m1 = subplot(2,2,2);
 add_numbers_to_mat(r(ord,ord),this_lbls(ord));
 title({'Permutation Clustering Signal' [num2str(perm_ind) ' Permutations']},'FontSize',20);
 
-
-r = squeeze(sum(fid_mat_all(2,:,:,:),2));
-r = r ./ perm_ind;
+r = squeeze(mean(fid_mat_all(2,:,:,:),2));
+%r = r ./ perm_ind;
 newVec = get_triu(r);
-Z = linkage(1-newVec);
+Z = linkage(newVec);
 d2 = subplot(2,2,3);
 [h x perm] = dendrogram(Z,'labels',this_lbls,'orientation','left');
 [h(1:end).LineWidth] = deal(3)
@@ -157,12 +164,12 @@ m2.FontSize   = m1.FontSize
 m2.FontWeight = m1.FontWeight
 d2.FontWeight = d1.FontWeight
 % Schemaball
-%%
+%
 f = figure(4)
 clf
-schemaball_play(t_labels(ord_s),r_s(ord_s,ord_s),18)
-
+sch_mat = [1 - r_s(ord_s,ord_s) ./ max(r_s(:))];
+schemaball_play(this_lbls(ord_s),sch_mat,18)
 %%
-figure(4)
-ofn = '/Users/aidasaglinskas/Desktop/test_folder/';
-export_fig([ofn datestr(datetime) '.pdf'])
+% figure(4)
+% ofn = '/Users/aidasaglinskas/Desktop/test_folder/';
+% export_fig([ofn datestr(datetime) '.pdf'])

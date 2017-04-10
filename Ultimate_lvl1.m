@@ -2,7 +2,7 @@ tic
 clear all
 loadMR
 fn = '/Users/aidasaglinskas/Google Drive/Data/S%d/Functional/Sess%d/swdata.nii'
-subs_to_run = 7 %subvect;
+subs_to_run = subvect;
 %% Params
 nsess = 5;
 TR = 2.5;
@@ -110,7 +110,7 @@ matlabbatch{s}.spm.stats.fmri_est.spmmat = {[root 'S' num2str(subID) '/Analysis'
 matlabbatch{s}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{s}.spm.stats.fmri_est.method.Classical = 1;
 end
-    end
-    spm_jobman('initcfg');
+spm_jobman('initcfg');
 spm_jobman('run',matlabbatch)
 toc
+    end

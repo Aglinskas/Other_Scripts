@@ -1,6 +1,6 @@
 clear all
 loadMR;
-%numclust = 5;
+numclust = 2;
 roi_or_task = 2;
 w_tasks = [1:10];
 w_rois = 1:18;

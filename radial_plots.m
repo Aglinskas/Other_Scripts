@@ -4,7 +4,8 @@
 a = { 'm'    'c'    'r'    'g'    'b'   'k'} % 'y' 'w'
 b = { '-' } %  '--'    ':'    '-.'
 bb = { 'o'    '+'    '*'    '.'    'x'    's'    'd'    '^'    'v'    '>'    '<'    'p'    'h'    'none'}
-c = CombVec(a,b,bb)';
+%c = CombVec(a,b,bb)';
+c = combvec(a,b,bb)';
 plt = arrayfun(@(x) [c{x,1} c{x,3} c{x,2}],1:length(c),'UniformOutput',0)';
 plt = Shuffle(plt);
 

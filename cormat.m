@@ -1,5 +1,6 @@
 clear 
 loadMR
+%%
 j = [ 1     2     4     6     8    11    13    14    15    17];
 %j = 1:18
 subBeta.goodinds = j%[1:18];
@@ -20,13 +21,13 @@ ind{2} = [ 3     4     5     9]
 ind{3} =  [7 10]
 
 nind = find(ismember([1:10],ind{2}) == 0);
+nind = []
 mat(nind,:) = 0
 mat(:,nind) = 0
-mat(:,:) = []
+%mat(:,:) = []
 for i = 1:3;
 mat(ind{i},[ind{find([1:3] ~= i)}]) = 0;    
-mat([ind{find([1:3] ~= i)}],ind{i}) = 0;    
-
+mat([ind{find([1:3] ~= i)}],ind{i}) = 0;
 mat(ind{i},ind{i}) = mat(ind{i},ind{i})*2;
 end
 
@@ -38,19 +39,5 @@ end
 
 %mat(7,10) = 0.3257;
 
-dlmwrite('/Users/aidasaglinskas/Desktop/newEdge.edge',mat,' ')
-
-
-
-
-
-
-
-
+dlmwrite('/Users/aidasaglinskas/Desktop/BrainNet_Files/newEdge.edge',mat,' ')
 %%
-% smat = []
-% for r = 1:length(mat)
-% for c = 1:length(mat)
-%     smat{r,c} = num2str(mat(r,c))
-% end
-% end

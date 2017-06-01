@@ -1,10 +1,7 @@
 %% Parameters to specify
-%fn = '/Volumes/Aidas_HDD/MRI_data/S%d/S%d_Results.mat';
-fn = '~/Google Drive/Data/S%d/S%d_ScannerMyTrials_RBLT.mat'
-% ^myTrials fn, with '%d' where subID should go
-ofn = '~/Google Drive/Data/S%d/'
-% ^output directory fn, with '%d' where subID should go
-for subID = 22; % one by one
+fn = '~/Desktop/Raw_Data/Words_expData/S%d/wS%d_Results.mat'
+ofn = '~/Desktop/Raw_Data/Words_expData/S%d/'
+for subID = 1:7; % one by one
 %%
 trial_dur = 2.5; %Trial duration
 TR = 2.5;

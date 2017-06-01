@@ -1,14 +1,18 @@
-%cd /Users/aidasaglinskas/Desktop/MRI_data/
 clear all
+warning('off')
 loadMR
-anal_dir = '/Users/aidasaglinskas/Google Drive/Data/Test_fact/'
-Subs_to_run = subvect
+anal_dir = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/Group_Analysis'
+Subs_to_run = [1:3 5:7]%subvect
 con_img = 6:17; % which con images to take
 conds = 1:12% [1:24]
 % Templates
-subAnalFLDR = '/Users/aidasaglinskas/Google Drive/Data/S%d/Analysis/' % TEMPLATE: '/Users/aidasaglinskas/Desktop/MRI_data/S%d/Analysis_mask02/'
+subAnalFLDR = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Analysis/' % TEMPLATE: '/Users/aidasaglinskas/Desktop/MRI_data/S%d/Analysis_mask02/'
 con_temp = 'con_00%s.nii,1'; % num2str(10,'%0.2u') %TEMPLATE: 'con_00%s.nii,1'
 % Self Sufficient code below
+
+if exist(anal_dir) > 0
+    delete(fullfile(anal_dir,'*'))    
+end
 clear matlabbatch
 matlabbatch{1}.spm.stats.factorial_design.dir = {anal_dir};
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).name = 'subject';
@@ -30,8 +34,10 @@ matlabbatch{1}.spm.stats.factorial_design.des.fblock.fsuball.fsubject(i).scans;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fsuball.fsubject(i).conds;
 end
 %
-matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters{1}.fmain.fnum = 1; % main effects and interactions
+%matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters{1}.fmain.fnum = 1; % main effects and interactions
 %matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters{2}.fmain.fnum = 2;
+
+matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters{1}.fmain.fnum = 2;
 %matlabbatch{1}.spm.stats.factorial_design.des.fblock.maininters{3}.inter.fnums = [1 2];                                                                          
 matlabbatch{1}.spm.stats.factorial_design.cov = struct('c', {}, 'cname', {}, 'iCFI', {}, 'iCC', {});
 matlabbatch{1}.spm.stats.factorial_design.multi_cov = struct('files', {}, 'iCFI', {}, 'iCC', {});
@@ -41,15 +47,23 @@ matlabbatch{1}.spm.stats.factorial_design.masking.em = {''};
 matlabbatch{1}.spm.stats.factorial_design.globalc.g_omit = 1;
 matlabbatch{1}.spm.stats.factorial_design.globalm.gmsca.gmsca_no = 1;
 matlabbatch{1}.spm.stats.factorial_design.globalm.glonorm = 1;
-% %% Estimate
-% matlabbatch{2}.spm.stats.fmri_est.spmmat(1) = cfg_dep('Factorial design specification: SPM.mat File', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
-% matlabbatch{2}.spm.stats.fmri_est.write_residuals = 0;
-% matlabbatch{2}.spm.stats.fmri_est.method.Classical = 1;
-% % Slice in a an f Con
-% matlabbatch{3}.spm.stats.con.spmmat(1) = cfg_dep('Model estimation: SPM.mat File', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
-% matlabbatch{3}.spm.stats.con.consess{1}.fcon.name = 'F_contrast_ALL';
-% matlabbatch{3}.spm.stats.con.consess{1}.fcon.weights = eye(max(conds));
-% matlabbatch{3}.spm.stats.con.consess{1}.fcon.sessrep = 'none';
+%% Estimate
+matlabbatch{2}.spm.stats.fmri_est.spmmat(1) = cfg_dep('Factorial design specification: SPM.mat File', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
+matlabbatch{2}.spm.stats.fmri_est.write_residuals = 0;
+matlabbatch{2}.spm.stats.fmri_est.method.Classical = 1;
+% Slice in a an f Con
+matlabbatch{3}.spm.stats.con.spmmat(1) = cfg_dep('Model estimation: SPM.mat File', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
+matlabbatch{3}.spm.stats.con.consess{1}.fcon.name = 'F_contrast_ALL';
+matlabbatch{3}.spm.stats.con.consess{1}.fcon.weights = eye(max(conds));
+matlabbatch{3}.spm.stats.con.consess{1}.fcon.sessrep = 'none';
+
+%matlabbatch{3}.spm.stats.con.consess{2}.fcon.name = 'Cog vs FaceCC';
+%matlabbatch{3}.spm.stats.con.consess{2}.fcon.weights = [ones(1,10) -10];
+%matlabbatch{3}.spm.stats.con.consess{2}.fcon.sessrep = 'none';
+
+
+
+
 
 %spm_jobman('initcfg')
 spm_jobman('run',matlabbatch)

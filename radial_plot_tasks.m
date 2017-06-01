@@ -1,10 +1,11 @@
 clear all
 loadMR
 
+wh_rois = [7 8 12 13]
 use_mat = tmat.sorted.array;
-use_mat = use_mat(1:2:end,:);
+use_mat = use_mat(wh_rois,:);
 use_t_lbls = tmat.sorted.lbls_t;
-use_r_lbls = tmat.sorted.lbls_r(1:2:end);
+use_r_lbls = tmat.sorted.lbls_r(wh_rois);
 
     r_ind = (1); % Prep
     rho = use_mat(r_ind,:);

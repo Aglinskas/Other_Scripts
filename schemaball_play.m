@@ -23,7 +23,7 @@ function schemaball(strNames, corrMatrix, fontsize, positive_color_hs, negative_
 %				lines must be placed. If not supplied, they are evenly
 %				distributed along the whole edge of the circle.
 %
-
+thresh = .1
 	if nargin==0 % DEMO
 		strNames = {'Lorem','ipsum','dolor','sit','amet','consectetur', ...
 			'adipisicing','elit','sed','do','eiusmod','tempor','incididunt',...
@@ -52,7 +52,7 @@ function schemaball(strNames, corrMatrix, fontsize, positive_color_hs, negative_
 		error('SchemaBall:InvalidInputArguments','Invalid size of ''theta''');
 	end
 	if nargin<5
-		positive_color_hs = [0.1587 0.8750]; % yellow
+		positive_color_hs = [0.1587 0.8750]; %yellow
 		negative_color_hs = [0.8333 1]; % magenta
 	end
 	
@@ -66,7 +66,8 @@ function schemaball(strNames, corrMatrix, fontsize, positive_color_hs, negative_
 	%% Create figure with invisible axes, just black background
 	gcf; %figure;%('Renderer','zbuffer');    Aidas
 	hold on
-	set(gca,'color','black','XTick',[],'YTick',[]);
+	set(gca,'color','none','XTick',[],'YTick',[]);
+    %set(gca,'color','black','XTick',[],'YTick',[]);
 	set(gca,'position',[0 0 1 1],'xlim',2*[-1 1]*R,'ylim',2*[-1 1]*R);
 	axis equal
 	
@@ -74,6 +75,10 @@ function schemaball(strNames, corrMatrix, fontsize, positive_color_hs, negative_
 	% if you draw the brightest lines first and then the darker lines, the
 	% latter will cut through the former and make it look like they have
 	% holes. Therefore, sort and draw them in order (darkest first).
+    uvalues = unique(corrMatrix);
+    cmap = cool(length(unique(corrMatrix)));
+%     gray, hot, cool, bone, copper, pink, flag, prism, jet,
+%     colormap, rgbplot, hsv2rgb, rgb2hsv.
 	idx = nonzeros(triu(reshape(1:M^2,M,M),1));
 	[~,sort_idx]=sort(abs(corrMatrix(idx)));
 	idx = idx(sort_idx);
@@ -87,12 +92,15 @@ function schemaball(strNames, corrMatrix, fontsize, positive_color_hs, negative_
 		Bt = getQuadBezier(P(:,jj),[P1x;P1y],P(:,kk), Nbezier);
 		if corrMatrix(jj,kk)>=0
 			clr = hsv2rgb([positive_color_hs abs(corrMatrix(jj,kk))]);
-		else
+        else
 			clr = hsv2rgb([negative_color_hs abs(corrMatrix(jj,kk))]);
-		end
-		plot(Bt(:,1),Bt(:,2),'color',clr);%,'LineSmoothing','on');
-	end
-	
+        end
+%         if corrMatrix(jj,kk)<thresh
+%             clr = 'none';
+%         end
+		%a = plot(Bt(:,1),Bt(:,2),'color',1-[clr 1-corrMatrix(jj,kk)],'linewidth',3); %,'LineSmoothing','on');
+        a = plot(Bt(:,1),Bt(:,2),'color',[cmap(find(uvalues == corrMatrix(jj,kk)),:) (corrMatrix(jj,kk))^2],'linewidth',3); %,'LineSmoothing','on');
+    end
 	%% draw edge markers
 	[Px,Py] = pol2cart(theta,R+markerR);
 	% base the color of the node on the 'degree of correlation' with other
@@ -109,10 +117,11 @@ function schemaball(strNames, corrMatrix, fontsize, positive_color_hs, negative_
 	end
 	
 	%% draw labels
+    fontsize = 20
 	[Px,Py] = pol2cart(theta,labelR);
 	for ii=1:M
-		text(Px(ii),Py(ii),strNames{ii},'Rotation',theta(ii)*180/pi,'color',0.8*[1 1 1], ...
-			'FontName','FixedWidth','FontSize',fontsize, 'VerticalAlignment','baseline');
+		text(Px(ii),Py(ii),strNames{ii},'Rotation',theta(ii)*180/pi,'color',0.8*[0 0 0], ...
+			'FontName','FixedWidth','FontSize',fontsize, 'fontweight','bold', 'VerticalAlignment','baseline');
 	end
 end
 function Bt = getQuadBezier(p0,p1,p2,N)

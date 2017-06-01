@@ -1,33 +1,14 @@
-clear all
-loadMR
-
-use_mat = ttrim.mat;
-use_t_lbls = ttrim.tlbls;
-ttrim.tlbls{5} = 'Factual';
-use_r_lbls = ttrim.rlbls;
-use_r_lbls = {'OFA'    'FFA'    'IFG'    'Orb G.'    'ATL'    'Precuneus'    'pSTS'    'mPFC'    'Amygdala'    'atFP'}
-
+f = radialPlot_func(use_mat,lbls)
     r_ind = (1); % Prep
     rho = use_mat(:,r_ind);
     sep = .60;
     angle = 0:(2*pi-sep)/(length(rho)-1):2*pi-sep;
 
-% plt_list = [.5	0	0
-% 1 0  0 
-% 0	.3	0
-% 0	.5	0
-% 0	.7	0
-% 0	0	.3
-% 0	0	.5
-% 0	0	.5
-% 0	.5	.5
-% 0	.5	.5];
-
-plt_list = [0 .9 0 %  nominal green 
-.9 1 0 % physical
-0 .9 .9 %socal 
-1 0 0 % episodic
-.5 0 1 %factual
+plt_list = [.5	0	0
+1 0  0 
+0	.3	0
+0	.5	0
+0	.7	0
 0	0	.3
 0	0	.5
 0	0	.5
@@ -36,7 +17,7 @@ plt_list = [0 .9 0 %  nominal green
 
 f = figure(1);
 clf;
-wh_plot = 1:5% Draws them in similarity order%[1:10]
+wh_plot = 1:2% Draws them in similarity order%[1:10]
 for i = wh_plot
 
 %r_ind = randi(10)
@@ -63,8 +44,8 @@ l = legend(use_t_lbls(wh_plot),'location','Northeast');
 f.CurrentAxes.LineWidth = 1
 
 
-f.Position = [144   185   695   419];
-l.Position = [0.8270    0.7856    0.1388    0.1301];
+%f.Position = [144   185   695   419];
+%l.Position = [0.8270    0.7856    0.1388    0.1301];
 ex = 0;
 if ex
 l.Color = 'none'

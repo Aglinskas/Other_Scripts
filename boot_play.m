@@ -1,7 +1,7 @@
 clear all
 loadMR;
 numclust = 0;
-roi_or_task = 1;
+roi_or_task = 2;
 n_perms = 100;
 w_tasks = [1:10];
 w_rois = 1:18;

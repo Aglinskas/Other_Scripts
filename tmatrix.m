@@ -1,6 +1,7 @@
 %#%# Set up
 clear all 
 loadMR
+clear tmat
 subBeta.ord_t = [6 10 2 9 3 4 1 5 7 8]
 a = subBeta.array - subBeta.array(:,11,:);
 a = a(:,1:10,:);

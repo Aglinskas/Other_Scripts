@@ -1,5 +1,6 @@
 clear all
 loadMR;
+load('/Users/aidasaglinskas/Google Drive/Mat_files/Workspace/Not_use/Subbeta.mat')
 numclust = 3;
 roi_or_task = 1;
 n_perms = 100;
@@ -160,9 +161,14 @@ d2.FontWeight = d1.FontWeight
 %%
 f = figure(4)
 clf
-schemaball_play(t_labels(ord_s),r_s(ord_s,ord_s),18)
 
+schemaball_play(r_labels(ord_s),r_s(ord_s,ord_s),18)
+
+sc_labels = r_labels(ord_s);
+sc_mat = r_s(ord_s,ord_s);
 %%
 figure(4)
 ofn = '/Users/aidasaglinskas/Desktop/test_folder/';
+
+
 export_fig([ofn datestr(datetime) '.pdf'])

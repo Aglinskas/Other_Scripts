@@ -13,6 +13,10 @@
 % end
 % end
 function newVec = get_triu(singmat)
+
+if numel(singmat) == 1
+newVec = singmat;
+else
 clear newVec
 cc=0;
 for ii=1:size(singmat,2)
@@ -22,8 +26,9 @@ cc=cc+1;
 newVec(cc)=singmat(ii,jj);
 end
 end
-end
+end % ends if 
 
+end
 
 
 

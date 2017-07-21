@@ -1,6 +1,6 @@
 clear;clc;close;loadMR
 %
-ROI_or_Task = 1
+ROI_or_Task = 2
 arr = subBeta.array;
 
 arr = arr - arr(:,11,:);
@@ -64,7 +64,8 @@ cls = {[1 0 0] [0 1 0] [1 1 0]}
 elseif ROI_or_Task == 2
 ln_c{1} = [1     3     5     8];
 ln_c{2} = [2     4     6     7];
-cls = {[0 1 0] [1 0 0]}
+%cls = {[0 1 0] [1 0 0]}
+cls = {[0 0 1] [0 0 1]}
 end
 
 for i = 1:numel(ln_c)
@@ -75,6 +76,7 @@ if ROI_or_Task == 1
 [h([length(h) length(h)-1]).LineWidth] = deal(5)
 elseif ROI_or_Task == 2
 [h([length(h)]).LineWidth] = deal(5)
+[h([length(h)]).Color] = deal([0 0 0])
 end
 
 
@@ -99,6 +101,39 @@ f.CurrentAxes.Title.FontSize = 20;
 
 f.Color = 'white' %[0 0 0];
 f.CurrentAxes.Color = 'white'%[0 0 0];
+
+
+if ROI_or_Task == 2
+    
+    c = {'\color{green} Common name'
+'\color{green} Full name'
+'\color{yellow} Attractiveness'
+'\color{yellow} Distinctiveness'
+'\color{cyan} Friendliness'
+'\color{red} First memory'
+'\color{magenta} Occupation'
+'\color{cyan} Trustworthiness'
+'\color{magenta} Familiarity'
+'\color{red} How many facts'}
+
+ticklabels = get(gca,'XTickLabel');
+
+% prepend a color for each tick label
+ticklabels_new = cell(size(ticklabels));
+for i = 1:length(ticklabels)
+    ticklabels_new{i} = c{i};
+end
+% set the tick labels
+set(gca, 'XTickLabel', ticklabels_new);
+
+
+cc = .6
+f.Color = [cc cc cc];
+f.CurrentAxes.Color = [cc cc cc]
+box off
+
+end
+
 %%
 dend_name = {'ROI' 'TASK'}
 ofn = '/Users/aidasaglinskas/Desktop/VSS_Poster/dend_task';

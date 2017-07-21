@@ -1,27 +1,59 @@
-clear all
-loadMR
 
-use_mat = ttrim.mat;
-use_t_lbls = ttrim.tlbls;
-ttrim.tlbls{5} = 'Factual';
-use_r_lbls = ttrim.rlbls;
-use_r_lbls = {'OFA'    'FFA'    'IFG'    'Orb G.'    'ATL'    'Precuneus'    'pSTS'    'mPFC'    'Amygdala'    'atFP'}
+to_trim = mat;
+
+
+    r_inds = {[1 2] [3 4] [5 6] [7 8 ] [9 10] [11 12] [13 14] [ 15 16] [17] [18]}
+    t_inds = {[1 5] [7 8] [3 4] [2 9] [6 10]}
+    wh_t_labels = {'Episodic' 'Factual' 'Social' 'Physical' 'Nominal' };
+    wh_r_labels = { 'ATL' 'Amygdala' 'pSTS' 'FFA' 'Face Patch' 'IFG' 'OFA' 'Orb' 'PFCmedial' 'Precuneus'};
+
+for r = 1:length(r_inds)
+for t = 1:length(t_inds)
+trim(r,t,:) = squeeze(mean(mean(to_trim(r_inds{r},t_inds{t},:),1),2));
+end
+end
+mtrim = mean(trim,3)
+
+get(0,'children')
+
+mtrim_fig  = figure(6)
+add_numbers_to_mat(mtrim,wh_t_labels,wh_r_labels);
+
+mtrim_fig.CurrentAxes.FontSize = 12
+mtrim_fig.CurrentAxes.FontWeight = 'bold'
+title('Mean Beta AVG', 'fontsize',20)
+
+
+tmat = [];
+for r = 1:length(r_inds)
+for t = 1:length(t_inds)
+%trim(r,t,:) = squeeze(mean(mean(to_trim(r_inds{r},t_inds{t},:),1),2));
+
+this_vec = squeeze(trim(r,t,:));
+other_vec = squeeze(mean(trim(r,find([1:5]~=t),:),2));
+[H,P,CI,STATS] = ttest(this_vec,other_vec);
+tmat(r,t) = STATS.tstat;
+end
+end
+
+tmat_fig = figure(9);
+add_numbers_to_mat(tmat,wh_t_labels,wh_r_labels)
+    tmat_fig.CurrentAxes.FontSize = 12
+    tmat_fig.CurrentAxes.FontWeight = 'bold'
+    title('Tmatrix Trim', 'fontsize',20)
+
+
+
+use_mat = tmat;
+use_t_lbls = wh_t_labels;
+%ttrim.tlbls{5} = 'Factual';
+use_r_lbls = wh_r_labels;
+%use_r_lbls = {'OFA'    'FFA'    'IFG'    'Orb G.'    'ATL'    'Precuneus'    'pSTS'    'mPFC'    'Amygdala'    'atFP'}
 
     r_ind = (1); % Prep
     rho = use_mat(:,r_ind);
     sep = .60;
     angle = 0:(2*pi-sep)/(length(rho)-1):2*pi-sep;
-
-% plt_list = [.5	0	0
-% 1 0  0 
-% 0	.3	0
-% 0	.5	0
-% 0	.7	0
-% 0	0	.3
-% 0	0	.5
-% 0	0	.5
-% 0	.5	.5
-% 0	.5	.5];
 
 plt_list = [0 .9 0 %  nominal green 
 .9 1 0 % physical

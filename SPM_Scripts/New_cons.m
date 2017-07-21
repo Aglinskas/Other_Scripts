@@ -4,16 +4,16 @@
 clear all;
 spm_jobman('initcfg')
 %fn = '/Users/aidasaglinskas/Google Drive/Data/S%d/Analysis/SPM.mat';
-fn = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Analysis/SPM.mat';
-
+fn = '/Users/aidasaglinskas/Google Drive/Data_words/S%d/Analysis/SPM.mat';
 %subvect =  [7 8  9 10 11 12 14 15 16 17 18 19 20 21 22 24 25 26  27 28 29 30 31]
-subvect = [1:7]
-subs_to_run = subvect;
+loadMR
+%subvect = [12]
+subs_to_run = [21]
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Common Last Name' 'Same_Face' 'Same_monument'};
 %% Create vs Create & Run
 run_immediately = 1; % if ==1 runs the cons, if not leaves it in the workspace
 delete_previous_cons = 1;
-nsess = 5;
+nsess = 4;
 %% Experiment specific parameters (aka assumptions)
 n_tasks = 12;
 fc_control_ind = 11; % face control task index;

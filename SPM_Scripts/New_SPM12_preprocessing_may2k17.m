@@ -1,12 +1,12 @@
 clear all 
-temp.functional = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Functional/Sess%d/data.nii'
-temp.anatomical = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Anatomical/Ana_nopeel.nii'
+temp.functional = '/Users/aidasaglinskas/Google Drive/Data_words/S%d/Functional/Sess%d/data.nii'
+temp.anatomical = '/Users/aidasaglinskas/Google Drive/Data_words/S%d/Anatomical/Ana_nopeel.nii'
 temp.TPM = '/Users/aidasaglinskas/Documents/MATLAB/spm12/tpm/TPM.nii';
 nsess = 5;
 
 
 spm_jobman('initcfg')
-for subID = 3:7;
+for subID = 21;
 clear matlabbatch;
 for s_ind = 1:nsess
 fn.functional = sprintf(temp.functional,subID,s_ind);

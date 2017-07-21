@@ -6,7 +6,7 @@ load('/Volumes/Aidas_HDD/MRI_data/master_coords30.mat')
 ofn = '/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/'
 sv_dir ='/Volumes/Aidas_HDD/MRI_data/Group30_Analysis_mask02/July_19th_ROIS_2';
 if exist(sv_dir) == 0; mkdir(sv_dir);end
-addpath('/Users/aidas_el_cap/Documents/MATLAB/spm12/toolbox/marsbar/')
+addpath('~/Documents/MATLAB/spm12/toolbox/marsbar/')
 %%
 master_coords = {}
 %master_coords{1,1} = [3,50,-19]
@@ -43,7 +43,6 @@ master_coords{end+1,1} = [48,-58,20];master_coords{end,2} = 'rpsts_peak'
 % master_coords{end+1,1} = [,,];master_coords{end,2} = ''
 % master_coords{end+1,1} = [,,];master_coords{end,2} = ''
 % master_coords{end+1,1} = [,,];master_coords{end,2} = ''
-
 %%
 coord = master_coords;
 for i=1:size(coord,1)
@@ -89,6 +88,8 @@ for i = 1:length(Pos)
     [a p] = spm_atlas('query',xA,Pos(:,i))
 end
 %% Check if ROI sphere coords are within the anatomical cluster;
+at_chk = 0;
+if at_chk
 for i = 1:size(master_coords,1)
 coord = master_coords{i,1}';
 atlas = fullfile('/Users/aidas_el_cap/Documents/MATLAB/spm12/tpm/','labels_Neuromorphometrics.nii');
@@ -96,15 +97,7 @@ xA = spm_atlas('load',atlas);
 [a b] = spm_atlas('query',xA,coord); % Good coord has to be fed in
 disp(coord')
 disp(a)
-%   FORMAT xA = spm_atlas('load',atlas)
-%   FORMAT L = spm_atlas('list')
-%   FORMAT [S,sts] = spm_atlas('select',xA,label)
-%   FORMAT Q = spm_atlas('query',xA,XYZmm)
-%   FORMAT [Q,P] = spm_atlas('query',xA,xY)
-%   FORMAT VM = spm_atlas('mask',xA,label,opt)
-%   FORMAT V = spm_atlas('prob',xA,label)
-%   FORMAT V = spm_atlas('maxprob',xA,thresh)
-%   FORMAT D = spm_atlas('dir')
+end
 end
 %%
 if extract_voi_coords == 1
@@ -210,16 +203,3 @@ a_roi = label(a_roi,lbls{r})
 saveroi(a_roi,fullfile(roi_fn,rois{r}))
 mars_rois2img(fullfile(roi_fn,rois{r}),fullfile(roi_fn,[ num2str(r) export_prefix '_' lbls{r} '.nii']),spc)
 end
-% Atlas multi-function
-%   FORMAT xA = spm_atlas('load',atlas)
-%   FORMAT L = spm_atlas('list')
-%   FORMAT [S,sts] = spm_atlas('select',xA,label)
-%   FORMAT Q = spm_atlas('query',xA,XYZmm)
-%   FORMAT [Q,P] = spm_atlas('query',xA,xY)
-%   FORMAT VM = spm_atlas('mask',xA,label,opt)
-%   FORMAT V = spm_atlas('prob',xA,label)
-%   FORMAT V = spm_atlas('maxprob',xA,thresh)
-%   FORMAT D = spm_atlas('dir')
-%   FORMAT url = spm_atlas('weblink',XYZmm,website)
-%   FORMAT labels = spm_atlas('import_labels',labelfile,fmt)
-%   FORMAT spm_atlas('save_labels',labelfile,labels)

@@ -1,6 +1,7 @@
-cd '/Users/aidasaglinskas/Google Drive/Data/'
+cd '/Users/aidasaglinskas/Google Drive/Data_words/'
 clf
-subVec= [23:27]
+subVec= [19 20 22] %[ 1     2  5     6     7     8     9    10  12    13    14  16    17]
+
 A=dir('S*')
 for i = 1:length(A)
     subFold{i}=A(i).name;

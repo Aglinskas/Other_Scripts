@@ -4,7 +4,7 @@ close all
 % {'IndependentROIS' 'NOT_IndependentROIS'}
 analysis_name = 'feb20_2017'
 %% Group Average, - Get Peaks
-opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/Group_anal_m-3_s8n44/SPM.mat'
+opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_analysis12t/SPM.mat'
 %opts_xSPM.spm_path = '/Users/aidasaglinskas/Google Drive/MRI_data/GroupAnalysis_31_6th_Oct/SPM.mat'
 opts_xSPM.p_tresh = .001;
 opts_xSPM.k_extent = 0;

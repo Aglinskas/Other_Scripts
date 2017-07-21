@@ -1,15 +1,15 @@
 clear 
-temp.root = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/';
-temp.functional_scans = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Functional/Sess%d/swdata.nii';
-temp.analysis_fldr = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Analysis';
-temp.multicond_file = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/sub%drun%d_multicond.mat';
-temp.RP_file = '/Users/aidasaglinskas/Desktop/Raw_Data/Words_expData/S%d/Functional/Sess%d/rp_data.txt';
+temp.root = '/Users/aidasaglinskas/Google Drive/Data_faces/';
+temp.functional_scans = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/Functional/Sess%d/swdata.nii';
+temp.analysis_fldr = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/AnalysisFAM/';
+temp.multicond_file = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/sub%drun%d_multicondFAM.mat';
+temp.RP_file = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/Functional/Sess%d/rp_data.txt';
 
 opts.overwrite = 1;
 %spm_jobman('initcfg')
-
-for subID = 1:7;
-nsess = 5;
+loadMR
+for subID = subvect
+nsess = 4;
 clear matlabbatch
 fn.analysis_fldr = sprintf(temp.analysis_fldr,subID);
     if opts.overwrite == 1 & exist(fn.analysis_fldr)>0;

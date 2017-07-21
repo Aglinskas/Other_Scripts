@@ -1,7 +1,8 @@
 %% Parameters to specify
-fn = '~/Desktop/Raw_Data/Words_expData/S%d/wS%d_Results.mat'
-ofn = '~/Desktop/Raw_Data/Words_expData/S%d/'
-for subID = 1:7; % one by one
+loadMR;
+fn = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/S%d_ScannerMyTrials_RBLT.mat'
+ofn = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/'
+for subID = subvect; % one by one
 %%
 trial_dur = 2.5; %Trial duration
 TR = 2.5;
@@ -20,6 +21,21 @@ end
 for i = 1:length(myTrials)
     myTrials(i).TR = floor((myTrials(i).time_presented / TR));
 end
+%% Drop Unknown ppl
+    e_inds = find(cellfun(@isempty,{myTrials.resp}'));
+    [myTrials(e_inds).RT] = deal(NaN);
+    [myTrials(e_inds).resp] = deal(NaN);
+u_inds = [myTrials.blockNum] == 8 & [myTrials.resp] == 4;
+u_inds = find(u_inds);
+% 8 ocupation, 5 familiarity
+tempa = cellfun(@(x) strsplit(x,'/'),{myTrials.filepath}','UniformOutput',0);
+tempb = cellfun(@(x) x{2},tempa,'UniformOutput',0);
+myTrials(1).name = 0;
+[myTrials.name] = deal(tempb{:});
+ut_inds = find(ismember({myTrials.name}',{myTrials(u_inds).name}'));
+ut_inds([myTrials(ut_inds).blockNum]' > 10) = [];
+myTrials(ut_inds) = [];
+disp([num2str(length(u_inds)) ' People Dropped'])
 %% multiconds
 %for r = 1:max([myTrials.fmriRun]);
  for r = 1:myTrials(length([myTrials.time_presented])).fmriRun;
@@ -29,9 +45,8 @@ end
 onsets{b} = [myTrials(find([myTrials.blockNum] == b & [myTrials.fmriRun] == r)).time_presented];
 durations{b} = trial_dur;
     end
-  save([sprintf(ofn,subID) 'sub' num2str(subID) 'run' num2str(r) '_multicond'],'durations','onsets','names');
+  save([sprintf(ofn,subID) 'sub' num2str(subID) 'run' num2str(r) '_multicondFAM'],'durations','onsets','names');
 end
 %%
 %n_sess = myTrials(length([myTrials.time_presented])).fmriRun
 end % ends subID loop
-

@@ -1,10 +1,8 @@
 clear
 loadMR
 %%
-
 mat = aBeta.fBeta;
 roi_or_task = 1;
-
 r = 0;
 pl = 1;
 if r
@@ -43,9 +41,8 @@ figure(2)
 add_numbers_to_mat(mmat)
 end
 %%
-nrps = 1000
+nrps = 10000
 for rp = 1:nrps
-
   if ismember(rp,0:nrps/10:nrps)
     disp(rp/nrps * 100)
   end
@@ -55,15 +52,15 @@ sc = Shuffle(1:18);
 C{1} = sc(1:6);
 C{2} = sc(7:14);
 C{3} = sc(15:18);
-%C{1} = [ 1     2     5     6    17    18]; % ext DMN
-%C{2} = [ 7     8    11    12    13    14    15    16]; % core
-%C{3} = [ 3     4     9    10]; %ext - limb
+% C{1} = [ 1     2     5     6    17    18]; % ext DMN
+% C{2} = [ 7     8    11    12    13    14    15    16]; % core
+% C{3} = [ 3     4     9    10]; %ext - limb
 else
-% C{1} = [3  2        6     9    10];
-% C{2} = [ 1     4     5     7     8];
+C{1} = [3  2        6     9    10];
+C{2} = [ 1     4     5     7     8];
 sc = Shuffle(1:10);
-C{1} = sc(1:5);
-C{2} = sc(6:10);
+% C{1} = sc(1:5);
+% C{2} = sc(6:10);
 end
 
 aC{rp} = C;
@@ -93,5 +90,4 @@ figure(3)
 hist(col);
 th = 8
 length(find(col>=th) / length(col)) / nrps;
-
 ch = find(col>th);

@@ -16,7 +16,7 @@ if exist('opts_clust','var') == 0
 opts_clust.size = 1 %1 for full, 2 for else
 opts_clust.inset = 4;
 end
-T_leg = t; % Tasks: Are they  or t_old?
+T_leg = t_labels; % Tasks: Are they  or t_old?
 [xyzmm,i] = spm_XYZreg('NearestXYZ',...
 spm_results_ui('GetCoords'),xSPM.XYZmm);
 spm_results_ui('SetCoords',xSPM.XYZmm(:,i));
@@ -51,6 +51,7 @@ CI    = CI*SE;
 if opts_clust.inset == 0 
 else f = figure('visible','off');
 end
+figure
 bar(cbeta)
 hold on
 errorbar(cbeta,CI,'rx')
@@ -66,7 +67,7 @@ set(gca,'XTickLabel',T_leg)
 %t_fig = figure(5)
 %c = a(2).Children(21)
 %inset(f,a,0.2); %inset(f,mip,0.2);
-colormap(map)
+%colormap(map)
 cluster_bar = gcf;
 cluster_bar.Position = [93 165 1296 640];
 title(xSPM.title)
@@ -76,7 +77,7 @@ hold off
 if isfield(opts_clust,'inset') == 0;
     opts_clust.inset = 4;
 end
-if opts_clust.inset == 1
+if opts_clust.inset == 0
 figure(f);
 elseif opts_clust.inset == 2
     inset(f,mip,0.2);
@@ -87,7 +88,6 @@ else title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(vx) ' 
 end
 elseif opts_clust.inset == 3
 elseif opts_clust.inset == 4
-get_sections
 % %
 % try 
 %     clf(g)

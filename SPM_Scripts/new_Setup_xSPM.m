@@ -24,5 +24,7 @@ spm_sections(xSPM,hReg,temp.sections_fn) %SECTIONS
 
 spm_mip_ui('setcoords',[6    57   -23])
 
+y=spm_mip_ui('Extract', 'y', 'voxel')
+
 
 hReg.Position = [0.0093    0.0197    0.9817    0.9597]

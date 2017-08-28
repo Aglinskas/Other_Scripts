@@ -1,0 +1,43 @@
+% Add path
+addpath(genpath('/Users/aidasaglinskas/Documents/MATLAB/spm12/toolbox/marsbar/'))
+%% Get Masks
+masks.dir = '/Users/aidasaglinskas/Desktop/faces_blobsp01/';
+temp = dir([masks.dir 'R*.nii']);
+masks.nii_files = {temp.name}'; clear temp;
+masks.mat_files = strrep(fullfile(masks.dir,masks.files),'.nii','.mat');
+    mask.lbls = masks.nii_files
+    mask.lbls = strrep(mask.lbls,'ROI_','');
+    mask.lbls = strrep(mask.lbls,'.nii','');
+disp(mask.lbls)
+disp([num2str(length(mask.lbls)) ' ROIs found'])
+%% 
+spm_dir = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_analysis12t/';
+spm_path = [spm_dir 'SPM.mat']
+%load(spm_path)
+
+for r_ind = 1:length(masks.mat_files)
+ROI_fn = masks.mat_files{r_ind}
+
+D  = mardo(spm_path);% Make marsbar design object
+R  = maroi(ROI_fn);% Make marsbar ROI object
+Y  = get_marsy(R, D, 'mean');% Fetch data into marsbar data object
+y = summary_data(Y) % Take 
+
+
+figure(9)
+r = reshape(y,12,20);
+r = zscore(r,[],1);
+bar(mean(r,2))
+
+r_ind = 1;
+roi_data(r_ind,:,:) = r;
+%% Fix SPM
+fix_spm = 0
+if fix_spm
+old_str = '/Users/aidasaglinskas/Google Drive/Data/'
+new_str = '/Users/aidasaglinskas/Google Drive/Aidas:Summaries & Analyses (WP 1.4)/Data_faces/'
+SPM.xY.P = strrep(SPM.xY.P,old_str,new_str)
+    b = strrep({SPM.xY.VY.fname},old_str,new_str)';
+[SPM.xY.VY.fname] = deal(b{:})
+save(spm_path,'SPM');
+end

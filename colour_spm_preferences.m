@@ -64,12 +64,8 @@ ref.Colormap = map;
 %%
 temp_nii.img(1,1,1) = 6
 save_nii(temp_nii,'/Users/aidasaglinskas/Desktop/lols.nii')
-
 %%
-
 dat = xSPM
 brt = nan
 rendfile = '/Users/aidasaglinskas/Documents/MATLAB/spm12/canonical/cortex_5124.surf.gii'
 spm_render(dat,brt,rendfile)
-
-

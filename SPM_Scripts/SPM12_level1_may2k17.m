@@ -1,20 +1,20 @@
 clear 
-temp.root = '/Users/aidasaglinskas/Google Drive/Data_faces/';
-temp.functional_scans = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/Functional/Sess%d/swdata.nii';
-temp.analysis_fldr = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/AnalysisFAM/';
-temp.multicond_file = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/sub%drun%d_multicondFAM.mat';
-temp.RP_file = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/Functional/Sess%d/rp_data.txt';
-
+temp.root = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/';
+temp.functional_scans = fullfile(temp.root,'/S%d/Functional/Sess%d/swdata.nii')
+temp.analysis_fldr = fullfile(temp.root,'/S%d/Analysis');
+temp.multicond_file = fullfile(temp.root,'S%d/sub%drun%d_multicond.mat');
+temp.RP_file = fullfile(temp.root,'S%d/Functional/Sess%d/rp_data.txt');
+loadMR
+subvect.face
 opts.overwrite = 1;
 %spm_jobman('initcfg')
-loadMR
 for subID = subvect
-nsess = 4;
+nsess = 5;
 clear matlabbatch
 fn.analysis_fldr = sprintf(temp.analysis_fldr,subID);
     if opts.overwrite == 1 & exist(fn.analysis_fldr)>0;
         delete(fullfile(fn.analysis_fldr,'*'));
-        rmdir(fn.analysis_fldr)
+        %rmdir(fn.analysis_fldr)
     end
         matlabbatch{1}.spm.stats.fmri_spec.dir = {fn.analysis_fldr};
         matlabbatch{1}.spm.stats.fmri_spec.timing.units = 'secs';
@@ -45,6 +45,5 @@ matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 matlabbatch{2}.spm.stats.fmri_est.spmmat(1) = cfg_dep('fMRI model specification: SPM.mat File', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
 matlabbatch{2}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{2}.spm.stats.fmri_est.method.Classical = 1;
-
 spm_jobman('run',matlabbatch)
 end% ends subject loop

@@ -1,12 +1,11 @@
 clear all 
-temp.functional = '/Users/aidasaglinskas/Google Drive/Data_words/S%d/Functional/Sess%d/data.nii'
-temp.anatomical = '/Users/aidasaglinskas/Google Drive/Data_words/S%d/Anatomical/Ana_nopeel.nii'
+loadMR
+temp.functional = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/S%d/Functional/Sess%d/data.nii'
+temp.anatomical = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/S%d/Anatomical/Ana_nopeel.nii'
 temp.TPM = '/Users/aidasaglinskas/Documents/MATLAB/spm12/tpm/TPM.nii';
 nsess = 5;
-
-
 spm_jobman('initcfg')
-for subID = 21;
+for subID = subvect.word;
 clear matlabbatch;
 for s_ind = 1:nsess
 fn.functional = sprintf(temp.functional,subID,s_ind);
@@ -97,5 +96,10 @@ matlabbatch{6}.spm.spatial.smooth.dtype = 0;
 matlabbatch{6}.spm.spatial.smooth.im = 0;
 matlabbatch{6}.spm.spatial.smooth.prefix = 's';
 
+matlabbatch{7}.spm.spatial.smooth.data(1) = cfg_dep('Normalise: Write: Normalised Images (Subj 1)', substruct('.','val', '{}',{5}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('()',{1}, '.','files'));
+matlabbatch{7}.spm.spatial.smooth.fwhm = [4 4 4];
+matlabbatch{7}.spm.spatial.smooth.dtype = 0;
+matlabbatch{7}.spm.spatial.smooth.im = 0;
+matlabbatch{7}.spm.spatial.smooth.prefix = 's4';
 spm_jobman('run',matlabbatch)
 end % end sub loop

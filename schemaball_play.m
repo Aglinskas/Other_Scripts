@@ -117,7 +117,7 @@ thresh = .1
 	end
 	
 	%% draw labels
-    fontsize = 20
+    %fontsize = 20
 	[Px,Py] = pol2cart(theta,labelR);
 	for ii=1:M
 		text(Px(ii),Py(ii),strNames{ii},'Rotation',theta(ii)*180/pi,'color',0.8*[0 0 0], ...

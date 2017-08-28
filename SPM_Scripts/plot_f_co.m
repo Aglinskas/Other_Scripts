@@ -1,4 +1,4 @@
-Ic = 4
+Ic = 1
 nr_vox = 1;
 add_lbls = 1;
 % Figure out SPM fig;

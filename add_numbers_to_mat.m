@@ -40,9 +40,9 @@ current_mat_fig = gcf;
 
 if nargin == 2
 current_mat_fig.CurrentAxes.YTick = 1:size(matrix,1);
-current_mat_fig.CurrentAxes.YTickLabel = lbls%num2str(ord)
+current_mat_fig.CurrentAxes.YTickLabel = lbls;%num2str(ord)
 current_mat_fig.CurrentAxes.XTick = 1:size(matrix,1);
-current_mat_fig.CurrentAxes.XTickLabel = lbls%num2str(ord)
+current_mat_fig.CurrentAxes.XTickLabel = lbls;%num2str(ord)
 current_mat_fig.CurrentAxes.YTickLabelRotation = 0;
 current_mat_fig.CurrentAxes.XTickLabelRotation = 15;
 elseif  nargin == 3
@@ -56,7 +56,7 @@ end
 
 textStrings = num2str(matrix(:),'%0.2f');
 textStrings = strtrim(cellstr(textStrings));
-if size(matrix,1) == size(matrix,2)
+if size(matrix,1) == size(matrix,2);
 [x,y] = meshgrid(1:length(matrix));
 hStrings = text(x(:),y(:),textStrings(:),'HorizontalAlignment','center');
 midValue = max(get(gca,'CLim'));%# Get the middle value of the color range

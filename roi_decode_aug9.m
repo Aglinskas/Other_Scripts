@@ -1,11 +1,10 @@
 % ROI decoding
 loadMR
-fn = '/Users/aidasaglinskas/Desktop/voxel_data.mat';
+fn = '/Users/aidasaglinskas/Desktop/mats/voxel_data.mat';
 load(fn)
 r_lbls = aBeta.r_lbls;
 t_lbls = aBeta.t_lbls;
-loadMR
-collect_roi = 0
+collect_roi = 1
 if collect_roi
     disp('Collecting ROIs')
 vx = {};
@@ -35,8 +34,6 @@ end % ends ROI
 end % ends if collect
 save('/Users/aidasaglinskas/Desktop/vx.mat','vx')
 disp('Done & Saved')
-
-%%
 %% Run MVPA
 load('/Users/aidasaglinskas/Desktop/vx.mat')
 clc
@@ -94,11 +91,12 @@ cmat(r_ind,pairs(pair_ind,1),pairs(pair_ind,2)) = nanmean(c);
 
 ds.sa.targets = ds.sa.t_ind;
 ds.sa.chunks = ds.sa.run_ind;
+
+
 partitions=cosmo_nfold_partitioner(ds.sa.chunks);
-%partitions=cosmo_nfold_partitioner(chunks)
-%predicted=cosmo_classify_lda(samples_train, targets_train, samples_test[,opt])
-%[pred, accuracy] = cosmo_crossvalidate(dataset, classifier, partitions, opt)
 [pred, accuracy] = cosmo_crossvalidate(ds, @cosmo_classify_lda, partitions);
+
+
 accuracy = accuracy - 1 / length(unique(ds.sa.targets));
 acc_mat(r_ind,pairs(pair_ind,1),pairs(pair_ind,2)) = accuracy;
 acc_mat(r_ind,pairs(pair_ind,2),pairs(pair_ind,1)) = accuracy;
@@ -107,14 +105,9 @@ end % ends ROI
 str = 'Dataset Created';
 disp(str);
 %% Decoding
-
 set(0, 'DefaultFigureVisible', 'on')
 imagesc(corr(ds.samples'))
 %%
-
-
 ds.sa.t_ind
-
-
 
 

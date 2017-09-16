@@ -1,7 +1,7 @@
 clear all
 warning('off')
 loadMR
-anal_dir = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_Analysis/'
+anal_dir = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_Analysis_subconst/'
 spm('Defaults','FMRI')
 spm_jobman('initcfg')
 %subvect_words = find(ismember([1:18],[3 4 11 18 12]) == 0);;

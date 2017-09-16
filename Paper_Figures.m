@@ -1,31 +1,51 @@
 % Dendrograms
 loadMR;
+roi_or_task = 2;
 mat = aBeta.fmat;
 mat = zscore(mat,[],2)
+
+% R null
+mat_rs = [];
+mat_ts = [];
+for r = 1:size(mat,1)
+for s = 1:size(mat,3)
+mat_rs(r,:,s) = mat(r,Shuffle(1:size(mat,2)),s);
+end
+end
+% T null
+null_mat = {};
+for t = 1:size(mat,2)
+for s = 1:size(mat,3)
+mat_ts(:,t,s) = mat(Shuffle(1:size(mat,1)),t,s);
+end
+end
+null_mat = {mat_rs mat_ts};
+null_mat = null_mat{roi_or_task};
+%
 albls = {aBeta.r_lbls aBeta.t_lbls(1:10)};
-roi_or_task = 2;
 %Dendrogram
 cmat = [];
+ncmat = [];
 for i = 1:20
 if roi_or_task == 1
 cmat(:,:,i) = corr(mat(:,:,i)');% rois
+ncmat(:,:,i) = corr(null_mat(:,:,i)');% rois
 elseif roi_or_task == 2
 cmat(:,:,i) = corr(mat(:,:,i));% task
+ncmat(:,:,i) = corr(null_mat(:,:,i));% rois
 end
 end
-
 acmat = mean(cmat,3);
 newVec = get_triu(acmat);
 Z = linkage(1-newVec,'ward');
 this_lbls =albls{cellfun(@length,albls) == size(acmat,1)};
-d = figure(1)
+d = figure(3)
 [h x perm] = dendrogram(Z,'labels',this_lbls);
 [h(1:end).LineWidth] = deal(3);
 d.CurrentAxes.XTickLabelRotation = 45;
 d.CurrentAxes.FontSize = 12;
 d.CurrentAxes.FontWeight = 'bold'
 box off
-
 {'Regional' 'Task'};title([ans{roi_or_task} ' Similarity'],'FontSize',20)
 d.CurrentAxes.YAxis.Label.String = 'Dissimilarity'
 tr = 1
@@ -36,7 +56,6 @@ if roi_or_task == 1
 c_inds = [1 2 2 1 2 1 2 3 1 1 2 1 3 1 2 3 1 1];
 c = {[1 0 0] [0 1 0] [.5 0 1]}
 thick_inds = [19 20];
-
 
 [h(1:length(c_inds)).Color] = deal(c{c_inds})
 [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
@@ -52,79 +71,92 @@ elseif roi_or_task == 2
 %     set(gca, 'XTickLabel', ticklabels_new);
 %     thick_inds = [8 9];
 %     [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
-
 thick_inds = [8 9]
 [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
 end
-%%
-% % i = 0
-% i = i+1
-% [h(1:end).Color] = deal([0 0 1]);
-% h(i).Color = [1 0 0];
-r_t = roi_or_task
-perm_params.n_clust = [3 3]
-% Bootsrapping
-perm_params.n_iters = 100;
-perm_params.n_subs_to_sample = 10;
-perm_params.n_clust = [3 3]; % ROI & TASK
-perm_struct = struct;
-temp_fig = figure(666);
-temp_fig.Visible = 'off';
-disp('Permuting')
-for perm_ind = 1:perm_params.n_iters
-repvec = 0:perm_params.n_iters / 10:perm_params.n_iters;
-if ismember(perm_ind,repvec)
-    perc = [perm_ind / perm_params.n_iters * 100];
-   disp([num2str(perc)  '% Done']);
-end
+% New Bootstrapp
+
+% albls
+% cmat
+% this_lbls
+perm_struct = [];
+dist = [];
+subjpool = [];
+perm_struct.params.nclust = [3 3];
+perm_struct.params.nperms = 1000;
+perm_struct.params.nsubs = 10;
+perm_struct.permMat = zeros(perm_struct.params.nperms,size(cmat,1),size(cmat,1));
+warning('off','stats:linkage:NotEuclideanMatrix') % Expecto Patronum those pesky warnings
+for iter_ind = 1:perm_struct.params.nperms
+    if ismember(iter_ind,0:perm_struct.params.nperms/10:perm_struct.params.nperms);disp(sprintf('%d/%d',iter_ind/perm_struct.params.nperms * 100,100));end
+subjpool(1,:) = randi(size(cmat,3),1,perm_struct.params.nsubs);
+subjpool(2,:) = randi(size(cmat,3),1,perm_struct.params.nsubs);
+
+
+% subjpool(1,:) = 1:20;
+% subjpool(2,:) = 1:20;
+
+    perm_struct.commonSubs(iter_ind) = sum(ismember(subjpool(1,:),subjpool(2,:)));
+    perm_struct.poolCor(iter_ind) = corr(subjpool(1,:)',subjpool(2,:)');
+    dist(1,:) = 1-get_triu(mean(cmat(:,:,subjpool(1,:)),3));
+    dist(2,:) = 1-get_triu(mean(ncmat(:,:,subjpool(2,:)),3));
     
-perm_cmat = cmat(:,:,randi(size(cmat,3),1,perm_params.n_subs_to_sample));
-dist = 1-get_triu(mean(perm_cmat,3));
-Z = linkage(dist,'ward');
-Z_atlas = get_Z_atlas(Z,length(Z)+1);
+[h x1 perm1] = dendrogram(linkage(dist(1,:),'ward'),perm_struct.params.nclust(roi_or_task));
+[h x2 perm2] = dendrogram(linkage(dist(2,:),'ward'),perm_struct.params.nclust(roi_or_task));
 
-perm_struct.dist_Mat(perm_ind,:,:) = zeros(size(perm_cmat,1),size(perm_cmat,1));
-% Distance Matrix
-for i = 1:size(Z_atlas,1) 
-    perm_struct.dist_Mat(perm_ind,Z_atlas{i,1},Z_atlas{i,2}) = perm_struct.dist_Mat(perm_ind,Z_atlas{i,1},Z_atlas{i,2}) + Z_atlas{i,3};
-    perm_struct.dist_Mat(perm_ind,Z_atlas{i,2},Z_atlas{i,1}) = perm_struct.dist_Mat(perm_ind,Z_atlas{i,2},Z_atlas{i,1}) + Z_atlas{i,3};
+tmat = zeros(size(cmat,1),size(cmat,1));
+for i = 1:size(cmat,1)
+r = (x1==x1(i)) & (x2==x2(i));
+tmat(find(r),find(r)) = tmat(find(r),find(r))+1;
+tmat(tmat>0)=1;
 end
-
-perm_struct.clust_Mat(perm_ind,:,:) = zeros(size(perm_cmat,1),size(perm_cmat,1));
-[h x perm] = dendrogram(Z,perm_params.n_clust(r_t));
-for i = unique(x)';
-perm_struct.clust_Mat(perm_ind,find(x==i),find(x==i)) = perm_struct.clust_Mat(perm_ind,find(x==i),find(x==i))+1;
-end
-end % ends perm
-%%
-perm_struct.Mclust_Mat = squeeze(mean(perm_struct.clust_Mat,1));
-perm_struct.Mdist_Mat = squeeze(mean(perm_struct.dist_Mat,1));
-
-[h x perm] = dendrogram(linkage(1-get_triu(perm_struct.Mdist_Mat),'ward'),'labels',this_lbls,'orientation','left');
-ord=perm(end:-1:1);
-%figure(1)
-%add_numbers_to_mat(perm_struct.Mclust_Mat(ord,ord),this_lbls(ord))
-f = figure(2)
-clf;schemaball_play(this_lbls(ord),perm_struct.Mclust_Mat(ord,ord),16)
+perm_struct.permMat(iter_ind,:,:) = tmat;
 
 
-%% T matrix;
+
+% % Old/ No good
+% for x = unique([x1;x2])'
+%     perm_struct.permMat(iter_ind,find(x1==x & x2==x),find(x1==x & x2==x)) = perm_struct.permMat(iter_ind,find(x1==x & x2==x),find(x1==x & x2==x))+1;
+% end % ends x
+
+end % ends boot_iterations
+% Plot
+figure(1)
+clf
+perm_struct.meanMat = squeeze(mean(perm_struct.permMat,1));
+[h x perm] = dendrogram(linkage(1-get_triu(perm_struct.meanMat)))
+ord = perm(end:-1:1);
+add_numbers_to_mat(perm_struct.meanMat(ord,ord),this_lbls(ord))
+figure(2)
+clf
+schemaball_play(this_lbls(ord),perm_struct.meanMat(ord,ord))
+%% Bar PLOT
+%%%
+%%%
 loadMR;
-mat=  [];
+mat = [];
+%r_inds = {[1;2],[3;4],[5;6],[7;8],[9;10],[11] [12],[13;14],[15;16],17,18,19,[20;21]}
+%r_lbls = {'ATL','Amygdala','Angular','FFA','Face Patch','IFG-Left','IFG-Right','OFA','Orb','PFCmedial','Precuneus','dMPFC','pSTS'}
+r_inds = {[1;2],[3;4],[5;6],[7;8],[9;10],[11;12],[13;14],[15;16],17,18,19,[20;21]}
+r_lbls = {'ATL','Amygdala','Angular','FFA','Face Patch','IFG','OFA','Orb','PFCmedial','Precuneus','dMPFC','pSTS'}
+for r = 1:length(r_inds)
 for t = 1:length(aBeta.trim.t_inds)
-matt(:,t,:) = mean(aBeta.fmat(:,aBeta.trim.t_inds{t},:),2);
-matr(:,t,:) = mean(aBeta.fmat_raw(:,aBeta.trim.t_inds{t},:),2);
+mat(r,t,:) = mean(mean(aBeta.fmat(r_inds{r},aBeta.trim.t_inds{t},:),2),1);
+%matr(:,t,:) = mean(aBeta.fmat_raw(:,aBeta.trim.t_inds{t},:),2);
 end
-%% Bar Plot
-r_ind = [14:21];
-mat = matt;
+end
+disp(size(mat))
+% Bar Plot
+r_ind = [1 6]; %ATL IFG
+r_ind = [3 12]
+mat = mat;
 % 11 = IFGLeft
 % 12  = IFGRight
 m = squeeze(mean(mat(r_ind,:,:),3));
 sdc = arrayfun(@(x) std(squeeze(mat(x,:,:))'),r_ind,'UniformOutput',0)
 sd = reshape(cell2mat(sdc),size(m))
 se = sd / sqrt(20)
-xlbls = aBeta.r_lbls(r_ind);
+xlbls = r_lbls(r_ind);
 % Data to be plotted as a bar graph
 f = figure(1)
 clf
@@ -145,7 +177,7 @@ h = bar(model_series,'BarWidth',1);
 % h(1).FaceColor = 'blue';
 % h(2).FaceColor = 'yellow';
 % Properties of the bar graph as required
-c = distinguishable_colors(length(r_ind))
+c = distinguishable_colors(5)
 for i = 1:5
 h(i).FaceColor = c(i,:);
 end
@@ -182,28 +214,29 @@ errorbar(x, model_series(:,i), model_error(:,i), 'k', 'linestyle', 'none');
 end
 box off
 f.Color = [1 1 1]
-%% regional F T tests
+%% regional F test
 addpath('/Users/aidasaglinskas/Downloads/anova_rm-1/')
 help anova_rm
 loadMR;
-mat =  [];
+matt =  [];
 for t = 1:length(aBeta.trim.t_inds)
 matt(:,t,:) = mean(aBeta.fmat(:,aBeta.trim.t_inds{t},:),2);
 matr(:,t,:) = mean(aBeta.fmat_raw(:,aBeta.trim.t_inds{t},:),2);
 end
-%
-r_ind = [1 2];
-mat = matt;
-amat = {squeeze(mat(r_ind(1),:,:))' squeeze(mat(r_ind(2),:,:))'};
-anova_rm(amat)
+r_ind = [11 12];
+disp(aBeta.r_lbls(r_ind));
+matt = matt;
+amat = {squeeze(matt(r_ind(1),:,:))' squeeze(matt(r_ind(2),:,:))'};
+anova_rm(amat);
+%% regional T test
 clc
-r_ind = 1;
-mat = matr;
-mat = squeeze(mat(r_ind,:,:));
+r_ind = 6;
+mat_raw = mat;
+mat_reduced = squeeze(mat_raw(r_ind,:,:));
 pairs = nchoosek(1:5,2);
-disp(aBeta.r_lbls{r_ind})
+disp(r_lbls{r_ind})
 for i = 1:length(pairs)
-[H,P,CI,STATS] = ttest(mat(pairs(i,1),:)',mat(pairs(i,2),:)');
+[H,P,CI,STATS] = ttest(mat_reduced(pairs(i,1),:)',mat_reduced(pairs(i,2),:)');
 if P < .05
 str = sprintf('%s-%s: t(%d) = %s, p=%s',aBeta.trim.t_lbls{pairs(i,1)},aBeta.trim.t_lbls{pairs(i,2)},STATS.df,num2str(round(STATS.tstat,4),'%10.4f'),num2str(round(P,4),'%10.4f'));
 disp(str)

@@ -1,11 +1,14 @@
 clear 
-temp.root = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/';
+
+spm('Defaults','FMRI')
+spm_jobman('initcfg')
+temp.root = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/';
 temp.functional_scans = fullfile(temp.root,'/S%d/Functional/Sess%d/swdata.nii')
 temp.analysis_fldr = fullfile(temp.root,'/S%d/Analysis');
 temp.multicond_file = fullfile(temp.root,'S%d/sub%drun%d_multicond.mat');
 temp.RP_file = fullfile(temp.root,'S%d/Functional/Sess%d/rp_data.txt');
 loadMR
-subvect.face
+subvect = subvect.word;
 opts.overwrite = 1;
 %spm_jobman('initcfg')
 for subID = subvect

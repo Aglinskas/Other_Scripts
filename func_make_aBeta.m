@@ -11,7 +11,7 @@ aBeta.t_lbls = {'First memory' 'Attractiveness' 'Friendliness' 'Trustworthiness'
 to_trim = aBeta.fmat;
 aBeta.trim.t_inds = {[1 5] [7 8] [3 4] [2 9] [6 10]};
 aBeta.trim.t_lbls = {'Episodic' 'Factual' 'Social' 'Physical' 'Nominal' };
-drop = {'Left', 'Right', '-', '.mat'};
+drop = {'left', 'right', '-', '.mat'};
 unique_rois = roi_data.lbls;
 for i = 1:length(drop);
    unique_rois =  strrep(unique_rois,drop{i},'');
@@ -25,8 +25,6 @@ aBeta.trim.r_inds{r_ind} = inds;
 aBeta.trim.r_lbls{r_ind} = unique_rois{r_ind};
 end
 
-
-
 for r_ind = 1:length(aBeta.trim.r_inds);
 for t_ind = 1:length(aBeta.trim.t_lbls);
 temp = to_trim(aBeta.trim.r_inds{r_ind},aBeta.trim.t_inds{t_ind},:);
@@ -34,7 +32,6 @@ trimmat(r_ind,t_ind,:) = squeeze(mean(mean(temp,1),2));
 end
 end
 aBeta.trim.mat = trimmat;
-
 
 % Cluster and order
 if sort == 1;

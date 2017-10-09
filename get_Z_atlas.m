@@ -1,8 +1,9 @@
-function Z_atlas = get_Z_atlas(Z,n_items)
-% get_Z_atlas(Z,n_items)
+function Z_atlas = get_Z_atlas(Z)
+% get_Z_atlas(Z)
 % Converts Z indexes to sum of individual points
 %
 %
+n_items = size(Z,1)+1;
 Z_atlas = nan(length(Z),2);
 Z_atlas = num2cell(Z_atlas);
 Z(:,4) = n_items + 1 : n_items+length(Z);
@@ -28,8 +29,8 @@ end
 
 for r = 1:length(Z)
 for c = [1 2]
-if sum([Z(find(Z(:,4) == Z(r,c)),[1 2])] <= n_items) == 1
-if any(isnan([Z_atlas{find(Z(:,4) == Z(r,c)),:}])) == 0
+if sum([Z(find(Z(:,4) == Z(r,c)),[1 2])] <= n_items) == 1;
+if any(isnan([Z_atlas{find(Z(:,4) == Z(r,c)),:}])) == 0;
 Z_atlas{r,c} = [Z_atlas{find(Z(:,4) == Z(r,c)),:}]; 
 end
 end

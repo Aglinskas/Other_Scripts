@@ -1,9 +1,12 @@
 % Dendrograms
+clear
 loadMR;
-roi_or_task = 2;
+roi_or_task = 1;
 mat = aBeta.fmat;
-mat = zscore(mat,[],2)
-
+dr = [];
+%dr = [9 10 13 14 19 20];
+mat(dr,:,:) = [];
+aBeta.r_lbls(dr) = []
 % R null
 mat_rs = [];
 mat_ts = [];
@@ -23,10 +26,9 @@ null_mat = {mat_rs mat_ts};
 null_mat = null_mat{roi_or_task};
 %
 albls = {aBeta.r_lbls aBeta.t_lbls(1:10)};
-%Dendrogram
 cmat = [];
 ncmat = [];
-for i = 1:20
+for i = 1:size(mat,3)
 if roi_or_task == 1
 cmat(:,:,i) = corr(mat(:,:,i)');% rois
 ncmat(:,:,i) = corr(null_mat(:,:,i)');% rois
@@ -35,6 +37,7 @@ cmat(:,:,i) = corr(mat(:,:,i));% task
 ncmat(:,:,i) = corr(null_mat(:,:,i));% rois
 end
 end
+%% Dendrogram
 acmat = mean(cmat,3);
 newVec = get_triu(acmat);
 Z = linkage(1-newVec,'ward');
@@ -51,7 +54,9 @@ d.CurrentAxes.YAxis.Label.String = 'Dissimilarity'
 tr = 1
 d.Color = [tr tr tr]
 d.CurrentAxes.Color = [tr tr tr];
-%Add colour 
+
+saveas(d,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
+%% Add colour 
 if roi_or_task == 1
 c_inds = [1 2 2 1 2 1 2 3 1 1 2 1 3 1 2 3 1 1];
 c = {[1 0 0] [0 1 0] [.5 0 1]}
@@ -74,27 +79,27 @@ elseif roi_or_task == 2
 thick_inds = [8 9]
 [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
 end
-% New Bootstrapp
+%% New Bootstrapp
 
 % albls
 % cmat
-% this_lbls
+this_lbls = albls{roi_or_task};
 perm_struct = [];
 dist = [];
 subjpool = [];
-perm_struct.params.nclust = [3 3];
+perm_struct.params.nclust = [3 2];
 perm_struct.params.nperms = 1000;
 perm_struct.params.nsubs = 10;
 perm_struct.permMat = zeros(perm_struct.params.nperms,size(cmat,1),size(cmat,1));
 warning('off','stats:linkage:NotEuclideanMatrix') % Expecto Patronum those pesky warnings
 for iter_ind = 1:perm_struct.params.nperms
     if ismember(iter_ind,0:perm_struct.params.nperms/10:perm_struct.params.nperms);disp(sprintf('%d/%d',iter_ind/perm_struct.params.nperms * 100,100));end
+subjpool = [];
 subjpool(1,:) = randi(size(cmat,3),1,perm_struct.params.nsubs);
 subjpool(2,:) = randi(size(cmat,3),1,perm_struct.params.nsubs);
 
-
-% subjpool(1,:) = 1:20;
-% subjpool(2,:) = 1:20;
+%subjpool(1,:) = 1:20;
+%subjpool(2,:) = 1:20;
 
     perm_struct.commonSubs(iter_ind) = sum(ismember(subjpool(1,:),subjpool(2,:)));
     perm_struct.poolCor(iter_ind) = corr(subjpool(1,:)',subjpool(2,:)');
@@ -111,8 +116,6 @@ tmat(find(r),find(r)) = tmat(find(r),find(r))+1;
 tmat(tmat>0)=1;
 end
 perm_struct.permMat(iter_ind,:,:) = tmat;
-
-
 
 % % Old/ No good
 % for x = unique([x1;x2])'
@@ -133,22 +136,24 @@ schemaball_play(this_lbls(ord),perm_struct.meanMat(ord,ord))
 %% Bar PLOT
 %%%
 %%%
+
+
+
 loadMR;
+pickmat = aBeta.wmat;
+r_inds = {[13;14]	[9;10]	[19;20]	[11;12]	[15;16]	[3;4]	18	21	17	[7;8]	[5;6]	[1;2]};
+r_lbls = {'OFA'	'FFA'	'pSTS'	'IFG'	'OFC'	'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'	'Amygdala'	'ATFP'};
+
 mat = [];
-%r_inds = {[1;2],[3;4],[5;6],[7;8],[9;10],[11] [12],[13;14],[15;16],17,18,19,[20;21]}
-%r_lbls = {'ATL','Amygdala','Angular','FFA','Face Patch','IFG-Left','IFG-Right','OFA','Orb','PFCmedial','Precuneus','dMPFC','pSTS'}
-r_inds = {[1;2],[3;4],[5;6],[7;8],[9;10],[11;12],[13;14],[15;16],17,18,19,[20;21]}
-r_lbls = {'ATL','Amygdala','Angular','FFA','Face Patch','IFG','OFA','Orb','PFCmedial','Precuneus','dMPFC','pSTS'}
 for r = 1:length(r_inds)
 for t = 1:length(aBeta.trim.t_inds)
-mat(r,t,:) = mean(mean(aBeta.fmat(r_inds{r},aBeta.trim.t_inds{t},:),2),1);
+mat(r,t,:) = mean(mean(pickmat(r_inds{r},aBeta.trim.t_inds{t},:),2),1);
 %matr(:,t,:) = mean(aBeta.fmat_raw(:,aBeta.trim.t_inds{t},:),2);
 end
 end
 disp(size(mat))
 % Bar Plot
-r_ind = [1 6]; %ATL IFG
-r_ind = [3 12]
+r_ind = [1:12]; %ATL IFG
 mat = mat;
 % 11 = IFGLeft
 % 12  = IFGRight
@@ -214,6 +219,7 @@ errorbar(x, model_series(:,i), model_error(:,i), 'k', 'linestyle', 'none');
 end
 box off
 f.Color = [1 1 1]
+f.CurrentAxes.YLim = [-3 7];
 %% regional F test
 addpath('/Users/aidasaglinskas/Downloads/anova_rm-1/')
 help anova_rm
@@ -272,29 +278,16 @@ end
 clc
 STATS.P = num2str(P);
 disp(STATS);
-%% Radial Plot
+%%
 loadMR
-mat = aBeta.fmat_raw;
-mat = mat  - mat(:,11,:);
-mat = mat(:,1:10,:);
-mat = zscore(mat,[],2)
-mat = zscore(mat,[],1)
-
+mat = aBeta.wmat;
 to_trim = mat;
-if size(mat,1) == 18
-    disp('old rois')
-r_inds =     {[13,14] [7,8] [11,12] [15,16] [1,2]  18 [5,6] 17 [3,4] [9,10]};
-wh_r_labels = {'OFA' 'FFA' 'IFG' 'Orb' 'ATL'  'Precuneus' 'pSTS' 'PFCmedial' 'Amygdala' 'Face Patch'};
- 
-elseif size(mat,1) == 21
-r_inds = {[13 14] [7 8] [20 21] [11 12] [15 16] [1 2] [19] [17]  [18] [5 6] [3 4] [9 10]};
-wh_r_labels = {'OFA' 'FFA' 'pSTS' 'IFG' 'OFC' 'ATL' 'dmPFC' 'vmPFC'  'Precuneus' 'Angular' 'Amygdala' 'Face Patch'};
-else
-    error(sprintf('%d ROIs, wat do',size(mat,1)))
-end
-    t_inds = {[1 5] [7 8] [3 4] [2 9] [6 10]}
-    wh_t_labels = {'Episodic' 'Factual' 'Social' 'Physical' 'Nominal' };
-    
+%lbls
+    r_inds = {[13;14]	[9;10]	[19;20]	[11;12]	[15;16]	[3;4]	18	21	17	[7;8]	[5;6]	[1;2]};
+    wh_r_labels = {'OFA'	'FFA'	'pSTS'	'IFG'	'OFC'	'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'	'Amygdala'	'ATFP'};
+    t_inds = aBeta.trim.t_inds
+    wh_t_labels = aBeta.trim.t_lbls
+
 trim = [];
 for r = 1:length(r_inds)
 for t = 1:length(t_inds)
@@ -302,19 +295,22 @@ trim(r,t,:) = squeeze(mean(mean(to_trim(r_inds{r},t_inds{t},:),1),2));
 end
 end
 mtrim = mean(trim,3);
-tmat = [];
+
+
+
+tmat = []; tmat2 = [];
 for r = 1:length(r_inds)
 for t = 1:length(t_inds)
 this_vec = squeeze(trim(r,t,:));
 other_vec = squeeze(mean(trim(r,find([1:5]~=t),:),2));
+%other_vec = squeeze(mean(trim(r,6,:),2));
 [H,P,CI,STATS] = ttest(this_vec,other_vec);
+tmat2(r,t) = STATS.tstat;
+[H,P,CI,STATS] = ttest(this_vec);
 tmat(r,t) = STATS.tstat;
 end
 end
 use_mat = tmat;
-%use_mat = tanh(use_mat);
-%use_mat = zscore(use_mat,[],2)
-%use_mat = zscore(use_mat,[],1)
 use_t_lbls = wh_t_labels;
 use_r_lbls = wh_r_labels;
     r_ind = (1); % Prep
@@ -336,24 +332,36 @@ plt_list = [0 .9 0 %  nominal green
 0	.5	.5
 0	.5	.5];
 
-f = figure(13);
-clf;
-subplot(2,2,[1 3])
-for sp =  1:4
-{[1 3 5] 2 4 6};subplot(3,2,ans{sp})
-%{1:5 1:3 4:5};wh_plot = ans{sp}
-{1:5 5 3:4 1:2};wh_plot = ans{sp}
+f = figure(13);clf;
+%subplot(2,2,[1 3])
+%
+mats = {tmat tmat2};
+sp_list = {[[1 2 5 6 9 10]] 3 7 11 4 8 12};
+wh_plot_list = {1:5 5 3:4 1:2 5 3:4 1:2};
+sp_ttls = {'Word Data' 'Raw' '' '' 'Region Preference Enchancd' '' ''}
+
+for sp_ind = 1:length(sp_list)
+subplot(3,4,sp_list{sp_ind})
+
+
+if sp_ind < 5; 
+    use_mat = mats{1};
+else
+    use_mat = mats{2};
+end
+
+wh_plot = wh_plot_list{sp_ind}
 for i = wh_plot
 %r_ind = randi(10)
 r_ind = (i);
 rho = use_mat(:,r_ind);
-%g = polarplot(angle,rho,plt{r_ind})
 pp = {'r-.o' 'r-o' 'r-o'  'r-o' 'r-o' 'r-o' 'r-o' 'r-o'};
 g = polarplot(angle,rho,pp{sp},'Color',plt_list(i,:),'LineWidth',3);
 g.MarkerSize = 30
 g.Marker = '.'
 hold on
 end
+
 f.Color = [1 1 1]
 f.CurrentAxes.Layer = 'top'
 f.CurrentAxes.LineWidth = 3
@@ -363,6 +371,113 @@ f.CurrentAxes.ThetaTickLabel = use_r_lbls;
 f.CurrentAxes.ThetaGrid = 'on';
 f.CurrentAxes.FontSize = 15;
 f.CurrentAxes.FontWeight = 'bold';
-l = legend(use_t_lbls(wh_plot),'location','Northeast');
-%l.Position = [0.8363    0.8127    0.1110    0.1564];
+if sp_ind == 1;l = legend(use_t_lbls(wh_plot),'location','northeastoutside');end
+title(sp_ttls{sp_ind},'Fontsize',20)
 end % ends suplot
+
+
+saveas(f,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
+
+
+%% Radial Plot OLD
+% loadMR
+% mat = aBeta.fmat;
+% to_trim = mat;
+% 
+% r_inds = {[13;14]	[9;10]	[19;20]	[11;12]	[15;16]	[3;4]	18	21	17	[7;8]	[5;6]	[1;2]};
+% wh_r_labels = {'OFA'	'FFA'	'pSTS'	'IFG'	'OFC'	'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'	'Amygdala'	'ATFP'};
+% 
+% t_inds = aBeta.trim.t_inds
+% wh_t_labels = aBeta.trim.t_lbls
+%     
+% aBeta.r_lbls
+% trim = [];
+% for r = 1:length(r_inds)
+% for t = 1:length(t_inds)
+% trim(r,t,:) = squeeze(mean(mean(to_trim(r_inds{r},t_inds{t},:),1),2));
+% end
+% end
+% mtrim = mean(trim,3);
+% tmat = [];
+% 
+% 
+% 
+% for r = 1:length(r_inds)
+% for t = 1:length(t_inds)
+% this_vec = squeeze(trim(r,t,:));
+% other_vec = squeeze(mean(trim(r,find([1:5]~=t),:),2));
+% %other_vec = squeeze(mean(trim(r,6,:),2));
+% [H,P,CI,STATS] = ttest(this_vec,other_vec);
+% tmat(r,t) = STATS.tstat;
+% end
+% end
+% use_mat = tmat;
+% 
+% 
+% nm = mean(trim,3)
+% sd = std(trim,[],3);
+% se = sd ./ sqrt(20);
+% f = figure(3);clf
+% bar(nm);hold on
+% %errorbar(nm(:,:),se(:,4),'r*')
+% legend(wh_t_labels)
+% f.CurrentAxes.XTickLabel  = wh_r_labels
+% f.CurrentAxes.XTickLabelRotation = 45
+% 
+% 
+% 
+% 
+% %use_mat = zscore(use_mat,[],2)
+% %use_mat = zscore(use_mat,[],1)
+% 
+% use_t_lbls = wh_t_labels;
+% use_r_lbls = wh_r_labels;
+%     r_ind = (1); % Prep
+%     rho = use_mat(:,r_ind);
+%     sep = .60;
+%     angle = 0:(2*pi-sep)/(length(rho)-1):2*pi-sep;
+% plt_list = [0 .9 0 %  nominal green 
+% .9 1 0 % physical
+% 0 .9 .9 %socal 
+% 1 0 0 % episodic
+% .5 0 1 %factual
+% 0	0	.3
+% 0	0	.5
+% 0	0	.5
+% 0	.5	.5
+% 0	.5	.5
+% 0	0	.5
+% 0	0	.5
+% 0	.5	.5
+% 0	.5	.5];
+% 
+% f = figure(13);
+% clf;
+% subplot(2,2,[1 3])
+% for sp =  1:4
+% {[1 3 5] 2 4 6};subplot(3,2,ans{sp})
+% %{1:5 1:3 4:5};wh_plot = ans{sp}
+% {1:5 5 [3 4] 1:2};wh_plot = ans{sp}
+% for i = wh_plot
+% %r_ind = randi(10)
+% r_ind = (i);
+% rho = use_mat(:,r_ind);
+% %g = polarplot(angle,rho,plt{r_ind})
+% pp = {'r-.o' 'r-o' 'r-o'  'r-o' 'r-o' 'r-o' 'r-o' 'r-o'};
+% g = polarplot(angle,rho,pp{sp},'Color',plt_list(i,:),'LineWidth',3);
+% g.MarkerSize = 30
+% g.Marker = '.'
+% hold on
+% end
+% f.Color = [1 1 1]
+% f.CurrentAxes.Layer = 'top'
+% f.CurrentAxes.LineWidth = 3
+% f.CurrentAxes.RLim = [min(use_mat(:)) max(use_mat(:))];
+% f.CurrentAxes.ThetaTick = rad2deg(angle);
+% f.CurrentAxes.ThetaTickLabel = use_r_lbls;
+% f.CurrentAxes.ThetaGrid = 'on';
+% f.CurrentAxes.FontSize = 15;
+% f.CurrentAxes.FontWeight = 'bold';
+% l = legend(use_t_lbls(wh_plot),'location','northeastoutside');
+% %l.Position = [0.8363    0.8127    0.1110    0.1564];
+% end % ends suplot

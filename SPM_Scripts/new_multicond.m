@@ -1,8 +1,10 @@
 %% Parameters to specify
 loadMR;
-fn = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/S%d_ScannerMyTrials_RBLT.mat'
-ofn = '/Users/aidasaglinskas/Google Drive/Data_faces/S%d/'
-for subID = subvect; % one by one
+fn = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/S%d/wS%d_Results.mat.mat';
+ofn = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/S%d/';
+
+which_subs = [23]
+for subID = which_subs; % one by one
 %%
 trial_dur = 2.5; %Trial duration
 TR = 2.5;

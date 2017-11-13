@@ -1,15 +1,18 @@
 clear all
-warning('off')
-loadMR
-anal_dir = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_Analysis_subconst/'
+%warning('off')
+%loadMR
+anal_dir = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/Group_Analysis_INDF/'
 spm('Defaults','FMRI')
 spm_jobman('initcfg')
 %subvect_words = find(ismember([1:18],[3 4 11 18 12]) == 0);;
-Subs_to_run = subvect.face
-con_img = 6:17; % which con images to take
-conds = 1:12% [1:24]
+%Subs_to_run = subvect.face
+Subs_to_run = [ 1 2 5 6 7 8 9 10 13 14 15 16 17 19 20 22 23 24 26 27 28 29 30 31] % WORD EXP
+%con_img = 6:17; % which con images to take
+con_img = 1:40;
+%conds = 1:12% [1:24]
+conds = 1:40;
 % Templates
-subAnalFLDR = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/S%d/Analysis/' % TEMPLATE: '/Users/aidasaglinskas/Desktop/MRI_data/S%d/Analysis_mask02/'
+subAnalFLDR = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/S%d/Analysis_INDF/' % TEMPLATE: '/Users/aidasaglinskas/Desktop/MRI_data/S%d/Analysis_mask02/'
 con_temp = 'con_00%s.nii,1'; % num2str(10,'%0.2u') %TEMPLATE: 'con_00%s.nii,1'
 % Self Sufficient code below
 if exist(anal_dir) > 0
@@ -54,10 +57,10 @@ matlabbatch{2}.spm.stats.fmri_est.spmmat(1) = cfg_dep('Factorial design specific
 matlabbatch{2}.spm.stats.fmri_est.write_residuals = 0;
 matlabbatch{2}.spm.stats.fmri_est.method.Classical = 1;
 
-matlabbatch{3}.spm.stats.con.spmmat(1) = cfg_dep('Model estimation: SPM.mat File', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
-matlabbatch{3}.spm.stats.con.consess{1}.tcon.name = 'All Face > Monuments';
-matlabbatch{3}.spm.stats.con.consess{1}.tcon.weights = [ones(1,11) -11];
-matlabbatch{3}.spm.stats.con.consess{1}.tcon.sessrep = 'none';
+%matlabbatch{3}.spm.stats.con.spmmat(1) = cfg_dep('Model estimation: SPM.mat File', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
+%matlabbatch{3}.spm.stats.con.consess{1}.tcon.name = 'All Face > Monuments';
+%matlabbatch{3}.spm.stats.con.consess{1}.tcon.weights = [ones(1,11) -11];
+%matlabbatch{3}.spm.stats.con.consess{1}.tcon.sessrep = 'none';
 
 % Slice in a an f Con
 % matlabbatch{3}.spm.stats.con.spmmat(1) = cfg_dep('Model estimation: SPM.mat File', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));

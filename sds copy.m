@@ -1,14 +1,6 @@
 r_t = 2;
 n = 20;
-c =distinguishable_colors(8);
-for i = 1:length(c)
-sp = subplot(4,2,i)
-sp.Color = c(i,:);
-sp.XAxis.Color = [1 1 1];
-sp.YAxis.Color = [1 1 1];
-title({num2str(i) num2str(c(i,:),2)},'fontsize',15)
-end
-%%
+c =distinguishable_colors(n);
 loadMR;
 mat = aBeta.fmat;
 rcmat = [];
@@ -28,7 +20,7 @@ Z = linkage(1-get_triu(mcmat),'ward');
     add_colours = 1;    
 if add_colours
     if r_t == 1
-[h(1:end).LineWidth] = deal(6)
+[h(1:end).LineWidth] = deal(3)
 [h(1:end).Color] = deal([0 0 0])
     c_c = c([2 3 16],:)
 c_inds = {}
@@ -42,8 +34,8 @@ c_inds{3} = [8 13 15]
 [h([19 20]).LineWidth] = deal(5)
 
     elseif r_t == 2
-[h(1:end).LineWidth] = deal(6);
-[h(1:end).Color] = deal([0 0 1]);
+[h(1:end).LineWidth] = deal(5);
+[h(1:end).Color] = deal([0 0 0]);
         
         c_c = c([17 10 20 9 15],:);
         c_inds = [1:5];

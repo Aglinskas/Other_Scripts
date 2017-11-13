@@ -8,7 +8,7 @@ fn = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/D
 %subvect =  [7 8  9 10 11 12 14 15 16 17 18 19 20 21 22 24 25 26  27 28 29 30 31]
 loadMR
 %subvect = [12]
-subs_to_run = subvect.word
+subs_to_run = [23    24     26    27    28    29    30    31];
 tasks_eng = {'First_memory' 'Attractiveness' 'Friendliness' 'Trustworthiness' 'Familiarity' 'Common_name' 'How_many_facts' 'Occupation' 'Distinctiveness_of_face' 'Common Last Name' 'Same_Face' 'Same_monument'};
 %% Create vs Create & Run
 run_immediately = 1; % if ==1 runs the cons, if not leaves it in the workspace

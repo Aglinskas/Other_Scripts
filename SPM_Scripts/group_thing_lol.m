@@ -11,7 +11,7 @@ mask.cutAG = '/Users/aidasaglinskas/Downloads/cutAG.nii'
 mask.cutpSTS = '/Users/aidasaglinskas/Downloads/cutSTS.nii'
 mask.cut_cut_pSTS = '/Users/aidasaglinskas/Desktop/MasksCheck/cutSTS.nii'
 mask.cut_cut_AG = '/Users/aidasaglinskas/Desktop/MasksCheck/cutAG.nii'
-fn = [dr.test 'SPM.mat']
+fn = [dr.n40 'SPM.mat']
 load(fn);
 con_list = arrayfun(@(x) [num2str(x) ': ' SPM.xCon(x).name],1:length(SPM.xCon),'UniformOutput',0)';
 %%
@@ -22,8 +22,8 @@ xSPM = SPM;
 xSPM.Ex=0;
     xSPM.Im= {};%{mask.grey}    %{mask.cutpSTS};
 xSPM.title=SPM.xCon(xSPM.Ic).name;
-    xSPM.thresDesc='none';
-    xSPM.u= .001;
+    xSPM.thresDesc='FWE';
+    xSPM.u= .01;
     xSPM.k= 0;
 [hReg,xSPM,SPM] = spm_results_ui('Setup',[xSPM]) % SPM GUI
 spm_sections(xSPM,hReg,temp.sections_fn) %SECTIONS

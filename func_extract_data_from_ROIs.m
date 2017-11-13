@@ -1,11 +1,12 @@
 function roi_data = func_extract_data_from_ROIs(roi_dir,spm_dir)
 %roi_data = func_extract_data_from_ROIs(roi_dir,spm_dir,ntasks,nsubs)
+
+%spm_dir = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_Analysis_subconst/'
 addpath(genpath('/Users/aidasaglinskas/Documents/MATLAB/spm12/toolbox/marsbar/'));
 %% Get Masks
 extract_voxel_data = 0;
 masks.dir = roi_dir;
 %masks.dir = '/Users/aidasaglinskas/Desktop/faces_blobsp01/';
-
 
 temp = dir([masks.dir 'R*.mat']);
 masks.nii_files = {temp.name}'; clear temp;
@@ -44,9 +45,9 @@ ofn = '/Users/aidasaglinskas/Desktop/ROI_data.mat';
 %% Extract Voxel Data
 if extract_voxel_data == 1;
 n.subs = nsubs;
-n.conds = ntasks;
+n.conds = nconds;
 n.masks = length(masks.mat_files);
-voxel_data = {};
+vx = {};
 clc;
 for r_ind = 1:n.masks
 disp(sprintf('%d/%d',r_ind,n.masks));
@@ -56,10 +57,14 @@ for i = 1:length({SPM.xY.VY.fname}); % All data
 dt{i,1} = getdata(R,SPM.xY.VY(i).fname);
 end % end subject task loop
 dt = reshape(dt,n.conds,n.subs);
-voxel_data(r_ind,:,:) = dt;
+vx(r_ind,:,:) = dt;
 end % ends roi loop
+voxel_data.mat_files = masks.lbls;
+voxel_data.dt = vx;
 ofn = '/Users/aidasaglinskas/Desktop/voxel_data.mat';
-%save(ofn,'voxel_data')
+save(ofn,'voxel_data')
+disp('voxel data exported to');
+disp(ofn)
 end % ends if 
 %% Fix SPM
 fix_spm = 0;

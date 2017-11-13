@@ -5,7 +5,7 @@ temp.anatomical = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analys
 temp.TPM = '/Users/aidasaglinskas/Documents/MATLAB/spm12/tpm/TPM.nii';
 nsess = 5;
 spm_jobman('initcfg')
-for subID = subvect.word;
+for subID = [24 26:31];
 clear matlabbatch;
 for s_ind = 1:nsess
 fn.functional = sprintf(temp.functional,subID,s_ind);
@@ -26,7 +26,6 @@ matlabbatch{1}.spm.spatial.realign.estwrite.roptions.wrap = [0 0 0];
 matlabbatch{1}.spm.spatial.realign.estwrite.roptions.mask = 1;
 matlabbatch{1}.spm.spatial.realign.estwrite.roptions.prefix = 'r';
 matlabbatch{2}.spm.spatial.coreg.estimate.ref(1) = cfg_dep('Realign: Estimate & Reslice: Mean Image', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','rmean'));
-
 
 fn.anatomical = sprintf(temp.anatomical,subID);
 matlabbatch{2}.spm.spatial.coreg.estimate.source = {[fn.anatomical ',1']}; % ANATOMICAL IMAGE

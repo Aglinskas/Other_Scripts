@@ -20,7 +20,6 @@ coords = [3	-52	29
 42	-64	35
 -48	-49	14
 48	-55	14];
-
 names = {'Precuneus'
 'OFA-right'
 'OFA-left'
@@ -40,11 +39,11 @@ names = {'Precuneus'
 'ATFP-left'
 'Angular-left'
 'Angular-right'
-'pSTS-left'
-'pSTS-right'};
+'pSTS_Aidas-left'
+'pSTS_Aidas-right'};
 %% Extrac
 aBeta = [];
-for i = 1:2
+for i = 1
 spm_dir_temp = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/%s/Group_Analysis_subconst/';
 fldr = {'Data_faces' 'Data_words'};
 spm_dir = sprintf(spm_dir_temp,fldr{i})
@@ -62,7 +61,8 @@ aBeta.wmat = wBeta.fmat;
 aBeta.wmat_raw = wBeta.fmat_raw;
 end
 end
-save('/Users/aidasaglinskas/Google Drive/Mat_files/Workspace/aBeta.mat','aBeta')
+save('/Users/aidasaglinskas/Desktop/Smat.mat','aBeta')
+%save('/Users/aidasaglinskas/Google Drive/Mat_files/Workspace/aBeta.mat','aBeta')
 %%
 mat = aBeta.wmat;
 cmat_task = [];

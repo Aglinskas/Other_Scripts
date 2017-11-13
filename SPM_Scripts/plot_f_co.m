@@ -1,4 +1,4 @@
-Ic = 1
+Ic = 2
 nr_vox = 1;
 add_lbls = 1;
 % Figure out SPM fig;
@@ -10,10 +10,7 @@ add_lbls = 1;
 c = spm_mip_ui('GetCoords');
 %h=spm_mip_ui('FindMIPax');
 c = spm_mip_ui('SetCoords',c);
-
-
 v_ind = find(xSPM.XYZmm(1,:) == c(1) & xSPM.XYZmm(2,:) == c(2) & xSPM.XYZmm(3,:) == c(3));
-
 XYZ = xSPM.XYZ(:,v_ind);
 dist = arrayfun(@(x) pdist([xSPM.XYZ(:,x)';xSPM.XYZ(:,v_ind)']),1:size(xSPM.XYZ,2))';
 [Y I] = sort(dist);
@@ -44,7 +41,7 @@ hold on;
 errorbar(cbeta,CI,'rx');
 
 if add_lbls
-ff.CurrentAxes.XTickLabel = t_labels(1:12);
+ff.CurrentAxes.XTickLabel = aBeta.t_lbls(1:12);
 ff.CurrentAxes.XTickLabelRotation = 45;
 end
 figure(spm_g_fig.Number); % Make active again

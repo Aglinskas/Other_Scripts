@@ -81,13 +81,14 @@ aBeta.trim.t_lbls = aBeta.trim.t_lbls(perm);
 end
 end
 
+end % end mat_ind
+end % end roi or taks
+
 aBeta.list_R = arrayfun(@(x) [num2str(x) ' ' aBeta.r_lbls{x}],1:length(aBeta.r_lbls),'UniformOutput',0)';
 aBeta.list_T = arrayfun(@(x) [num2str(x) ' ' aBeta.t_lbls{x}],1:length(aBeta.t_lbls),'UniformOutput',0)';
 aBeta.trim.list_R = arrayfun(@(x) [num2str(num2str(x)) ' ' aBeta.trim.r_lbls{x}],1:length(aBeta.trim.r_lbls),'UniformOutput',0)';
 aBeta.trim.list_T = arrayfun(@(x) [num2str(num2str(x)) ' ' aBeta.trim.t_lbls{x}],1:length(aBeta.trim.t_lbls),'UniformOutput',0)';
 
-end % end mat_ind
-end % end roi or taks
 overwrite = 0
 if overwrite
 ofn = '/Users/aidasaglinskas/Google Drive/Mat_files/Workspace/aBeta.mat';

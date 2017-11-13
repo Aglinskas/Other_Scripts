@@ -1,6 +1,6 @@
-cd '/Users/aidasaglinskas/Google Drive/Data_words/'
+cd '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/'
 clf
-subVec= [19 20 22] %[ 1     2  5     6     7     8     9    10  12    13    14  16    17]
+subVec= [24 26:31] %[ 1     2  5     6     7     8     9    10  12    13    14  16    17]
 
 A=dir('S*')
 for i = 1:length(A)

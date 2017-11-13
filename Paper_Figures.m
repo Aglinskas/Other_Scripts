@@ -1,12 +1,23 @@
 % Dendrograms
 clear
 loadMR;
-roi_or_task = 1;
-mat = aBeta.fmat;
-dr = [];
-%dr = [9 10 13 14 19 20];
-mat(dr,:,:) = [];
-aBeta.r_lbls(dr) = []
+
+% c1 = [9 10 11 12 13 14 15 16 19 20]
+% c2 = [3 4 7 8 17 18 21]
+% not_semNet = [];
+% semNet = find(~ismember(1:21,not_semNet));
+% aBeta.r_lbls(semNet)
+% inds = c2
+aBeta.r_lbls = strrep(aBeta.r_lbls,'_','-');
+roi_or_task = 2;
+inds = [3 4 7 8 11 12 15 16 17 21 18]
+ninds = find(~ismember([1:21],inds))
+%aBeta.r_lbls(ninds)
+mat = aBeta.wmat(inds,:,:);
+albls = {aBeta.r_lbls(inds) aBeta.t_lbls(1:10)};
+ttl = 'Word data'
+% [19 20 5 6 9 10 13 14] go 
+% [19 20 5 6 9 10 13 14 15 16]
 % R null
 mat_rs = [];
 mat_ts = [];
@@ -25,7 +36,7 @@ end
 null_mat = {mat_rs mat_ts};
 null_mat = null_mat{roi_or_task};
 %
-albls = {aBeta.r_lbls aBeta.t_lbls(1:10)};
+
 cmat = [];
 ncmat = [];
 for i = 1:size(mat,3)
@@ -37,11 +48,12 @@ cmat(:,:,i) = corr(mat(:,:,i));% task
 ncmat(:,:,i) = corr(null_mat(:,:,i));% rois
 end
 end
-%% Dendrogram
+% Dendrogram
 acmat = mean(cmat,3);
 newVec = get_triu(acmat);
 Z = linkage(1-newVec,'ward');
-this_lbls =albls{cellfun(@length,albls) == size(acmat,1)};
+%this_lbls =albls{cellfun(@length,albls) == size(acmat,1)};
+this_lbls = albls{roi_or_task}
 d = figure(3)
 [h x perm] = dendrogram(Z,'labels',this_lbls);
 [h(1:end).LineWidth] = deal(3);
@@ -49,38 +61,39 @@ d.CurrentAxes.XTickLabelRotation = 45;
 d.CurrentAxes.FontSize = 12;
 d.CurrentAxes.FontWeight = 'bold'
 box off
-{'Regional' 'Task'};title([ans{roi_or_task} ' Similarity'],'FontSize',20)
+{'Regional' 'Task'};title({[ans{roi_or_task} ' Similarity'] ttl},'FontSize',20)
 d.CurrentAxes.YAxis.Label.String = 'Dissimilarity'
 tr = 1
 d.Color = [tr tr tr]
 d.CurrentAxes.Color = [tr tr tr];
-
-saveas(d,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
+%saveas(d,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
 %% Add colour 
 if roi_or_task == 1
-c_inds = [1 2 2 1 2 1 2 3 1 1 2 1 3 1 2 3 1 1];
+c_inds = [1 2 2 1 1 2 2 3 1 1 2 1 3 1 3 2 1 1];
 c = {[1 0 0] [0 1 0] [.5 0 1]}
 thick_inds = [19 20];
 
 [h(1:length(c_inds)).Color] = deal(c{c_inds})
 [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
-
+%
 elseif roi_or_task == 2
-%     ticklabels = get(gca,'XTickLabel');
-%     ticklabels_new = cell(size(ticklabels));
-%     ccc = { 'green' 'green' 'red' 'red' 'magenta' 'magenta' 'blue' 'cyan' 'blue' 'cyan'}
-%     for i = 1:length(ticklabels)
-%         cc = ccc{i};
-%     ticklabels_new{i} = ['\' sprintf('color{%s} ',num2str(cc))  ticklabels{i}]
-%     end
-%     set(gca, 'XTickLabel', ticklabels_new);
-%     thick_inds = [8 9];
-%     [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
+    ticklabels = get(gca,'XTickLabel');
+    ticklabels_new = cell(size(ticklabels));
+    %ccc = { 'green' 'green' 'red' 'red' 'magenta' 'magenta' 'blue' 'blue' 'cyan' 'cyan'}
+    %ccc = { 'green' 'green' 'orange' 'orange' 'magenta' 'magenta' 'red' 'red' 'cyan' 'cyan'}
+    ccc = { 'red' 'red' 'magenta' 'magenta' 'blue' 'blue' 'orange' 'orange' 'cyan' 'cyan'}
+    for i = 1:length(ticklabels)
+        cc = ccc{i};
+    ticklabels_new{i} = ['\' sprintf('color{%s}',num2str(cc))  ticklabels{i}]
+    end
+    set(gca, 'XTickLabel', ticklabels_new);
+    thick_inds = [8 9];
+    [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
 thick_inds = [8 9]
 [h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
+[h(1:end).Color] = deal([0 0 0])
 end
 %% New Bootstrapp
-
 % albls
 % cmat
 this_lbls = albls{roi_or_task};
@@ -134,26 +147,23 @@ figure(2)
 clf
 schemaball_play(this_lbls(ord),perm_struct.meanMat(ord,ord))
 %% Bar PLOT
-%%%
-%%%
-
-
-
 loadMR;
-pickmat = aBeta.wmat;
-r_inds = {[13;14]	[9;10]	[19;20]	[11;12]	[15;16]	[3;4]	18	21	17	[7;8]	[5;6]	[1;2]};
-r_lbls = {'OFA'	'FFA'	'pSTS'	'IFG'	'OFC'	'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'	'Amygdala'	'ATFP'};
+pickmat = aBeta.wmat
+ttl = 'Word data' 
+r_inds = {[3;4]	18	21	17	[7] [8]	[5;6]	[1;2]};
+r_lbls = {'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular-left'	'Angular-right' 'Amygdala'	'ATFP'};
 
+%r_inds = {[13;14]	[9;10]	[19;20]	[11] [12]	[15;16]	[3;4]	18	21	17	[7;8]	[5;6]	[1;2]};
+%r_lbls = {'OFA'	'FFA'	'pSTS'	'IFG-left' 'IFG-right' 'OFC'	'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'	'Amygdala'	'ATFP'};
 mat = [];
 for r = 1:length(r_inds)
 for t = 1:length(aBeta.trim.t_inds)
 mat(r,t,:) = mean(mean(pickmat(r_inds{r},aBeta.trim.t_inds{t},:),2),1);
-%matr(:,t,:) = mean(aBeta.fmat_raw(:,aBeta.trim.t_inds{t},:),2);
 end
 end
 disp(size(mat))
 % Bar Plot
-r_ind = [1:12]; %ATL IFG
+r_ind = [1:size(mat,1)]; %ATL IFG
 mat = mat;
 % 11 = IFGLeft
 % 12  = IFGRight
@@ -162,6 +172,8 @@ sdc = arrayfun(@(x) std(squeeze(mat(x,:,:))'),r_ind,'UniformOutput',0)
 sd = reshape(cell2mat(sdc),size(m))
 se = sd / sqrt(20)
 xlbls = r_lbls(r_ind);
+
+m = m ./ sd
 % Data to be plotted as a bar graph
 f = figure(1)
 clf
@@ -220,6 +232,7 @@ end
 box off
 f.Color = [1 1 1]
 f.CurrentAxes.YLim = [-3 7];
+title(ttl,'Fontsize',20)
 %% regional F test
 addpath('/Users/aidasaglinskas/Downloads/anova_rm-1/')
 help anova_rm
@@ -280,7 +293,9 @@ STATS.P = num2str(P);
 disp(STATS);
 %%
 loadMR
-mat = aBeta.wmat;
+exp_mats = {aBeta.fmat aBeta.wmat};
+w_exp = 2; % 1 = Face data 2 = word data
+mat = exp_mats{w_exp};
 to_trim = mat;
 %lbls
     r_inds = {[13;14]	[9;10]	[19;20]	[11;12]	[15;16]	[3;4]	18	21	17	[7;8]	[5;6]	[1;2]};
@@ -288,12 +303,15 @@ to_trim = mat;
     t_inds = aBeta.trim.t_inds
     wh_t_labels = aBeta.trim.t_lbls
 
+        
 trim = [];
 for r = 1:length(r_inds)
 for t = 1:length(t_inds)
 trim(r,t,:) = squeeze(mean(mean(to_trim(r_inds{r},t_inds{t},:),1),2));
 end
 end
+
+%trim = trim - mean(trim,2);
 mtrim = mean(trim,3);
 
 
@@ -310,6 +328,13 @@ tmat2(r,t) = STATS.tstat;
 tmat(r,t) = STATS.tstat;
 end
 end
+
+% th = 2;
+% tmat(tmat<th) = 0;
+% tmat(tmat>th) = th;
+% tmat = tmat+rand(size(tmat))*.1;
+
+
 use_mat = tmat;
 use_t_lbls = wh_t_labels;
 use_r_lbls = wh_r_labels;
@@ -317,11 +342,11 @@ use_r_lbls = wh_r_labels;
     rho = use_mat(:,r_ind);
     sep = .60;
     angle = 0:(2*pi-sep)/(length(rho)-1):2*pi-sep;
-plt_list = [0 .9 0 %  nominal green 
-.9 1 0 % physical
-0 .9 .9 %socal 
-1 0 0 % episodic
-.5 0 1 %factual
+plt_list = [1 0.1 .7	 % Episodic
+.5 0 1 % Factual
+0 0 1 % Social
+1 .7 0 % Physical
+0 .6 0 % Nominal
 0	0	.3
 0	0	.5
 0	0	.5
@@ -338,7 +363,8 @@ f = figure(13);clf;
 mats = {tmat tmat2};
 sp_list = {[[1 2 5 6 9 10]] 3 7 11 4 8 12};
 wh_plot_list = {1:5 5 3:4 1:2 5 3:4 1:2};
-sp_ttls = {'Word Data' 'Raw' '' '' 'Region Preference Enchancd' '' ''}
+ttls = {'Face Data' 'Word Data'};
+sp_ttls = {ttls{w_exp} 'Raw' '' '' 'Region Preference Enchancd' '' ''};
 
 for sp_ind = 1:length(sp_list)
 subplot(3,4,sp_list{sp_ind})
@@ -356,7 +382,7 @@ for i = wh_plot
 r_ind = (i);
 rho = use_mat(:,r_ind);
 pp = {'r-.o' 'r-o' 'r-o'  'r-o' 'r-o' 'r-o' 'r-o' 'r-o'};
-g = polarplot(angle,rho,pp{sp},'Color',plt_list(i,:),'LineWidth',3);
+g = polarplot(angle,rho,pp{sp_ind},'Color',plt_list(i,:),'LineWidth',3);
 g.MarkerSize = 30
 g.Marker = '.'
 hold on

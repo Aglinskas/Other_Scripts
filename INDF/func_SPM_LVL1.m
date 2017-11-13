@@ -1,5 +1,4 @@
-clear 
-
+function func_SPM_LVL1(subvect)
 spm('Defaults','FMRI')
 spm_jobman('initcfg')
 temp.root = '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/';
@@ -7,9 +6,10 @@ temp.functional_scans = fullfile(temp.root,'/S%d/Functional/Sess%d/swdata.nii')
 temp.analysis_fldr = fullfile(temp.root,'/S%d/Analysis_INDF');
 temp.multicond_file = fullfile(temp.root,'S%d/sub%drun%d_multicond_IND_F.mat');
 temp.RP_file = fullfile(temp.root,'S%d/Functional/Sess%d/rp_data.txt');
-loadMR
+%loadMR
 %subvect = [23    24     26    27    28    29    30    31];
-subvect = 29;
+%subvect = 29;
+%subvect = subID
 opts.overwrite = 1;
 %spm_jobman('initcfg')
 for subID = subvect

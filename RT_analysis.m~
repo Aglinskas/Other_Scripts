@@ -1,0 +1,75 @@
+loadMR
+load('/Users/aidasaglinskas/Desktop/behav_scores.mat');
+mf.RT(:,:,7) = [];
+mf.resp(:,:,7) = [];
+m = struct;
+m.wRT = mw.RT;
+m.wResp = mw.resp;
+m.fRT = mf.RT;
+m.fResp = mf.resp;
+m.t_lbls = mf.t_lbls;
+m.f_lbls = mf.f_lbls;
+albls = {m.t_lbls m.f_lbls aBeta.trim.t_lbls'};
+for i = 1:5
+   m.fRT_trim(:,i,:) = mean(m.fRT(:,aBeta.trim.t_inds{i},:),2);
+   m.wRT_trim(:,i,:) = mean(m.wRT(:,aBeta.trim.t_inds{i},:),2);
+   m.fResp_trim(:,i,:) = mean(m.fResp(:,aBeta.trim.t_inds{i},:),2);
+   m.wResp_trim(:,i,:) = mean(m.wResp(:,aBeta.trim.t_inds{i},:),2);
+end
+RTmats = {m.fRT m.wRT m.fRT_trim m.wRT_trim};
+Respmats = {m.fResp m.fResp m.fResp_trim m.wResp_trim};
+mats_lbls = {'Face Data' 'Word Data' 'Face Data Trim' 'Word Data Trim'}
+%% Nans
+nn = zeros([size(mat,1) size(mat,2)]);
+for i = 1:size(mat,3)
+   n = isnan(mat(:,:,i));
+   nn = nn+n;
+end
+add_numbers_to_mat(nn,this_t_labels,albls{2})
+title({'Nans across subjects' mats_lbls{wh_mat}},'fontsize',20)
+%% Check average
+%add_numbers_to_mat(mmat)
+% T difference
+mat = mats{1}
+tmat = [];
+for t1 = 1:size(mat,2)
+for t2 = 1:size(mat,2)
+   [H,P,CI,STATS] = ttest(mmat(t1,:)',mmat(t2,:)');
+   tmat(t1,t2) = STATS.tstat;
+end
+end
+f = figure(1);
+add_numbers_to_mat(tmat,this_t_labels)
+f.CurrentAxes.CLim = [-1.96 1.96]
+title({'RT difference, T values' mats_lbls{wh_mat}},'Fontsize',20)
+%% Select Mat
+%mats_lbls{wh_mat}
+wh_mat = 3;
+mat = mats{wh_mat};
+mmat = squeeze(nanmean(mat,1))
+this_t_labels = albls{find(cellfun(@length,albls) == size(mat,2))};
+%% Bar graph
+mb = mean(mmat,2);
+%mb = mb - mean(mb)
+sb = std(mmat');
+se = sb ./ sqrt(size(mmat,2));
+b = figure(2);clf
+bar(mb); hold on;
+errorbar(mb,se,'r*');
+hold off
+b.CurrentAxes.XTick = 1:length(mb);
+b.CurrentAxes.XTickLabel = this_t_labels;
+b.CurrentAxes.XTickLabelRotation = 45;
+b.CurrentAxes.FontSize = 12;
+b.CurrentAxes.FontWeight = 'bold'
+title({'Mean subtracted' 'RT bar graph' mats_lbls{wh_mat}},'fontsize',20)
+%%
+clc
+m_ind = 1;
+mat = RTmats{m_ind};
+disp(mats_lbls{m_ind})
+size(mat)
+%%
+
+
+

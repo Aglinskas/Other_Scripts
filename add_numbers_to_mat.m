@@ -53,7 +53,7 @@ current_mat_fig.CurrentAxes.XTickLabel = lblsx;%num2str(ord)
 current_mat_fig.CurrentAxes.YTickLabelRotation = 0;
 current_mat_fig.CurrentAxes.XTickLabelRotation = 15;  
 end
-
+current_mat_fig.Color = [1 1 1];
 textStrings = num2str(matrix(:),'%0.2f');
 textStrings = strtrim(cellstr(textStrings));
 if size(matrix,1) == size(matrix,2);

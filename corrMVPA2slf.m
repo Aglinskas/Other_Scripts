@@ -19,7 +19,6 @@ clear reallyTemp
 for run=1:5
 reallyTemp(run,:,:)=zscore(squeeze(temp(run,:,:)));% default is 1st dim
 end
-
 %%
 use_mat = reallyTemp;
 sqz = [squeeze(use_mat(:,t1,:)); squeeze(use_mat(:,t2,:))]';

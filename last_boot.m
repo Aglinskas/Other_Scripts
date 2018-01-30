@@ -1,6 +1,9 @@
 loadMR;clc
-mat = aBeta.fmat;
+mat = aBeta.wmat;
 albls = {aBeta.r_lbls aBeta.t_lbls(1:10)};
+drop_inds = [9 10 13 14  19 20 1 2]
+mat(drop_inds,:,:) = [];
+albls{1}(drop_inds) = [];
 % make null mats
 null_mats = {mat permute(mat,[2 1 3])};
 for r_t = 1:2

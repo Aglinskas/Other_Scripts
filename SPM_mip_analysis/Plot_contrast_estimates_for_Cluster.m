@@ -1,6 +1,6 @@
 %% Gets cluster
-%Ic = 1;
-T_leg = t; % Tasks: Are they  or t_old?
+Ic = 4;
+T_leg = {'First memory'	'Attractiveness'	'Friendliness'	'Trustworthiness'	'Familiarity'	'Common name'	'How many facts'	'Occupation'	'Distinctiveness'	'Full name'	'Same Face'	'Same monument'}
 [xyzmm,i] = spm_XYZreg('NearestXYZ',...
 spm_results_ui('GetCoords'),xSPM.XYZmm);
 spm_results_ui('SetCoords',xSPM.XYZmm(:,i));
@@ -9,7 +9,6 @@ j = find(A == A(i));
 XYZ = xSPM.XYZ(:,j);
 XYZmm = xSPM.XYZmm(:,j);
 disp(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(length(XYZmm))])
-%
 % Average across voxels
 beta  = spm_get_data(SPM.Vbeta, XYZ);
 ResMS = spm_get_data(SPM.VResMS,XYZ);
@@ -31,6 +30,7 @@ hold on
 errorbar(cbeta,CI,'rx')
 %title([SPM.xCon(Ic).name 'est at cluster' num2str(A(i))])
 title(['Cluster ' num2str(A(i)) '/' num2str(max(A)) ' Size ' num2str(length(XYZmm)) ' Voxels'])
+set(gca,'XTickLabel',T_leg)
 set(gca,'XTickLabel',T_leg)
 % inset
 %addpath('/Users/aidas_el_cap/Downloads/inset/')

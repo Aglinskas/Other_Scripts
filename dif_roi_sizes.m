@@ -2,10 +2,15 @@ roi_dir = '/Users/aidasaglinskas/Desktop/testR/'
 if length(dir(roi_dir)) ~= 2; delete([roi_dir '/*']);end
 spm_dirs = {'/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_faces/Group_Analysis_subconst/'
     '/Users/aidasaglinskas/Google Drive/Aidas:  Summaries & Analyses (WP 1.4)/Data_words/Group_Analysis_subconst/'}
-exp_ind = 1 ;
+exp_ind = 1;
 spm_dir = spm_dirs{exp_ind};
 sph_radius = 10;
 func_makeROIsFromCoords(coords,names,roi_dir,sph_radius);
+
+ofn = roi_dir;
+func_makeROIsFromCoords(coords,names,roi_dir,sph_radius);
+
+
     delete([roi_dir '/*_labels.mat']);
 nsubs_list = [20 24];
 nsubs = nsubs_list(exp_ind);

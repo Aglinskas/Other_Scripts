@@ -5,6 +5,10 @@ loadMR;
 r_inds = {[11;12],[15;16],[3;4],[7;8],17,18,21,[1;2],[5;6]};
 rlbls = {'IFG','OFC','ATL','Angular','Precuneus','dmPFC','vmPFC','ATFP','Amygdala'}
 
+
+r_inds = {[9;10],[13;14],[19;20],[11;12],[15;16],[3;4],[7;8],17,18,21,[1;2],[5;6]};
+rlbls = {'FFA', 'OFA','pSTS','IFG','OFC','ATL','Angular','Precuneus','dmPFC','vmPFC','ATFP','Amygdala'}
+
 %r_inds = {[11] [12],[15;16],[3;4],[7;8],17,18,21,[1;2],[5;6]};
 %rlbls = {'IFG-L','IFG-R','OFC','ATL','Angular','Precuneus','dmPFC','vmPFC','ATFP','Amygdala'}
 
@@ -39,7 +43,7 @@ xticks(1:r)
 xticklabels(rlbls)
 xtickangle(45)
 l = legend(tlbls,'Location','NorthEastOutside')
-xlim([0 10.5])
+xlim([0 12.5])
 ylim([0 1])
 box off
 f.Color = [1 1 1]

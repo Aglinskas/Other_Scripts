@@ -15,7 +15,7 @@ for t = 1:5
     xSPM.Ic= 4;ans(t); % Which contrast
     xSPM.Ex=0;
     xSPM.Im= [];
-    xSPM.Im= {'/Users/aidasaglinskas/Desktop/faces_blobsp01/Combined_ROIs.nii'};
+    %xSPM.Im= {'/Users/aidasaglinskas/Desktop/faces_blobsp01/Combined_ROIs.nii'};
     xSPM.title=SPM.xCon(xSPM.Ic).name;
 xSPM.thresDesc='none';
 xSPM.u= .999;
@@ -96,5 +96,5 @@ imshow(im)
 drawnow
 end
 end
-saveas(f,['/Users/aidasaglinskas/Desktop/SPMS/' 'comb' num2str(t)],'png')
+%saveas(f,['/Users/aidasaglinskas/Desktop/SPMS/' 'comb' num2str(t)],'png')
 end

@@ -1,13 +1,19 @@
 % Dendrograms
-clear
+clear all;
+%close all;
 loadMR;
 aBeta.r_lbls = strrep(aBeta.r_lbls,'.mat','');
+aBeta.r_lbls = strrep(aBeta.r_lbls,'-left','-L');
+aBeta.r_lbls = strrep(aBeta.r_lbls,'-right','-R');
+
+
+
 not_semNet = [1 2 5 6 9 10 13 14 19 20];
 semNet = find(~ismember(1:21,not_semNet));
 aBeta.r_lbls = strrep(aBeta.r_lbls,'_','-');
 roi_or_task = 1;
-inds = semNet
-exp = 2;
+inds = 1:21
+exp = 1;
 mats = {aBeta.fmat(inds,:,:) aBeta.wmat(inds,:,:)}
 mat = mats{exp};
 albls = {aBeta.r_lbls(inds) aBeta.t_lbls(1:10)};
@@ -63,11 +69,25 @@ box off
 d.CurrentAxes.YAxis.Label.String = 'Dissimilarity'
 tr = 1
 d.Color = [tr tr tr]
-d.CurrentAxes.Color = [tr tr tr];
+d.CurrentAxes.Color = [tr tr tr];pap
 %saveas(d,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
 % MDS scale
 cc{1} = { [.5 0 1] [1 0 0] [0 .5 0]}
 cc{2} = {[1 0 0] [1 0 1] [0 0 1] [1 .5 0] [0 .8 .8]}
+
+% Add colour
+figure(3)
+if roi_or_task == 1
+c_inds = [1 2 2 1 1 2 2 3 1 1 2 1 3 1 3 2 1 1];
+c = {[1 0 0] [0 1 0] [.5 0 1]}
+thick_inds = [19 20];
+h(end).LineWidth = 7
+
+[h(1:length(c_inds)).Color] = deal(c{c_inds})
+[h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
+%
+
+
 md_fig = figure(4);clf
 mdd = mdscale(1-newVec,2);
 for i = 1:length(mdd)
@@ -86,17 +106,7 @@ md_fig.Color = [1 1 1];
 md_fig.CurrentAxes.FontWeight = 'bold';
 md_fig.CurrentAxes.FontSize = 12;
 
-% Add colour
-figure(3)
-if roi_or_task == 1
-c_inds = [1 2 2 1 1 2 2 3 1 1 2 1 3 1 3 2 1 1];
-c = {[1 0 0] [0 1 0] [.5 0 1]}
-thick_inds = [19 20];
-h(end).LineWidth = 7
 
-[h(1:length(c_inds)).Color] = deal(c{c_inds})
-[h(thick_inds).LineWidth] = deal(h(1).LineWidth*2);
-%
 elseif roi_or_task == 2
     ticklabels = get(gca,'XTickLabel');
     ticklabels_new = cell(size(ticklabels));
@@ -179,16 +189,16 @@ schemaball(this_lbls(ord),perm_struct.meanMat(ord,ord))
 %% Bar PLOT
 loadMR;
 pickmat = aBeta.fmat
-ttl = 'Word Data' 
-r_inds = {[13;14]	[9;10]	[19;20]	[11;12]	[15;16] [5;6]	[1;2]	[3;4]	18	21	17	[7;8]	};
-r_lbls = {'OFA'	'FFA'	'pSTS'	'IFG' 'OFC'	'Amygdala'	'ATFP' 'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'};
+ttl = 'Face Data' 
+r_inds = {[13;14]	[9;10]	[19;20]	[11] [12]	[15;16] [5;6]	[1;2]	[3;4]	18	21	17	[7;8]	};
+r_lbls = {'OFA'	'FFA'	'pSTS'	'IFG-L' 'IFG-R' 'OFC'	'Amygdala'	'ATFP' 'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular'};
 %r_inds = {[13;14]	[9;10]	[19;20]	[11] [12]	[15;16]	[3;4]	18	21	17	[7] [8]	[5;6]	[1;2]};
 %r_lbls = {'OFA'	'FFA'	'pSTS'	'IFG-L' 'IFG-R' 'OFC'	'ATL'	'dmPFC'	'vmPFC'	'Precuneus'	'Angular-left' 'Angular-right'	'Amygdala'	'ATFP'};
 mat = [];
-aBeta.trim.t_inds{end+1} = 11
-aBeta.trim.t_lbls{end+1} = 'FaceCC'
-aBeta.trim.t_inds{end+1} = 12
-aBeta.trim.t_lbls{end+1} = 'MonCC'
+% aBeta.trim.t_inds{end+1} = 11
+% aBeta.trim.t_lbls{end+1} = 'FaceCC'
+% aBeta.trim.t_inds{end+1} = 12
+% aBeta.trim.t_lbls{end+1} = 'MonCC'
 for r = 1:length(r_inds)
 for t = 1:length(aBeta.trim.t_inds)
 mat(r,t,:) = mean(mean(pickmat(r_inds{r},aBeta.trim.t_inds{t},:),2),1);
@@ -284,7 +294,7 @@ r_ind = aBeta.trim.r_inds{2}
 disp(aBeta.r_lbls(r_ind));
 matt = matt;
 amat = {squeeze(matt(r_ind(1),:,:))' squeeze(matt(r_ind(2),:,:))'};
-[p, table] = anova_rm(amat);
+%[p, table] = anova_rm(amat);
 %% regional T test
 clc
 r_ind = 4;

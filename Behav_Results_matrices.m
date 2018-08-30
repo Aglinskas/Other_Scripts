@@ -9,7 +9,7 @@ for f = 1:10
        fc_allsubs(f).(Tasks_eng{t}) = fc_allsubs(f).(Tasks_eng{t})(13:24);
     end
 end
-%% Get all rating in a matrix
+% Get all rating in a matrix
 %% Correlation matrix
 for r = 1:13
     for c = 1:13

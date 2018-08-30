@@ -1,8 +1,8 @@
-function Z_atlas = get_Z_atlas(Z)
-% get_Z_atlas(Z)
+function [Z_atlas distmat]= get_Z_atlas(Z)
+% [Z_atlas distmat]= get_Z_atlas(Z)
 % Converts Z indexes to sum of individual points
-%
-%
+% get_triu(distmat) draws a faithful dend
+
 n_items = size(Z,1)+1;
 Z_atlas = nan(length(Z),2);
 Z_atlas = num2cell(Z_atlas);
@@ -52,3 +52,9 @@ end
 for i = 1:length(Z)
     Z_atlas{i,3} = Z(i,3);
 end % end 
+
+distmat = zeros(size(Z_atlas,1)+1);
+for i = 1:size(Z_atlas,1) 
+   distmat(Z_atlas{i,1},Z_atlas{i,2}) = distmat(Z_atlas{i,1},Z_atlas{i,2})+Z_atlas{i,3};
+   distmat(Z_atlas{i,2},Z_atlas{i,1}) = distmat(Z_atlas{i,2},Z_atlas{i,1})+Z_atlas{i,3};
+end

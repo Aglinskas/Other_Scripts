@@ -31,9 +31,9 @@ clear;
 loadMR;
 addpath('/Users/aidasaglinskas/Documents/MATLAB/BrainNetViewer/');
 addpath('/Users/aidasaglinskas/Documents/MATLAB/export_fig_fldr/');
-node_file = '/Users/aidasaglinskas/Desktop/BrainNet_Files/node2_7ROis.node'; %ROIs
-edge_file = '/Users/aidasaglinskas/Desktop/BrainNet_Files/Edge2_7ROis.edge';
-cfg = '/Users/aidasaglinskas/Desktop/BrainNet_Files/newCfg.mat';
+node_file = '/Users/aidasaglinskas/Desktop/Work_Clutter/BrainNet_Files//node2_7ROis.node'; %ROIs
+edge_file = '/Users/aidasaglinskas/Desktop/Work_Clutter/BrainNet_Files/Edge2_7ROis.edge';
+cfg = '/Users/aidasaglinskas/Desktop/Work_Clutter/BrainNet_Files/newCfg.mat';
 load(cfg);
 EC.lbl_font.FontSize = 24;
 save(cfg,'EC')

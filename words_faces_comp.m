@@ -1,5 +1,6 @@
 loadMR
-load('/Users/aidasaglinskas/Desktop/wBeta.mat')
+%load('/Users/aidasaglinskas/Desktop/wBeta.mat')
+load('/Users/aidasaglinskas/Google Drive/Mat_files/Other_mats/wBeta.mat')
 re_ord = [ 10    11    12    13     2     3     6     7    17    18     8     9     4     5    15 16    14     1];
 subBeta.array = subBeta.array(re_ord,:,:)
 subBeta.r_labels = {subBeta.r_labels{re_ord}}'

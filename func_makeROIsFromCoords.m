@@ -67,7 +67,7 @@ end
 %saveroi(all_rois,[ofn 'ROIs_Combined.mat'])    
 %mars_rois2img([ofn 'ROIs_Combined.mat'],[ofn 'Combined_ROIs.nii'],space)
 %% RoiSizes 
-RoiSizes = 0;
+RoiSizes = 1;
 if RoiSizes == 1
 r_list = dir([ofn '*.nii']);
 r_list = {r_list.name}';

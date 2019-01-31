@@ -1,12 +1,10 @@
 % Dendrograms
 clear all;
-%close all;
+close all;
 loadMR;
 aBeta.r_lbls = strrep(aBeta.r_lbls,'.mat','');
 aBeta.r_lbls = strrep(aBeta.r_lbls,'-left','-L');
 aBeta.r_lbls = strrep(aBeta.r_lbls,'-right','-R');
-
-
 
 not_semNet = [1 2 5 6 9 10 13 14 19 20];
 semNet = find(~ismember(1:21,not_semNet));
@@ -61,15 +59,16 @@ nclust = [3 5];
 [h x perm] = dendrogram(Z,'labels',this_lbls);
 ord = perm(end:-1:1);
 [h(1:end).LineWidth] = deal(3);
+[h(1:end).Color] = deal([0 0 0])
 d.CurrentAxes.XTickLabelRotation = 45;
 d.CurrentAxes.FontSize = 12;
 d.CurrentAxes.FontWeight = 'bold'
 box off
 {'Regional' 'Task'};title({[ans{roi_or_task} ' Similarity'] ttl},'FontSize',20)
-d.CurrentAxes.YAxis.Label.String = 'Dissimilarity'
+d.CurrentAxes.YAxis.Label.String = 'Dissimilarity (a.u.)'
 tr = 1
 d.Color = [tr tr tr]
-d.CurrentAxes.Color = [tr tr tr];pap
+d.CurrentAxes.Color = [tr tr tr];
 %saveas(d,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
 % MDS scale
 cc{1} = { [.5 0 1] [1 0 0] [0 .5 0]}
@@ -444,7 +443,6 @@ f.CurrentAxes.FontWeight = 'bold';
 if sp_ind == 1;l = legend(use_t_lbls(wh_plot),'location','northeastoutside');end
 title(sp_ttls{sp_ind},'Fontsize',20)
 end % ends suplot
-
 
 %saveas(f,['/Users/aidasaglinskas/Desktop/Figures/' datestr(datetime) '.png'],'png')
 %% Radial Plot OLD

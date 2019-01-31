@@ -84,6 +84,9 @@ f = figure(2);
 for i = 1:length(clusts)
 subplot(1,length(clusts),i)
 models{i} = func_made_RSA_model(lbls{1},clusts{i},1,clust_names{i})
+xtickangle(45);
+
+xticks([]);yticks([]);
 end
 %f.CurrentAxes.FontSize = 12;
 %f.CurrentAxes.FontWeight = 'bold';
@@ -104,47 +107,27 @@ l = 0
 % clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
 % clust_names{l} = 'Core-Extended'
 
-l = l+1;clust{l}= {};
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
-clust_names{l} = 'Core-IFG-Extended'
 
-l = l+1;clust{l}= {};
-clust{l}{end+1} = { 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
-clust_names{l} = 'Core-Extended-IFG'
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+% clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
+% clust_names{l} = 'Core-IFG-Extended'
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = { 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
+% clust_names{l} = 'Core-Extended-IFG'
 
 l = l+1;clust{l}= {};
 clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
 clust{l}{end+1} = { 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
-clust_names{l} = 'Core+IFG+OFC - Extended'
-
-l = l+1;clust{l}= {};
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'OFC-L' 'OFC-R' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
-clust_names{l} = 'Core+IFG-Extended+OFC'
-
-
-l = l+1;clust{l}= {};
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'ATFP-L' 'ATFP-R' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
-clust_names{l} = 'Core+ATFP / Extended'
-
-l = l+1;clust{l}= {};
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'ATFP-L' 'ATFP-R' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
-clust_names{l} = 'Core / Extended+ATFP'
-
-
-l = l+1;clust{l}= {};
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
-clust_names{l} = 'Core+IFG+OFC/Extended'
+clust_names{l} = 'Core+FL - Extended'
 
 l = l+1;clust{l}= {};
 clust{l}{end+1} = {'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
-clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
-clust_names{l} = 'Core/Extended+IFG+OFC'
+clust{l}{end+1} = {'OFC-L' 'OFC-R' 'IFG-R'    'IFG-L' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L'}
+clust_names{l} = 'Core-Extended+FL'
+
 
 l = l+1;clust{l}= {};
 clust{l}{end+1} = {'OFA-L'    'OFA-R' };
@@ -158,23 +141,75 @@ clust{l}{end+1} = {'ATL-L' 'ATL-R'};
 clust{l}{end+1} = {'Angular-L' 'Angular-R'};
 clust_names{l} = 'ROI pairs'
 
+l = l+1;clust{l}= {};
+clust{l}{end+1} = {'IFG-R'    'IFG-L' 'ATFP-L' 'ATFP-R' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
+clust_names{l} = 'Core+ATFP / Extended'
+
+l = l+1;clust{l}= {};
+clust{l}{end+1} = {'IFG-R'    'IFG-L' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+clust{l}{end+1} = {'ATFP-L' 'ATFP-R' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
+clust_names{l} = 'Core / Extended+ATFP'
+
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+% clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
+% clust_names{l} = 'Core+IFG+OFC/Extended'
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
+% clust_names{l} = 'Core/Extended+IFG+OFC'
+% 
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'Amygdala-R'    'Amygdala-L' 'ATFP-R' 'ATFP-L' 'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'    'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L' };
+% clust{l}{end+1} = {'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'}
+% clust_names{l} = 'Core+IFG+OFC+Amy+ATFP/Extended'
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'     'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L'};
+% clust{l}{end+1} = {'Amygdala-R'    'Amygdala-L' 'ATFP-R' 'ATFP-L' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'    'Amygdala-R'    'Amygdala-L' }
+% clust_names{l} = 'Core+IFG+OFC/Extended+Amy+ATFP'
+% 
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'     'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L'}
+% clust{l}{end+1} = {'Amygdala-R'    'Amygdala-L' 'ATFP-R' 'ATFP-L' 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'}
+% clust_names{l} = 'Extended'
+% 
+% 
+% l = l+1;clust{l}= {};
+% clust{l}{end+1} = {'IFG-R'    'IFG-L' 'OFC-L' 'OFC-R' 'FFA-R'     'FFA-L' 'OFA-R'    'OFA-L' 'pSTS-R'    'pSTS-L'}
+% clust{l}{end+1} = {'Amygdala-R'    'Amygdala-L' 'ATFP-R' 'ATFP-L'};
+% clust{l}{end+1} = { 'Angular-R'    'Angular-L'    'vmPFC'    'Precuneus'    'dmPFC'    'ATL-R' 'ATL-L'   }
+% clust_names{l} = 'amy+FP / Extended'
+
+
 % Estimate Regional Models
 f = figure(2);clf
 data = rcmats;
 for i = 1:length(clust)
 sp = subplot(2,ceil(length(clust)/2),i);
 models{i} = func_made_RSA_model(lbls{2},clust{i},1,{[num2str(i) '. '] clust_names{i}})
-sp.Title.String
+sp.Title.FontSize = 14;
 this_model_fit = func_fit_RSA_model(data,models{i});
+xtickangle(65)
 [H,P,CI,STATS] = ttest(this_model_fit);
-xlabel(t_statement(STATS,P))
+%xlabel(t_statement(STATS,P))
+
+xticks([]);yticks([]);
 end
 model_fit = func_fit_RSA_model(data,models);
 %%
 [H,P,CI,STATS] = ttest(model_fit);
+
+
+
 %%
-[H,P,CI,STATS] = ttest(model_fit(:,7),model_fit(:,8));
-clc;t_statement(STATS,P);
+% [H,P,CI,STATS] = ttest(model_fit(:,11),model_fit(:,12));
+% clc;t_statement(STATS,P);
 %% Bar Graph
 mdata = squeeze(mean(data_mat,2));
 m = mean(mdata,2);
@@ -243,8 +278,6 @@ t_statement(STATS,P)
 
 [H,P,CI,STATS] = ttest(squeeze(mean((data_mat),2))');
 clc;t_statement(STATS,P);
-
-
 %%
 
 mat= squeeze(mean(data_mat_tiny(ismember(aBeta.r_lbls,ang),:,:),1));
@@ -280,7 +313,6 @@ end
 f = figure(2);
 add_numbers_to_mat(tmat,clust_pairs_leg);
 f.CurrentAxes.CLim = [1.9 2]
-
 %%
 dt = [];
 for i = 1:5
@@ -350,7 +382,6 @@ rlbls = aBeta.r_lbls;
 tlbls = aBeta.t_lbls;
 
 
-
 tiny_data_mat = [];
 for r = 1:length(r_group)
 for t = 1:length(t_group)
@@ -360,13 +391,20 @@ end
 end
 %%
 figure(2);
-[H,P,CI,STATS] = ttest(permute(tiny_data_mat,[3 2 1]),0,'alpha',.005);
+[H,P,CI,STATS] = ttest(permute(tiny_data_mat,[3 2 1]),0,'alpha',.05);
 tmat = squeeze(STATS.tstat);
-pmat = squeeze(H);
+pmat = squeeze(P);
+
+t_group_lbls = t_group_lbls(end:-1:1);
+tmat = tmat(end:-1:1,:);
+pmat = pmat(end:-1:1,:);
 sp = subplot(1,2,1);
-add_numbers_to_mat(pmat,r_group_lbls,t_group_lbls);sp.CLim = [.04998 .05];
+add_numbers_to_mat(pmat,r_group_lbls,t_group_lbls);sp.CLim = [.0049 .005];
 sp = subplot(1,2,2);
 add_numbers_to_mat(tmat,r_group_lbls,t_group_lbls);sp.CLim = [1.95 1.96]
+
+
+a = arrayfun(@(x) num2str(x,'%.4f'),pmat,'UniformOutput',0)
 %%
 % Stacked
 m = mean(tiny_data_mat,3);
@@ -403,10 +441,13 @@ box off
 legend(t_group_lbls,'Location','bestoutside');
 ylabel('% total activation')
 ylim([0 1])
-
-f.Position = [ -1037        1224        1433         511]
-
+xtickangle(45);
+%f.Position = [ -1037        1224        1433         511]
+f.CurrentAxes.FontSize = 11
+%ofn = '/Users/aidasaglinskas/Desktop/paper_figs/stacked.pdf';
+%print(ofn,'-dpdf','-bestfit')
 %% Bar Graph
+% Paper one
 r_lbls = {'OFA-L'    'OFA-R'    'FFA-L'    'FFA-R'    'pSTS-L'    'pSTS-R'    'IFG-L' 'IFG-R'    'OFC-L'    'OFC-R'    'ATFP-L'    'ATFP-R'    'Amygdala-L' 'Amygdala-R'    'ATL-L'    'ATL-R'  'Angular-L'    'Angular-R' 'dmPFC'    'Precuneus'    'vmPFC' };
 tl = strrep(r_lbls,'-L','');
 tl = strrep(tl,'-R','');
@@ -428,12 +469,12 @@ f = figure(1);clf; hold on
 inds = {l r med}
 
 c = [1 0 0; 0 0 1;0 1 0] .* .7;
+%c = [0 0 0;1 1 1;.3 .3 .3;]
 for i = 1:3
 plot_m = m;
 plot_m(~inds{i}) = 0
     plot_e = e;
     plot_e(~inds{i}) = 0;
-
     
 HB = bar(plot_m);
 HB.FaceColor = c(i,:);
@@ -441,10 +482,15 @@ HB.FaceAlpha = .8;
 HE = errorbar(plot_m,plot_e,'r.')
 HE.Color = [0 0 0];
 HE.LineWidth = 1;
+HE.Marker = 'none';
 end
 
 
-xt = [1.5 3.5 5.5 7.5 9.5 11.5 13.5 15.5 17.5 19 20 21];
+xt = [1.5 3.5 5.5 7.5 9.5 11.5 13.5 15.5 17.5 19.2 20.4 21.6];
+spc = 1.2
+x = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 18+spc 18+2*spc 18+3*spc]
+HB.XData = x;
+HE.XData = x;
 f.CurrentAxes.FontSize = 12;
 f.CurrentAxes.FontWeight = 'bold';
 f.CurrentAxes.XTick = xt;
@@ -454,6 +500,13 @@ f.CurrentAxes.LineWidth = 1;
 box off
 l = legend({'left' 'none' 'right' 'SE' 'medial'},'Location','bestoutside')
 l.Box = 'off';
+
+f.CurrentAxes.LineWidth = 1.5;
+f.CurrentAxes.FontSize = 10
+plot(0:22,zeros(1,23),'k-','LineWidth',1.5);
+ylim([-2.5 5])
+%ofn = '/Users/aidasaglinskas/Desktop/paper_figs/Bar.pdf';
+%print(ofn,'-dpdf','-bestfit');
 %% Control Mats
 data_mat_fc = aBeta.fmat_raw(:,11,:) - aBeta.fmat_raw(:,12,:);
     data_mat_fc = squeeze(data_mat_fc);
@@ -480,8 +533,3 @@ sp.XTickLabel = aBeta.r_lbls;
 sp.XTickLabelRotation = 45;
 sp.CLim = [.049 .049999]
 end
-
-
-
-
-
